@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FREE TIMES</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Bebas+Neue&family=Orbitron:wght@700;900&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -16,7 +18,7 @@
   --white:#e8f4ff;
   --blue:#2a8fd4;
   --blue2:#4ab8ff;
-  --cyan:#00e5ff;
+  --cyan:#00cfff;
   --pink:#ff3cac;
   --lime:#c8ff45;
   --amber:#ffb700;
@@ -68,10 +70,10 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   position:absolute;top:28px;left:32px;z-index:3;
 }
 .hero-logo{
-  font-family:'Zen Dots',cursive;
+  font-family:'Black Ops One',cursive;
   font-size:clamp(36px,7vw,84px);
   font-weight:400;
-  letter-spacing:8px;
+  letter-spacing:6px;
   line-height:1;
   color:#ffffff;
   position:relative;
@@ -106,12 +108,6 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   letter-spacing:5px;
   text-transform:uppercase;
   margin-top:10px;
-}
-@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}50%{opacity:0.4;}}50%{opacity:0.4;transform:translateX(-50%) scale(1.4);}}
-.hero-logo-sub{
-  font-family:'Noto Sans JP',sans-serif;
-  font-size:10px;color:rgba(74,184,255,0.65);
-  letter-spacing:3px;margin-top:5px;
 }
 
 /* Social */
@@ -404,11 +400,11 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .modal-body{padding:36px 28px;display:flex;flex-direction:column;overflow-y:auto;max-height:92vh;}
 .modal-issue{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .modal-issue::before{content:'';width:16px;height:1px;background:var(--cyan);}
-.modal-title{font-family:'Bebas Neue',cursive;font-size:clamp(22px,3.5vw,38px);line-height:1.0;letter-spacing:2px;margin-bottom:8px;}
+.modal-title{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:clamp(20px,3vw,30px);line-height:1.3;letter-spacing:1px;margin-bottom:10px;}
 .modal-sub{font-size:9px;color:var(--muted);line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .modal-article{font-size:12px;line-height:1.9;color:rgba(232,244,255,0.72);flex:1;}
 .modal-article p{margin-bottom:12px;}
-.modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
+.modal-article p:first-child::first-letter{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:40px;float:left;line-height:0.9;margin:4px 8px 0 0;color:var(--cyan);}
 .modal-footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-by{font-size:8px;color:var(--dim);}
 .modal-nav{display:flex;gap:6px;}
@@ -442,7 +438,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 
   <!-- Logo -->
   <div class="hero-logo-block">
-    <div class="hero-logo">FREE <em>TIMES</em></div>
+    <div class="hero-logo"><span class="logo-free">FREE</span> <span class="logo-times">TIMES</span></div>
     <div class="hero-logo-sub">Breaking News From The Unknown</div>
   </div>
 
@@ -654,7 +650,7 @@ const papers = [
   { id:3, monthly:false, issue:"FREE TIMES 裏 — 2024年4月", category:"yokohama",
     title:"大さん橋、海からWi-Fi飛んでくる",
     sub:"知らないネットワーク／接続すると過去の映像／たまに未来も混ざる",
-    by:"By 緑マキ男", imageSrc:"paper3.png", color:"#00e5ff",
+    by:"By 緑マキ男", imageSrc:"paper3.png", color:"#00cfff",
     article:`<p>横浜・大さん橋で謎のWi-Fiが海から飛んでくるという報告が相次いでいる。接続すると過去の映像が流れ、たまに未来も混ざるという。横浜忍者一族・影浜との関係も浮上。続報を待て。</p>`
   },
   { id:4, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
