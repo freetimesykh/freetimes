@@ -1020,6 +1020,8 @@ function hexRgb(h) {
 //  EDITOR — 外部ツール不要のブラウザ編集モード
 // ══════════════════════════════════════════════
 let EDIT = false;
+// 編集ボタンは「?edit」を付けて開いたときだけ表示する（自分だけの合言葉）
+const CAN_EDIT = new URLSearchParams(location.search).has('edit') || location.hash === '#edit';
 let efImg = '';   // 記事フォームで選択中の画像
 
 // 記事カード／月刊カードをクリックしたとき
@@ -1065,7 +1067,8 @@ function renderEditChrome(){
   const fab = document.getElementById('edFab');
   if(!EDIT){
     fab.className = 'ed-fab';
-    fab.innerHTML = `<button class="ed-enter" onclick="toggleEdit()">✏ 編集する</button>`;
+    // 「?edit」付きでアクセスした人にだけ編集ボタンを見せる
+    fab.innerHTML = CAN_EDIT ? `<button class="ed-enter" onclick="toggleEdit()">✏ 編集する</button>` : '';
     return;
   }
   fab.className = 'ed-fab open';
