@@ -479,6 +479,42 @@ body.edit-mode .a-card::after,body.edit-mode .monthly-right::after{content:'✏ 
 .ed-slide-item button{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;}
 .ed-slide-item button:hover{border-color:var(--cyan);color:var(--cyan);}
 .ed-slide-item button:disabled{opacity:.3;cursor:default;}
+
+/* ══════════════ 携帯（縦）でホームを1画面に収める ══════════════ */
+@media(max-width:600px){
+  .hero{height:27vh;min-height:160px;}
+  .home-body{padding:10px 0 18px;}
+  .inner{padding:0 14px;}
+  .sec-hd{margin-bottom:8px;}
+
+  /* 月刊：大きめに見せる */
+  .monthly-section{margin-bottom:14px;}
+  .monthly-coming{min-height:150px;}
+  .monthly-layout{grid-template-columns:1fr;min-height:auto;}
+  .monthly-left{padding:18px 18px;}
+  .monthly-right{min-height:150px;}
+
+  /* 他の記事：横並び（横スワイプ）にして縦スクロールを減らす */
+  .articles-grid{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:8px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    padding-bottom:6px;
+  }
+  .articles-grid .a-card{
+    flex:0 0 31%;
+    aspect-ratio:auto;
+    height:140px;
+    scroll-snap-align:start;
+  }
+  .articles-grid .a-card-strip{padding:22px 8px 8px;}
+  .articles-grid .a-card-title{font-size:10px;}
+  .articles-grid .a-card-sub,
+  .articles-grid .a-card-read{display:none;}
+}
 </style>
 </head>
 <body>
