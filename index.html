@@ -137,12 +137,54 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   right:clamp(24px,9vw,130px);
   top:50%;transform:translateY(-55%);
   width:clamp(110px,17vw,210px);
-  height:clamp(110px,17vw,210px);
+  height:clamp(120px,18vw,230px);
   display:flex;align-items:center;justify-content:center;
   z-index:3;
+  /* ★ 水槽（アクアリウム）風 */
+  border-radius:16px;
+  border:2px solid rgba(190,230,255,0.5);
+  background:linear-gradient(180deg,
+    rgba(130,205,255,0.12) 0%,
+    rgba(30,110,170,0.30) 20%,
+    rgba(8,45,85,0.45) 100%);
+  backdrop-filter:blur(3px) saturate(1.25);
+  -webkit-backdrop-filter:blur(3px) saturate(1.25);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.18),
+    inset 0 14px 22px rgba(120,210,255,0.18),
+    0 10px 26px rgba(0,0,0,0.45),
+    0 0 34px rgba(0,180,255,0.28);
+  overflow:hidden;
 }
+/* 水のゆらぎ・深み */
+.tank-water{position:absolute;inset:0;border-radius:inherit;z-index:0;
+  background:radial-gradient(120% 85% at 50% 120%, rgba(0,205,255,0.30), transparent 62%);}
+/* 水面のライン */
+.water-surface{position:absolute;left:6px;right:6px;top:18%;height:2px;z-index:1;
+  background:linear-gradient(90deg,transparent,rgba(205,242,255,0.75),transparent);
+  box-shadow:0 0 8px rgba(185,232,255,0.7);
+  animation:surface 4.5s ease-in-out infinite;}
+@keyframes surface{0%,100%{transform:translateY(0);opacity:.65}50%{transform:translateY(3px);opacity:1}}
+/* 気泡 */
+.bubble{position:absolute;bottom:6%;border-radius:50%;z-index:1;opacity:0;
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.25) 60%, transparent 72%);
+  box-shadow:0 0 4px rgba(255,255,255,0.5);
+  animation:rise linear infinite;}
+@keyframes rise{
+  0%{transform:translateY(0) scale(0.5);opacity:0;}
+  15%{opacity:0.9;}
+  85%{opacity:0.65;}
+  100%{transform:translateY(-160px) scale(1);opacity:0;}}
+.bubble.b1{left:30%;width:6px;height:6px;animation-duration:5s;animation-delay:0s;}
+.bubble.b2{left:56%;width:4px;height:4px;animation-duration:4s;animation-delay:1.2s;}
+.bubble.b3{left:43%;width:8px;height:8px;animation-duration:6s;animation-delay:2.4s;}
+.bubble.b4{left:68%;width:5px;height:5px;animation-duration:4.6s;animation-delay:0.6s;}
+.bubble.b5{left:22%;width:5px;height:5px;animation-duration:5.4s;animation-delay:3s;}
+/* ガラスの反射 */
+.tank-glare{position:absolute;inset:0;border-radius:inherit;z-index:3;pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 16%, transparent 38%);}
 .star-ring{
-  position:absolute;border-radius:50%;
+  position:absolute;border-radius:50%;z-index:1;
   animation:rpulse 3.5s ease-in-out infinite;
 }
 .star-ring.r1{width:100%;height:100%;border:1px solid rgba(168,255,0,0.18);}
@@ -159,10 +201,15 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 @keyframes starfloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-11px) rotate(7deg);}}
 
 .star-alive{
-  position:absolute;top:-16px;right:0;
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
   display:flex;align-items:center;gap:5px;
-  font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--cyan);
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#dffaff;z-index:4;
+  background:rgba(2,22,34,0.6);
+  padding:3px 9px;border-radius:11px;
+  border:1px solid rgba(170,225,255,0.35);
+  box-shadow:0 0 10px rgba(0,200,255,0.35);
+  white-space:nowrap;
 }
 .star-alive-dot{
   width:5px;height:5px;border-radius:50%;
@@ -170,9 +217,10 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   animation:blink 1.2s ease-in-out infinite;
 }
 .star-label{
-  position:absolute;bottom:-16px;left:0;right:0;
-  font-size:7px;color:rgba(168,255,0,0.45);
+  position:absolute;bottom:7px;left:0;right:0;z-index:4;
+  font-size:7px;color:rgba(210,245,255,0.85);
   letter-spacing:2px;text-transform:uppercase;text-align:center;
+  text-shadow:0 0 6px rgba(0,160,230,0.6);
 }
 
 /* Slide dots */
@@ -561,8 +609,15 @@ body.edit-mode .a-card::after,body.edit-mode .monthly-right::after{content:'✏ 
     </a>
   </div>
 
-  <!-- ★ Star Fragment Alive -->
+  <!-- ★ Star Fragment Alive（水槽風） -->
   <div class="hero-star">
+    <div class="tank-water"></div>
+    <div class="water-surface"></div>
+    <span class="bubble b1"></span>
+    <span class="bubble b2"></span>
+    <span class="bubble b3"></span>
+    <span class="bubble b4"></span>
+    <span class="bubble b5"></span>
     <div class="star-ring r1"></div>
     <div class="star-ring r2"></div>
     <div class="star-ring r3"></div>
@@ -584,6 +639,7 @@ body.edit-mode .a-card::after,body.edit-mode .monthly-right::after{content:'✏ 
         <circle r="2" fill="white"/>
       </g>
     </svg>
+    <div class="tank-glare"></div>
   </div>
 
   <!-- Dots -->
