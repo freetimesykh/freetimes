@@ -512,6 +512,8 @@ body.edit-mode [data-edit]{outline:1px dashed rgba(0,229,255,.7);outline-offset:
 body.edit-mode [data-edit]:hover{background:rgba(0,229,255,.12);}
 body.edit-mode .a-card,body.edit-mode .arch-card,body.edit-mode .monthly-right,body.edit-mode .monthly-left{cursor:pointer;}
 body.edit-mode .a-card::after,body.edit-mode .monthly-right::after{content:'✏ 編集';position:absolute;top:6px;left:6px;background:rgba(0,229,255,.92);color:#04080f;font-size:9px;font-weight:700;padding:3px 7px;border-radius:4px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
+body.edit-mode .monthly-coming{cursor:pointer;}
+body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
 .ed-wrap{position:fixed;inset:0;z-index:650;display:none;align-items:center;justify-content:center;padding:14px;font-family:'Noto Sans JP',sans-serif;}
 .ed-wrap.open{display:flex;}
 .ed-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);}
@@ -981,7 +983,7 @@ function initHome() {
       </div>`;
   } else {
     document.getElementById('monthly-area').innerHTML = `
-      <div class="monthly-coming">
+      <div class="monthly-coming" onclick="editMonthly()">
         <div class="coming-inner">
           <div class="coming-badge">Coming Soon</div>
           <div class="coming-title">MONTHLY ISSUE 01</div>
@@ -1261,6 +1263,18 @@ function addArticle(){
   content.articles.push({ id, monthly:false, issue:'号外', category:'', title:'新しい記事', sub:'', by:'FREE TIMES', imageSrc:'', color:'#1e3a52', article:'<p>本文をここに書きます。</p>' });
   saveContent();
   editArticle(id);
+}
+// メインの月刊号エリアを編集（無ければ新規作成）
+function editMonthly(){
+  if(!EDIT) return;
+  let m = content.articles.find(a => a.monthly);
+  if(!m){
+    const id = Math.max(0, ...content.articles.map(a => a.id)) + 1;
+    m = { id, monthly:true, issue:'月刊号', category:'', title:'月刊フリータイムズ 創刊号', sub:'', by:'FREE TIMES', imageSrc:'', color:'#00e5ff', article:'<p>本文をここに書きます。</p>' };
+    content.articles.unshift(m);
+    saveContent();
+  }
+  editArticle(m.id);
 }
 function deleteArticle(id){
   if(!confirm('この記事を削除しますか？')) return;
