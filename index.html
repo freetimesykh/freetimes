@@ -412,7 +412,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
   cursor:pointer;border:1px solid var(--border);transition:border-color 0.25s;
 }
 .a-card:hover{border-color:var(--cyan);}
-.a-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.a-card img{width:100%;height:100%;object-fit:contain;background:var(--black);display:block;transition:transform 0.5s;}
 .a-card:hover img{transform:scale(1.05);}
 .a-card-strip{
   position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;
@@ -435,7 +435,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .arch-card{position:relative;aspect-ratio:3/4;background:var(--panel);overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:border-color 0.25s;}
 .arch-card:hover{border-color:var(--cyan);}
 .arch-card.hidden{display:none;}
-.arch-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.arch-card img{width:100%;height:100%;object-fit:contain;background:var(--black);display:block;transition:transform 0.5s;}
 .arch-card:hover img{transform:scale(1.05);}
 .arch-card-strip{position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;background:linear-gradient(to top,rgba(4,8,15,0.98),rgba(4,8,15,0.5) 70%,transparent);}
 .arch-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;margin-bottom:6px;}
