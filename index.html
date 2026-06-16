@@ -753,7 +753,6 @@ function initHome() {
       c.innerHTML = `
         <img src="${p.imageSrc}" alt="${p.title}" loading="lazy">
         <div class="a-card-strip">
-          <div class="a-card-tag">${p.category || '号外'}</div>
           <div class="a-card-title">${p.title}</div>
           <div class="a-card-sub">${p.sub.substring(0,38)}...</div>
           <div class="a-card-read">記事を読む</div>
@@ -779,7 +778,6 @@ function initArchive() {
     c.innerHTML = `
       <img src="${p.imageSrc}" alt="${p.title}" loading="lazy">
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${p.category||'other'}</span>
         <div class="arch-card-issue">${p.issue}</div>
         <div class="arch-card-title">${p.title}</div>
         <div class="arch-card-read">記事を読む</div>
@@ -812,7 +810,6 @@ function initSearch() {
     c.innerHTML = `
       <img src="${p.imageSrc}" alt="${p.title}" loading="lazy">
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${p.category||'other'}</span>
         <div class="arch-card-issue">${p.issue}</div>
         <div class="arch-card-title">${p.title}</div>
         <div class="arch-card-read">記事を読む</div>
