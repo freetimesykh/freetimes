@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FREE TIMES</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&family=Zen+Dots&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -107,12 +107,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   text-transform:uppercase;
   margin-top:10px;
 }
-@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}50%{opacity:0.4;}}50%{opacity:0.4;transform:translateX(-50%) scale(1.4);}}
-.hero-logo-sub{
-  font-family:'Noto Sans JP',sans-serif;
-  font-size:10px;color:rgba(74,184,255,0.65);
-  letter-spacing:3px;margin-top:5px;
-}
+@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 
 /* Social */
 .hero-social{
@@ -639,6 +634,12 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 // ══ DATA ══
 // monthly:true にすると月刊号として表示される
 const papers = [
+  { id:0, monthly:true, issue:"月刊フリータイムズ — 創刊号 / 2026年6月", category:"special",
+    title:"星のかけら、横浜に墜つ — 脈動する発光体「アライブ」を追え",
+    sub:"大さん橋沖に落下した星のかけらが今も脈動を続ける／忍者一族・影浜が極秘調査に着手／ルナ特派員 独占密着レポート",
+    by:"By 編集長 ポール・ヨタ", imageSrc:"hero.png", color:"#a8ff00",
+    article:`<p>2026年6月、横浜・大さん橋の沖合に「星のかけら」が墜落した。緑色の光を放ちながら今も脈動を続けるその発光体に、本紙は「アライブ」と名付けた。生きているかのように呼吸する光——その正体を追う。</p><p>現場をいち早く押さえたのは横浜忍者一族・影浜だった。「これは普通の隕石ではない。海から飛んでくる謎のWi-Fiとも関係がある」と一族の長は語る。接続すると過去や未来の映像が混ざるあのネットワークと、星のかけらは何かでつながっているのか。</p><p>ルナ特派員は5言語のレポートで「かけらに近づくと心臓の音が聞こえる」と報告。出汁コーボ社は早くも「星のかけら出汁」の開発に着手したという噂もある。創刊号は、この一大事件を総力取材でお届けする。続報を待て——FREE TIMES。</p>`
+  },
   { id:1, monthly:false, issue:"号外 — Gourmet", category:"gourmet",
     title:"ゼータ星リトルジャパンで「銀河ポン酢」発売！",
     sub:"銀ポン大ブーム！出汁コーボの新商品に熱狂／超行列！瓦屋木店に大集結",
