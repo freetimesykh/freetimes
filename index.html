@@ -354,6 +354,16 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .ml-title{font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,2.4vw,22px);font-weight:700;line-height:1.5;color:var(--white);margin:0 auto 12px;max-width:640px;}
 .ml-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
 body.edit-mode .monthly-coming.monthly-live::after{content:'✏ 月刊号を編集';}
+/* 月刊号あり（画像）：コンパクトな長方形バナーに画像表示・タップで開く */
+.monthly-banner{position:relative;display:block;width:100%;height:clamp(160px,32vw,240px);border:1px solid var(--border);background:var(--panel);overflow:hidden;cursor:pointer;transition:border-color 0.25s;}
+.monthly-banner:hover{border-color:var(--cyan);}
+.monthly-banner img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.monthly-banner:hover img{transform:scale(1.04);}
+.monthly-banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,15,0.92),rgba(4,8,15,0.15) 55%,transparent);display:flex;flex-direction:column;justify-content:flex-end;padding:18px 20px;}
+.monthly-banner-badge{align-self:flex-start;font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--black);background:var(--cyan);padding:4px 12px;margin-bottom:10px;}
+.monthly-banner-title{font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,2.4vw,22px);font-weight:700;line-height:1.4;color:var(--white);margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,0.6);}
+.monthly-banner-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
+body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
 
 /* Monthly card (月刊号が来たら使う) */
 .monthly-layout{
@@ -993,14 +1003,26 @@ function initHome() {
 
   // Monthly
   if (monthly) {
-    document.getElementById('monthly-area').innerHTML = `
-      <div class="monthly-coming monthly-live" onclick="cardClick(${monthly.id})">
-        <div class="coming-inner">
-          <div class="coming-badge">Latest Issue</div>
-          <div class="ml-title">${esc(monthly.title)}</div>
-          <div class="ml-hint">タップして読む →</div>
-        </div>
-      </div>`;
+    if (monthly.imageSrc) {
+      document.getElementById('monthly-area').innerHTML = `
+        <div class="monthly-banner" onclick="cardClick(${monthly.id})">
+          <img src="${monthly.imageSrc}" alt="">
+          <div class="monthly-banner-overlay">
+            <div class="monthly-banner-badge">Latest Issue</div>
+            <div class="monthly-banner-title">${esc(monthly.title)}</div>
+            <div class="monthly-banner-hint">タップして読む →</div>
+          </div>
+        </div>`;
+    } else {
+      document.getElementById('monthly-area').innerHTML = `
+        <div class="monthly-coming monthly-live" onclick="cardClick(${monthly.id})">
+          <div class="coming-inner">
+            <div class="coming-badge">Latest Issue</div>
+            <div class="ml-title">${esc(monthly.title)}</div>
+            <div class="ml-hint">タップして読む →</div>
+          </div>
+        </div>`;
+    }
   } else {
     document.getElementById('monthly-area').innerHTML = `
       <div class="monthly-coming" onclick="editMonthly()">
