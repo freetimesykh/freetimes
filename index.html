@@ -411,6 +411,40 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
 @media(max-width:640px){.modal{grid-template-columns:1fr;}.modal-img{max-height:38vh;}.modal-body{padding:20px 16px;}}
 
+/* ══ MOBILE OPTIMIZATION ══ */
+@media(max-width:600px){
+  /* 横はみ出し防止 */
+  img,svg{max-width:100%;}
+  /* 余白を詰める */
+  .inner{padding:0 18px;}
+  .home-body{padding:32px 0 56px;}
+  .monthly-section,.articles-section{margin-bottom:36px;}
+  /* セクション見出しは折り返し可に */
+  .sec-hd{flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  /* ヒーロー：ロゴ */
+  .hero-logo-block{top:18px;left:18px;}
+  .hero-logo{letter-spacing:4px;}
+  .hero-logo-sub{letter-spacing:2px;margin-top:6px;}
+  /* ヒーロー：SNSアイコン（重なり防止で小さめ＆近づける） */
+  .hero-social{top:18px;right:16px;gap:12px;}
+  .hero-social a svg{width:18px;height:18px;}
+  /* ヒーロー：星（ロゴ・SNSと重ならないよう下げて縮小） */
+  .hero-star{top:auto;bottom:34px;transform:none;
+    right:clamp(14px,5vw,40px);width:96px;height:96px;}
+  /* 月刊カード：縦積み時は右境界→下境界に */
+  .monthly-left{border-right:none;border-bottom:1px solid var(--border);padding:30px 22px;}
+  /* フッター：中央寄せで縦に整える */
+  .footer-inner{flex-direction:column;justify-content:center;text-align:center;gap:14px;}
+  .footer-nav{justify-content:center;}
+  .footer-nav a{padding:6px 4px;}
+  .footer-copy{text-align:center;line-height:2;}
+}
+@media(max-width:380px){
+  /* 極小画面では星を隠してロゴ周りをスッキリ */
+  .hero-star{display:none;}
+  .hero-logo-sub{display:none;}
+}
+
 /* ══ FOOTER ══ */
 .site-footer{background:var(--panel);border-top:1px solid var(--border);padding:28px;}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
