@@ -348,6 +348,12 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .coming-title{font-family:'Bebas Neue',cursive;font-size:clamp(24px,4vw,52px);letter-spacing:6px;color:rgba(255,255,255,0.05);margin-bottom:8px;}
 .coming-sub{font-size:9px;color:var(--dim);letter-spacing:2px;line-height:1.8;}
 .coming-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);margin:12px auto 0;animation:blink 1.5s ease-in-out infinite;}
+/* 月刊号あり：トップは今のコンパクト枠のまま・タップで開く */
+.monthly-live{cursor:pointer;padding:28px 22px;transition:border-color 0.25s;}
+.monthly-live:hover{border-color:var(--cyan);}
+.ml-title{font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,2.4vw,22px);font-weight:700;line-height:1.5;color:var(--white);margin:0 auto 12px;max-width:640px;}
+.ml-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
+body.edit-mode .monthly-coming.monthly-live::after{content:'✏ 月刊号を編集';}
 
 /* Monthly card (月刊号が来たら使う) */
 .monthly-layout{
@@ -988,19 +994,11 @@ function initHome() {
   // Monthly
   if (monthly) {
     document.getElementById('monthly-area').innerHTML = `
-      <div class="monthly-layout">
-        <div class="monthly-left" onclick="cardClick(${monthly.id})">
-          <div class="monthly-eyebrow">Monthly Free Times</div>
-          <div class="monthly-h2">${esc(monthly.title)}</div>
-          <div class="monthly-sub">${esc(monthly.sub)}</div>
-          <button class="monthly-btn" onclick="event.stopPropagation();cardClick(${monthly.id})">最新号を読む</button>
-        </div>
-        <div class="monthly-right" onclick="cardClick(${monthly.id})">
-          <img src="${monthly.imageSrc}" alt="">
-          <div class="monthly-right-overlay">
-            <div class="monthly-right-title">${esc(monthly.title)}</div>
-            <div class="monthly-right-sub">${esc(monthly.sub)}</div>
-          </div>
+      <div class="monthly-coming monthly-live" onclick="cardClick(${monthly.id})">
+        <div class="coming-inner">
+          <div class="coming-badge">Latest Issue</div>
+          <div class="ml-title">${esc(monthly.title)}</div>
+          <div class="ml-hint">タップして読む →</div>
         </div>
       </div>`;
   } else {
