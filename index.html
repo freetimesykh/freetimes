@@ -355,7 +355,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .ml-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
 body.edit-mode .monthly-coming.monthly-live::after{content:'✏ 月刊号を編集';}
 /* 月刊号あり（画像）：コンパクトな長方形バナーに画像表示・タップで開く */
-.monthly-banner{position:relative;display:block;width:100%;height:clamp(160px,32vw,240px);border:1px solid var(--border);background:var(--panel);overflow:hidden;cursor:pointer;transition:border-color 0.25s;}
+.monthly-banner{position:relative;display:block;width:100%;aspect-ratio:3/1;border:1px solid var(--border);background:var(--panel);overflow:hidden;cursor:pointer;transition:border-color 0.25s;}
 .monthly-banner:hover{border-color:var(--cyan);}
 .monthly-banner img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
 .monthly-banner:hover img{transform:scale(1.04);}
