@@ -1,0 +1,15 @@
+{
+  "name": "FREE TIMES",
+  "short_name": "FREE TIMES",
+  "description": "パラレルワールド新聞 — 横浜発",
+  "start_url": "./?edit",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#04080f",
+  "theme_color": "#04080f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

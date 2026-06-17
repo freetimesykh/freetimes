@@ -6,6 +6,14 @@
 <!-- 検索エンジンに表示させない（作成中のため） -->
 <meta name="robots" content="noindex, nofollow">
 <title>FREE TIMES</title>
+<!-- ホーム画面アプリ化（iPad/iPhoneのホームに置くとアプリのように開ける） -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#04080f">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FREE TIMES">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -633,6 +641,14 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .gate-err.show{opacity:1;}
 @keyframes gateshake{10%,90%{transform:translateX(-2px);}30%,70%{transform:translateX(4px);}50%{transform:translateX(-6px);}}
 .gate-box.shake{animation:gateshake 0.4s;}
+
+/* ══ トップへ戻るボタン ══ */
+#toTop{position:fixed;left:18px;bottom:18px;z-index:550;width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:rgba(4,8,15,0.82);color:var(--cyan);font-size:18px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:transform 0.2s,border-color 0.2s,opacity 0.2s;}
+#toTop.show{display:flex;}
+#toTop:hover{transform:translateY(-3px);border-color:var(--cyan);}
+
+/* ══ NEW バッジ（新着記事の目印） ══ */
+.card-new{position:absolute;top:6px;right:6px;z-index:6;background:var(--pink);color:#fff;font-family:'Space Mono',monospace;font-size:7px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:4px;box-shadow:0 0 12px rgba(255,60,172,0.6);pointer-events:none;}
 </style>
 </head>
 <body>
@@ -647,6 +663,9 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
     <div class="gate-err" id="gateErr">パスコードが違います</div>
   </div>
 </div>
+
+<!-- トップへ戻る -->
+<button id="toTop" aria-label="トップへ戻る" title="トップへ戻る">↑</button>
 <script>
 // 合言葉（数字）を知っている人だけ閲覧可。数字はソースに直書きせず SHA-256 で照合。
 (function(){
@@ -682,6 +701,15 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
   inp.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
   inp.addEventListener('input', function(){ err.classList.remove('show'); });
   window.addEventListener('DOMContentLoaded', function(){ inp.focus(); });
+})();
+// トップへ戻るボタン：少し下にスクロールすると出現
+(function(){
+  var b = document.getElementById('toTop');
+  if(!b) return;
+  function upd(){ b.classList.toggle('show', window.scrollY > 400); }
+  window.addEventListener('scroll', upd, { passive:true });
+  b.addEventListener('click', function(){ window.scrollTo({ top:0, behavior:'smooth' }); });
+  upd();
 })();
 </script>
 
@@ -947,7 +975,7 @@ const DEFAULT_CONTENT = {
     by:"By 緑マキ男", imageSrc:"paper3.png", color:"#00e5ff",
     article:`<p>横浜・大さん橋で謎のWi-Fiが海から飛んでくるという報告が相次いでいる。接続すると過去の映像が流れ、たまに未来も混ざるという。横浜忍者一族・影浜との関係も浮上。続報を待て。</p>`
   },
-  { id:-1, monthly:false, issue:"号外 — 2024年5月25日", category:"mystery",
+  { id:-1, monthly:false, new:true, issue:"号外 — 2024年5月25日", category:"mystery",
     title:`均衡を壊す"偏極者" 存在浮上！！`,
     sub:"フリータイムズ本社の屋上受信機が何者かによって破壊される！！",
     by:"By FREE TIMES 編集部", imageSrc:"henkyokusha.jpg", color:"#ffb700",
@@ -1045,9 +1073,17 @@ function applyStatic(){
   renderSlides();
 }
 function renderTicker(){
-  const items = content.ticker;
-  document.getElementById('tickerScroll').innerHTML =
-    [...items, ...items].map(t => `<span class="ticker-item">${t}</span>`).join('');
+  // 手動テロップ（content.ticker）＋ 記事見出しを自動連動
+  const manual = content.ticker || [];
+  const auto = (content.articles || [])
+    .filter(a => a.imageSrc && !a.monthly)
+    .map(a => `<b>${esc((a.category || '速報').toUpperCase())}</b>${esc(a.title)}`);
+  const items = manual.concat(auto);
+  const el = document.getElementById('tickerScroll');
+  if(!el) return;
+  el.innerHTML = items.length
+    ? [...items, ...items].map(t => `<span class="ticker-item">${t}</span>`).join('')
+    : '';
 }
 
 // ══ SLIDER（スライド画像） ══
@@ -1152,6 +1188,7 @@ function initHome() {
       c.innerHTML = `
         <img src="${p.imageSrc}" alt="" loading="lazy" draggable="false">
         <div class="a-card-drag" aria-hidden="true">⠿</div>
+        ${p.new ? '<div class="card-new">NEW</div>' : ''}
         <div class="a-card-strip">
           <div class="a-card-tag">${esc(p.category || '号外')}</div>
           <div class="a-card-title">${esc(p.title)}</div>
@@ -1179,6 +1216,7 @@ function initArchive() {
     c.className = 'arch-card'; c.onclick = () => cardClick(p.id);
     c.innerHTML = `
       <img src="${p.imageSrc}" alt="" loading="lazy">
+      ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
         <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${esc(p.issue)}</div>
@@ -1212,6 +1250,7 @@ function initSearch() {
     c.onclick = () => cardClick(p.id);
     c.innerHTML = `
       <img src="${p.imageSrc}" alt="" loading="lazy">
+      ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
         <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${esc(p.issue)}</div>
@@ -1495,6 +1534,7 @@ function editArticle(id){
       <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
       <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
     </div>
+    <div class="ed-field"><label><input id="ef-new" type="checkbox" ${a.new?'checked':''}> 🆕 NEWバッジを付ける</label></div>
     <div class="ed-actions">
       <button class="ed-del" onclick="deleteArticle(${id})">削除</button>
       <button class="ed-save" onclick="saveArticle(${id})">保存する</button>
@@ -1519,6 +1559,7 @@ function saveArticle(id){
   a.by       = val('ef-by');
   a.color    = document.getElementById('ef-color').value;
   a.monthly  = document.getElementById('ef-monthly').checked;
+  a.new      = document.getElementById('ef-new').checked;
   a.article  = wrapP(val('ef-article'));
   a.imageSrc = efImg;
   a.imageSrc2 = efImg2;
