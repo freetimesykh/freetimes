@@ -474,8 +474,22 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   /* ヒーロー：星（ロゴ・SNSと重ならないよう下げて縮小） */
   .hero-star{top:auto;bottom:34px;transform:none;
     right:clamp(14px,5vw,40px);width:96px;height:96px;}
-  /* 編集ボタンは省スペースのため小画面では非表示（自動色変更は継続） */
-  .star-edit{display:none;}
+  /* スマホ：編集ボタンは画面右下に固定／パネルは下部シートで常に表示できるように
+     （ヒーローの overflow:hidden に切られないよう position:fixed） */
+  .star-edit{
+    position:fixed;bottom:14px;right:14px;left:auto;top:auto;
+    justify-content:flex-end;z-index:50;
+  }
+  .star-edit-btn{
+    background:rgba(4,8,15,0.9);
+    padding:8px 12px;font-size:9px;
+  }
+  .star-panel{
+    position:fixed;left:50%;right:auto;top:auto;bottom:58px;
+    transform:translateX(-50%);
+    width:auto;max-width:90vw;
+  }
+  .star-sw{width:26px;height:26px;}
   /* 月刊カード：縦積み時は右境界→下境界に */
   .monthly-left{border-right:none;border-bottom:1px solid var(--border);padding:30px 22px;}
   /* フッター：中央寄せで縦に整える */
@@ -485,8 +499,8 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   .footer-copy{text-align:center;line-height:2;}
 }
 @media(max-width:380px){
-  /* 極小画面では星を隠してロゴ周りをスッキリ */
-  .hero-star{display:none;}
+  /* 極小画面でも星は表示（色の確認用）。さらに小さく＆下げて重なりを避ける */
+  .hero-star{width:80px;height:80px;bottom:20px;}
   .hero-logo-sub{display:none;}
 }
 
