@@ -479,6 +479,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
+.modal.modal-noimg{grid-template-columns:1fr;}
+.modal.modal-noimg .modal-img{display:none;}
 .modal-footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-by{font-size:8px;color:var(--dim);}
 .modal-nav{display:flex;gap:6px;}
@@ -1150,19 +1152,25 @@ function openModal(id) {
   document.getElementById('modal-sub').textContent     = p.sub;
   document.getElementById('modal-article').innerHTML   = p.article;
   document.getElementById('modal-by').textContent      = p.by;
-  document.getElementById('modal-img').innerHTML       = p.imageSrc
-    ? `<img src="${p.imageSrc}" alt="${p.title}">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
-  // 月刊号の2枚目：バナー画像の直後（本文の前）に表示
   const _mbody = document.querySelector('#modal .modal-body');
+  const _mbox  = document.querySelector('#modal .modal');
   let _topImg = document.getElementById('modal-top-img');
   if(!_topImg){ _topImg = document.createElement('div'); _topImg.id = 'modal-top-img'; _mbody.insertBefore(_topImg, _mbody.firstChild); }
-  if(p.monthly && p.imageSrc2){ _topImg.style.display = ''; _topImg.innerHTML = `<img src="${p.imageSrc2}" alt="">`; }
-  else { _topImg.style.display = 'none'; _topImg.innerHTML = ''; }
+  if(p.monthly && p.imageSrc2){
+    // 月刊号：タップ後は2枚目だけ表示（1枚目＝バナー画像は出さない）
+    _topImg.style.display = ''; _topImg.innerHTML = `<img src="${p.imageSrc2}" alt="">`;
+    document.getElementById('modal-img').innerHTML = '';
+    if(_mbox) _mbox.classList.add('modal-noimg');
+  } else {
+    _topImg.style.display = 'none'; _topImg.innerHTML = '';
+    if(_mbox) _mbox.classList.remove('modal-noimg');
+    document.getElementById('modal-img').innerHTML = p.imageSrc
+      ? `<img src="${p.imageSrc}" alt="${p.title}">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
+  }
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  const mbox = document.querySelector('#modal .modal');
-  if(mbox) mbox.scrollTop = 0;   // 開くたびに先頭（画像）から表示
+  if(_mbox) _mbox.scrollTop = 0;   // 開くたびに先頭から表示
   if(_mbody) _mbody.scrollTop = 0;
 }
 function closeModal() {
