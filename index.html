@@ -478,6 +478,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article{font-size:12px;line-height:1.9;color:rgba(232,244,255,0.72);flex:1;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
+.modal-extra-img{display:block;width:100%;clear:both;margin:16px 0 4px;border:1px solid var(--border);}
 .modal-footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-by{font-size:8px;color:var(--dim);}
 .modal-nav{display:flex;gap:6px;}
@@ -1147,7 +1148,7 @@ function openModal(id) {
   document.getElementById('modal-issue').textContent   = p.issue;
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
-  document.getElementById('modal-article').innerHTML   = p.article;
+  document.getElementById('modal-article').innerHTML   = p.article + ((p.monthly && p.imageSrc2) ? `<img class="modal-extra-img" src="${p.imageSrc2}" alt="">` : '');
   document.getElementById('modal-by').textContent      = p.by;
   document.getElementById('modal-img').innerHTML       = p.imageSrc
     ? `<img src="${p.imageSrc}" alt="${p.title}">`
@@ -1182,7 +1183,8 @@ function hexRgb(h) {
 let EDIT = false;
 // 編集ボタンは「?edit」を付けて開いたときだけ表示する（自分だけの合言葉）
 const CAN_EDIT = new URLSearchParams(location.search).has('edit') || location.hash === '#edit';
-let efImg = '';   // 記事フォームで選択中の画像
+let efImg = '';   // 記事フォームで選択中の画像（1枚目／バナー用）
+let efImg2 = '';  // 月刊号の2枚目（記事内に表示）
 
 // 記事カード／月刊カードをクリックしたとき
 function cardClick(id){
@@ -1256,15 +1258,21 @@ function edClose(){ document.getElementById('edWrap').classList.remove('open'); 
 // ── 記事の編集 ──
 function editArticle(id){
   const a = content.articles.find(x => x.id === id); if(!a) return;
-  efImg = a.imageSrc || '';
+  efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || '';
   edOpen(`
     <div class="ed-head"><span>記事を編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
     <div class="ed-field">
-      <label>写真</label>
+      <label>${a.monthly ? '写真（バナー用・1枚目）' : '写真'}</label>
       <div class="ed-imgprev" id="edImgPrev">${efImg ? `<img src="${efImg}">` : '<span>画像なし</span>'}</div>
       <label class="ed-upload">写真を選ぶ<input type="file" accept="image/*" id="edImgInput" hidden></label>
       <button class="ed-btn-mini" id="edImgDel" style="${efImg?'':'display:none'}">写真を削除</button>
     </div>
+    ${a.monthly ? `<div class="ed-field">
+      <label>2枚目の画像（タップ後の記事内に表示）</label>
+      <div class="ed-imgprev" id="edImg2Prev">${efImg2 ? `<img src="${efImg2}">` : '<span>画像なし</span>'}</div>
+      <label class="ed-upload">画像を選ぶ<input type="file" accept="image/*" id="edImg2Input" hidden></label>
+      <button class="ed-btn-mini" id="edImg2Del" style="${efImg2?'':'display:none'}">画像を削除</button>
+    </div>` : ''}
     <div class="ed-field"><label>タイトル</label><input id="ef-title" type="text" value="${esc(a.title)}"></div>
     <div class="ed-field"><label>サブ見出し</label><textarea id="ef-sub" rows="2">${esc(a.sub)}</textarea></div>
     <div class="ed-row">
@@ -1285,6 +1293,12 @@ function editArticle(id){
   const del = document.getElementById('edImgDel');
   inp.onchange = () => { const f = inp.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg = d; document.getElementById('edImgPrev').innerHTML = `<img src="${d}">`; del.style.display=''; }); };
   del.onclick  = () => { efImg = ''; document.getElementById('edImgPrev').innerHTML = '<span>画像なし</span>'; del.style.display='none'; };
+  if(a.monthly){
+    const inp2 = document.getElementById('edImg2Input');
+    const del2 = document.getElementById('edImg2Del');
+    if(inp2) inp2.onchange = () => { const f = inp2.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg2 = d; document.getElementById('edImg2Prev').innerHTML = `<img src="${d}">`; del2.style.display=''; }); };
+    if(del2) del2.onclick  = () => { efImg2 = ''; document.getElementById('edImg2Prev').innerHTML = '<span>画像なし</span>'; del2.style.display='none'; };
+  }
 }
 function saveArticle(id){
   const a = content.articles.find(x => x.id === id); if(!a) return;
@@ -1297,6 +1311,7 @@ function saveArticle(id){
   a.monthly  = document.getElementById('ef-monthly').checked;
   a.article  = wrapP(val('ef-article'));
   a.imageSrc = efImg;
+  a.imageSrc2 = efImg2;
   if(!saveContent()) return;
   edClose(); renderAll();
 }
