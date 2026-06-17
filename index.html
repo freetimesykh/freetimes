@@ -113,7 +113,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   text-transform:uppercase;
   margin-top:10px;
 }
-@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}50%{opacity:0.4;}}50%{opacity:0.4;transform:translateX(-50%) scale(1.4);}}
+@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 .hero-logo-sub{
   font-family:'Noto Sans JP',sans-serif;
   font-size:10px;color:rgba(74,184,255,0.65);
@@ -618,9 +618,72 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
   .articles-grid .a-card-sub,
   .articles-grid .a-card-read{display:none;}
 }
+
+/* ══ パスコードロック（関係者だけ閲覧） ══ */
+#gate{position:fixed;inset:0;z-index:9999;background:#04080f;display:flex;align-items:center;justify-content:center;padding:24px;}
+#gate.hide{display:none;}
+.gate-box{width:100%;max-width:300px;text-align:center;}
+.gate-logo{font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:6px;color:var(--cyan);text-shadow:0 0 18px rgba(0,229,255,0.6);margin-bottom:6px;}
+.gate-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:26px;}
+.gate-input{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--white);font-family:'Space Mono',monospace;font-size:22px;letter-spacing:10px;text-align:center;padding:14px 12px;outline:none;transition:border-color 0.2s;}
+.gate-input:focus{border-color:var(--cyan);}
+.gate-btn{width:100%;margin-top:12px;background:var(--cyan);color:#04080f;border:none;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:13px;cursor:pointer;transition:background 0.2s;}
+.gate-btn:hover{background:#e8f4ff;}
+.gate-err{min-height:16px;margin-top:12px;font-size:9px;letter-spacing:2px;color:var(--pink);opacity:0;transition:opacity 0.2s;}
+.gate-err.show{opacity:1;}
+@keyframes gateshake{10%,90%{transform:translateX(-2px);}30%,70%{transform:translateX(4px);}50%{transform:translateX(-6px);}}
+.gate-box.shake{animation:gateshake 0.4s;}
 </style>
 </head>
 <body>
+
+<!-- ══ パスコードロック（このURLを知っても、合言葉が無ければ中は見えない） ══ -->
+<div id="gate">
+  <div class="gate-box" id="gateBox">
+    <div class="gate-logo">FREE TIMES</div>
+    <div class="gate-sub">Enter Passcode</div>
+    <input class="gate-input" id="gateInput" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="••••" maxlength="12">
+    <button class="gate-btn" id="gateBtn">Unlock</button>
+    <div class="gate-err" id="gateErr">パスコードが違います</div>
+  </div>
+</div>
+<script>
+// 合言葉（数字）を知っている人だけ閲覧可。数字はソースに直書きせず SHA-256 で照合。
+(function(){
+  var PASS_HASH = "71af0fdd2e7f62c1c351432a69fdf8f6579e9dce0c12c2b3af90f964540bdb83";
+  var KEY = "ft-gate-ok";
+  var gate = document.getElementById('gate');
+  var box  = document.getElementById('gateBox');
+  var inp  = document.getElementById('gateInput');
+  var btn  = document.getElementById('gateBtn');
+  var err  = document.getElementById('gateErr');
+  function open(){ gate.classList.add('hide'); document.body.style.overflow=''; }
+  try { if(localStorage.getItem(KEY) === PASS_HASH){ open(); return; } } catch(e){}
+  document.body.style.overflow = 'hidden';
+  async function sha256(s){
+    if(window.crypto && crypto.subtle){
+      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return [].map.call(new Uint8Array(buf), function(b){return b.toString(16).padStart(2,'0');}).join('');
+    }
+    return null;
+  }
+  async function tryUnlock(){
+    var h = await sha256(inp.value.trim());
+    if(h && h === PASS_HASH){
+      try { localStorage.setItem(KEY, PASS_HASH); } catch(e){}
+      open();
+    } else {
+      err.classList.add('show'); box.classList.add('shake');
+      inp.value=''; inp.focus();
+      setTimeout(function(){ box.classList.remove('shake'); }, 450);
+    }
+  }
+  btn.addEventListener('click', tryUnlock);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+  inp.addEventListener('input', function(){ err.classList.remove('show'); });
+  window.addEventListener('DOMContentLoaded', function(){ inp.focus(); });
+})();
+</script>
 
 <!-- ══ HERO ══ -->
 <div class="hero">
@@ -762,7 +825,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
         <a href="#" onclick="showPage('archive')">Archive</a>
         <a href="#" onclick="showPage('search')">Search</a>
       </div>
-      <div class="footer-copy">© 2024 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace</div>
+      <div class="footer-copy">© 2026 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace</div>
     </div>
   </footer>
 </div>
@@ -782,7 +845,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-logo"><svg class="ftlogo" viewBox="0 0 6889 1640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FREE TIMES" preserveAspectRatio="xMinYMid meet"><defs><filter id="ftGlowF" x="-15%" y="-60%" width="130%" height="220%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.0" result="thick"/><feFlood flood-color="#ffffff" result="col"/><feComposite in="col" in2="thick" operator="in" result="cglow"/><feGaussianBlur in="cglow" stdDeviation="12.0" result="b1"/><feGaussianBlur in="cglow" stdDeviation="30.0" result="b2"/><feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#ftGlowF)"><g transform="translate(120.0,1151.0) scale(1,-1)" fill="#ffffff" stroke="#ffffff" stroke-width="18.0" stroke-linejoin="round" stroke-linecap="round"><path transform="translate(0.0,0)" d="M575 568H350Q271 568 222.5 527.0Q174 486 170 407H575V286H170V0H49V391Q49 460 68.0 515.0Q87 570 125.5 608.5Q164 647 221.0 668.0Q278 689 354 689H575Z"/><path transform="translate(673.0,0)" d="M50 206Q50 306 108.5 356.5Q167 407 267 407H412Q445 407 468.0 430.5Q491 454 491 488Q491 504 484.5 518.5Q478 533 467.5 544.0Q457 555 443.0 561.5Q429 568 413 568H50V689H394Q451 689 492.0 673.0Q533 657 559.5 629.0Q586 601 598.5 564.5Q611 528 611 486Q611 450 599.5 414.0Q588 378 562.0 349.5Q536 321 494.5 303.5Q453 286 394 286H255L627 122V-11L171 195V0H50Z"/><path transform="translate(1394.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(2103.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(3174.0,0)" d="M318 0H198V568H28V689H478V568H318Z"/><path transform="translate(3740.0,0)" d="M49 689H170V0H49Z"/><path transform="translate(4019.0,0)" d="M231 584Q249 635 290.5 663.0Q332 691 386 691Q423 691 455.5 679.0Q488 667 512.0 645.0Q536 623 550.0 591.5Q564 560 564 522V175Q564 115 615 115Q632 115 641.0 125.5Q650 136 657 157L795 584Q812 635 854.5 663.0Q897 691 950 691Q987 691 1019.5 679.0Q1052 667 1076.0 645.0Q1100 623 1114.0 591.5Q1128 560 1128 522V0H1000V510Q1000 570 948 570Q931 570 922.5 558.5Q914 547 907 526L767 100Q753 49 709.5 20.5Q666 -8 613 -8Q575 -8 543.0 4.0Q511 16 487.0 38.0Q463 60 449.5 91.5Q436 123 436 161V510Q436 570 384 570Q367 570 359.0 558.5Q351 547 343 526L159 0H23Z"/><path transform="translate(5256.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(5965.0,0)" d="M645 201Q645 101 587.5 50.5Q530 0 427 0H73V120H450Q482 120 503.0 144.5Q524 169 524 204Q524 237 503.0 261.5Q482 286 450 286H256Q196 286 154.5 304.0Q113 322 87.5 351.0Q62 380 50.5 415.5Q39 451 39 486Q39 528 51.0 564.5Q63 601 89.5 629.0Q116 657 157.0 673.0Q198 689 256 689H600V568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 182.0 430.5Q205 407 238 407H429Q529 407 587.0 356.5Q645 306 645 206Z"/></g></g></svg><small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
-      <div class="footer-copy">© 2024 FREE TIMES All Rights Reserved.</div>
+      <div class="footer-copy">© 2026 FREE TIMES All Rights Reserved.</div>
     </div>
   </footer>
 </div>
@@ -810,7 +873,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-logo"><svg class="ftlogo" viewBox="0 0 6889 1640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FREE TIMES" preserveAspectRatio="xMinYMid meet"><defs><filter id="ftGlowF" x="-15%" y="-60%" width="130%" height="220%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.0" result="thick"/><feFlood flood-color="#ffffff" result="col"/><feComposite in="col" in2="thick" operator="in" result="cglow"/><feGaussianBlur in="cglow" stdDeviation="12.0" result="b1"/><feGaussianBlur in="cglow" stdDeviation="30.0" result="b2"/><feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#ftGlowF)"><g transform="translate(120.0,1151.0) scale(1,-1)" fill="#ffffff" stroke="#ffffff" stroke-width="18.0" stroke-linejoin="round" stroke-linecap="round"><path transform="translate(0.0,0)" d="M575 568H350Q271 568 222.5 527.0Q174 486 170 407H575V286H170V0H49V391Q49 460 68.0 515.0Q87 570 125.5 608.5Q164 647 221.0 668.0Q278 689 354 689H575Z"/><path transform="translate(673.0,0)" d="M50 206Q50 306 108.5 356.5Q167 407 267 407H412Q445 407 468.0 430.5Q491 454 491 488Q491 504 484.5 518.5Q478 533 467.5 544.0Q457 555 443.0 561.5Q429 568 413 568H50V689H394Q451 689 492.0 673.0Q533 657 559.5 629.0Q586 601 598.5 564.5Q611 528 611 486Q611 450 599.5 414.0Q588 378 562.0 349.5Q536 321 494.5 303.5Q453 286 394 286H255L627 122V-11L171 195V0H50Z"/><path transform="translate(1394.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(2103.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(3174.0,0)" d="M318 0H198V568H28V689H478V568H318Z"/><path transform="translate(3740.0,0)" d="M49 689H170V0H49Z"/><path transform="translate(4019.0,0)" d="M231 584Q249 635 290.5 663.0Q332 691 386 691Q423 691 455.5 679.0Q488 667 512.0 645.0Q536 623 550.0 591.5Q564 560 564 522V175Q564 115 615 115Q632 115 641.0 125.5Q650 136 657 157L795 584Q812 635 854.5 663.0Q897 691 950 691Q987 691 1019.5 679.0Q1052 667 1076.0 645.0Q1100 623 1114.0 591.5Q1128 560 1128 522V0H1000V510Q1000 570 948 570Q931 570 922.5 558.5Q914 547 907 526L767 100Q753 49 709.5 20.5Q666 -8 613 -8Q575 -8 543.0 4.0Q511 16 487.0 38.0Q463 60 449.5 91.5Q436 123 436 161V510Q436 570 384 570Q367 570 359.0 558.5Q351 547 343 526L159 0H23Z"/><path transform="translate(5256.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(5965.0,0)" d="M645 201Q645 101 587.5 50.5Q530 0 427 0H73V120H450Q482 120 503.0 144.5Q524 169 524 204Q524 237 503.0 261.5Q482 286 450 286H256Q196 286 154.5 304.0Q113 322 87.5 351.0Q62 380 50.5 415.5Q39 451 39 486Q39 528 51.0 564.5Q63 601 89.5 629.0Q116 657 157.0 673.0Q198 689 256 689H600V568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 182.0 430.5Q205 407 238 407H429Q529 407 587.0 356.5Q645 306 645 206Z"/></g></g></svg><small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
-      <div class="footer-copy">© 2024 FREE TIMES All Rights Reserved.</div>
+      <div class="footer-copy">© 2026 FREE TIMES All Rights Reserved.</div>
     </div>
   </footer>
 </div>
@@ -850,6 +913,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 // localStorage に保存が無いとき、または「初期化」したときに使う内容
 const DEFAULT_CONTENT = {
   theme:{ cyan:"#00e5ff", blue:"#2a8fd4", blue2:"#4ab8ff", pink:"#ff3cac", lime:"#c8ff45", amber:"#ffb700", black:"#04080f", white:"#e8f4ff", star:"#a8ff00" },
+  starAuto:true,   // 星のかけらの色を2ヶ月ごとに自動で変える（編集機能でオフにして手動色も可）
   hero:{
     logoFree:"FREE", logoTimes:"TIMES",
     sub:"Breaking News From The Unknown",
@@ -862,7 +926,7 @@ const DEFAULT_CONTENT = {
     "<b>警戒</b>3IATLAS 第8回攻撃 — 地球ギリギリの危機",
     "<b>特報</b>ルナ特派員 密輸組織ボス特定へ — 近く逮捕"
   ],
-  footer:{ copyHtml:"© 2024 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace" },
+  footer:{ copyHtml:"© 2026 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace" },
   // monthly:true にすると月刊号として表示される
   articles: [
   { id:1, monthly:false, issue:"号外 — Gourmet", category:"gourmet",
@@ -900,6 +964,7 @@ const clone  = o => JSON.parse(JSON.stringify(o));
 function mergeContent(base, over){
   if(!over) return base;
   if(over.theme)    Object.assign(base.theme, over.theme);
+  if(over.starAuto !== undefined) base.starAuto = over.starAuto;
   if(over.hero)     Object.assign(base.hero, over.hero);
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
@@ -950,11 +1015,27 @@ function fileToDataURL(file, maxW, cb){
   reader.readAsDataURL(file);
 }
 
+// ══ 星のかけらの色：2ヶ月ごとの自動巡回 ══
+// 見えにくい色（黒・白）は自動巡回から除外。手動では引き続き何色でも選べる。
+const STAR_AUTO_PALETTE = ['#a8ff00','#00e5ff','#ff2d2d','#ffd400','#ff3cac','#b026ff','#eaff00','#39ff14'];
+// 2ヶ月ごとに1つ進む期間番号（年をまたいでも連続。1-2月→0, 3-4月→1, …）
+function starPeriodIndex(){ const n = new Date(); return Math.floor((n.getFullYear()*12 + n.getMonth()) / 2); }
+function autoStarColor(){ return STAR_AUTO_PALETTE[starPeriodIndex() % STAR_AUTO_PALETTE.length]; }
+// 画面に出す星の色（自動ならその時期の色、手動なら theme.star）
+function activeStarColor(){ return content.starAuto ? autoStarColor() : content.theme.star; }
+
 // ══ 内容を画面に反映 ══
 function applyTheme(){
   const r = document.documentElement.style;
   for(const k in content.theme) r.setProperty('--'+k, content.theme[k]);
+  if(content.starAuto) r.setProperty('--star', autoStarColor());   // 自動のとき星だけ上書き
 }
+// 自動のとき、2ヶ月の期間をまたいだら色を更新（1時間ごとに確認）
+let _starPeriod = starPeriodIndex();
+setInterval(() => {
+  const p = starPeriodIndex();
+  if(p !== _starPeriod){ _starPeriod = p; if(content.starAuto) applyTheme(); }
+}, 3600000);
 function applyStatic(){
   const _lf = document.getElementById('logoFree');   if(_lf) _lf.textContent = content.hero.logoFree;
   const _lt = document.getElementById('logoTimes');  if(_lt) _lt.textContent = content.hero.logoTimes;
@@ -1517,13 +1598,37 @@ function saveFooter(){ content.footer.copyHtml = val('ef-footer'); if(!saveConte
 // ── 色・デザイン ──
 function editTheme(){
   const t = content.theme;
-  const fields = [['cyan','アクセント色（見出し・ボタン・光る部分）'],['black','背景の色'],['white','文字の色（全体）'],['star','星のかけらの色'],['blue','記事カテゴリタグの色'],['pink','削除・閉じるボタンの色']];
+  const fields = [['cyan','アクセント色（見出し・ボタン・光る部分）'],['black','背景の色'],['white','文字の色（全体）'],['blue','記事カテゴリタグの色'],['pink','削除・閉じるボタンの色']];
+  const auto = !!content.starAuto;
+  const starVal = auto ? autoStarColor() : (t.star || '#a8ff00');
   edOpen(`
     <div class="ed-head"><span>色・デザイン</span><button class="ed-x" onclick="edClose()">✕</button></div>
     ${fields.map(([k,label]) => `<div class="ed-field"><label>${label}</label><input type="color" id="th-${k}" value="${t[k]}" oninput="liveTheme('${k}',this.value)"></div>`).join('')}
+    <div class="ed-field" style="flex-direction:column;align-items:stretch;gap:8px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+        <input type="checkbox" id="th-starauto" ${auto?'checked':''} onchange="setStarAuto(this.checked)">
+        ⭐ 星のかけらの色を2ヶ月ごとに自動で変える
+      </label>
+      <div class="ed-field" style="margin:0;${auto?'opacity:0.5;':''}">
+        <label>星のかけらの色（手動）</label>
+        <input type="color" id="th-star" value="${starVal}" oninput="liveTheme('star',this.value)">
+      </div>
+      <div style="font-size:10px;line-height:1.6;color:var(--muted);">${auto
+        ? '自動ON：いまは <b>'+starVal+'</b>。手動で色を選ぶと自動はオフになります。'
+        : '手動モード。上のチェックを入れると2ヶ月ごとに自動で変わります。'}</div>
+    </div>
     <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
 }
-function liveTheme(k, v){ content.theme[k] = v; applyTheme(); saveContent(); }
+function liveTheme(k, v){
+  content.theme[k] = v;
+  if(k === 'star'){ content.starAuto = false; const cb = document.getElementById('th-starauto'); if(cb) cb.checked = false; }
+  applyTheme(); saveContent();
+}
+function setStarAuto(on){
+  content.starAuto = on;
+  if(!on) content.theme.star = autoStarColor();   // 手動に切替えたら、今の自動色を初期値に
+  applyTheme(); saveContent(); editTheme();        // パネルを再描画して状態を反映
+}
 
 // ── バックアップ／読み込み／初期化 ──
 function exportJSON(){
