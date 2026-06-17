@@ -3,20 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FREE TIMES — パラレルワールド新聞</title>
-<meta name="description" content="FREE TIMES（フリータイムズ）— 横浜発、もう一つの世界をお届けするパラレルワールド新聞。星のかけら「アライブ」、銀河ポン酢、レインボール、海から飛んでくるWi-Fi…。月刊号・号外を随時公開中。">
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="FREE TIMES">
-<meta property="og:title" content="FREE TIMES — パラレルワールド新聞">
-<meta property="og:description" content="横浜発、もう一つの世界をお届けするパラレルワールド新聞。月刊号・号外を随時公開中。">
-<meta property="og:image" content="hero.png">
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="FREE TIMES — パラレルワールド新聞">
-<meta name="twitter:description" content="横浜発、もう一つの世界をお届けするパラレルワールド新聞。月刊号・号外を随時公開中。">
-<meta name="twitter:image" content="hero.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&family=Zen+Dots&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<!-- 検索エンジンに表示させない（作成中のため） -->
+<meta name="robots" content="noindex, nofollow">
+<title>FREE TIMES</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -32,7 +22,9 @@
   --pink:#ff3cac;
   --lime:#c8ff45;
   --amber:#ffb700;
+  /* ★ 星のかけらの色（自動は月替り／編集機能で変更可） */
   --star:#a8ff00;
+  --star-rgb:168,255,0;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
@@ -81,19 +73,22 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   position:absolute;top:28px;left:32px;z-index:3;
 }
 .hero-logo{
-  font-family:'Zen Dots',cursive;
-  font-size:clamp(36px,7vw,84px);
-  font-weight:400;
-  letter-spacing:8px;
-  line-height:1;
+  font-family:'Archivo Black','Syne',sans-serif;
+  font-size:clamp(22px,3.4vw,42px);
+  font-weight:900;
+  letter-spacing:1px;
+  line-height:0.95;
   color:#ffffff;
   position:relative;
   text-shadow:
-    0 0 10px rgba(255,255,255,0.9),
-    0 0 24px rgba(255,255,255,0.5),
-    0 0 50px rgba(200,230,255,0.3);
-  padding-bottom:6px;
+    0 2px 0 rgba(0,0,0,0.45),
+    0 0 12px rgba(168,255,0,0.35),
+    0 0 22px rgba(255,255,255,0.25);
+  -webkit-text-stroke:1px rgba(4,8,15,0.6);
+  padding-bottom:4px;
 }
+.hero-logo .ftlogo{display:block;height:clamp(48px,8.5vw,104px);width:auto;overflow:visible;}
+.hero-logo em{font-style:normal;color:rgba(190,240,255,0.95);}
 .hero-logo::before{content:none;}
 .hero-logo::after{content:none;}
 .hero-logo-inner{ display:inline-block; }
@@ -120,7 +115,12 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   text-transform:uppercase;
   margin-top:10px;
 }
-@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+@keyframes starpulse{0%,100%{opacity:1;}50%{opacity:0.4;}}50%{opacity:0.4;}}50%{opacity:0.4;transform:translateX(-50%) scale(1.4);}}
+.hero-logo-sub{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:10px;color:rgba(74,184,255,0.65);
+  letter-spacing:3px;margin-top:5px;
+}
 
 /* Social */
 .hero-social{
@@ -143,33 +143,80 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   right:clamp(24px,9vw,130px);
   top:50%;transform:translateY(-55%);
   width:clamp(110px,17vw,210px);
-  height:clamp(110px,17vw,210px);
+  height:clamp(120px,18vw,230px);
   display:flex;align-items:center;justify-content:center;
   z-index:3;
+  /* ★ 水槽（アクアリウム）風 */
+  border-radius:16px;
+  border:2px solid rgba(190,230,255,0.5);
+  background:linear-gradient(180deg,
+    rgba(10,16,24,0.78) 0%,
+    rgba(3,7,13,0.90) 45%,
+    rgba(0,0,0,0.95) 100%);
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.18),
+    inset 0 14px 22px rgba(120,210,255,0.10),
+    0 10px 26px rgba(0,0,0,0.55),
+    0 0 30px rgba(0,180,255,0.22);
+  overflow:hidden;
 }
+/* 水のゆらぎ・深み（黒の中にほのかな光） */
+.tank-water{position:absolute;inset:0;border-radius:inherit;z-index:0;
+  background:radial-gradient(120% 85% at 50% 120%, rgba(0,180,160,0.18), transparent 60%);}
+/* 水面のライン */
+.water-surface{position:absolute;left:6px;right:6px;top:18%;height:2px;z-index:1;
+  background:linear-gradient(90deg,transparent,rgba(205,242,255,0.75),transparent);
+  box-shadow:0 0 8px rgba(185,232,255,0.7);
+  animation:surface 4.5s ease-in-out infinite;}
+@keyframes surface{0%,100%{transform:translateY(0);opacity:.65}50%{transform:translateY(3px);opacity:1}}
+/* 気泡 */
+.bubble{position:absolute;bottom:6%;border-radius:50%;z-index:1;opacity:0;
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.25) 60%, transparent 72%);
+  box-shadow:0 0 4px rgba(255,255,255,0.5);
+  animation:rise linear infinite;}
+@keyframes rise{
+  0%{transform:translateY(0) scale(0.5);opacity:0;}
+  15%{opacity:0.9;}
+  85%{opacity:0.65;}
+  100%{transform:translateY(-160px) scale(1);opacity:0;}}
+.bubble.b1{left:30%;width:6px;height:6px;animation-duration:5s;animation-delay:0s;}
+.bubble.b2{left:56%;width:4px;height:4px;animation-duration:4s;animation-delay:1.2s;}
+.bubble.b3{left:43%;width:8px;height:8px;animation-duration:6s;animation-delay:2.4s;}
+.bubble.b4{left:68%;width:5px;height:5px;animation-duration:4.6s;animation-delay:0.6s;}
+.bubble.b5{left:22%;width:5px;height:5px;animation-duration:5.4s;animation-delay:3s;}
+/* ガラスの反射 */
+.tank-glare{position:absolute;inset:0;border-radius:inherit;z-index:3;pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 16%, transparent 38%);}
 .star-ring{
-  position:absolute;border-radius:50%;
+  position:absolute;border-radius:50%;z-index:1;
   animation:rpulse 3.5s ease-in-out infinite;
 }
-.star-ring.r1{width:100%;height:100%;border:1px solid color-mix(in srgb,var(--star) 18%,transparent);}
-.star-ring.r2{width:72%;height:72%;border:1px solid color-mix(in srgb,var(--star) 12%,transparent);animation-delay:0.7s;}
-.star-ring.r3{width:46%;height:46%;border:1px solid color-mix(in srgb,var(--star) 25%,transparent);animation-delay:1.4s;}
+.star-ring.r1{width:100%;height:100%;border:1px solid rgba(var(--star-rgb),0.18);transition:border-color 0.8s ease;}
+.star-ring.r2{width:72%;height:72%;border:1px solid rgba(var(--star-rgb),0.12);animation-delay:0.7s;transition:border-color 0.8s ease;}
+.star-ring.r3{width:46%;height:46%;border:1px solid rgba(var(--star-rgb),0.25);animation-delay:1.4s;transition:border-color 0.8s ease;}
 @keyframes rpulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.06);opacity:0.4;}}
 
 .star-svg{
   width:36%;height:36%;
   position:relative;z-index:2;
   animation:starfloat 6s ease-in-out infinite;
-  filter:drop-shadow(0 0 18px color-mix(in srgb,var(--star) 95%,transparent)) drop-shadow(0 0 50px color-mix(in srgb,var(--star) 45%,transparent));
+  filter:drop-shadow(0 0 18px rgba(var(--star-rgb),0.95)) drop-shadow(0 0 50px rgba(var(--star-rgb),0.45));
+  transition:filter 0.8s ease;
 }
-.star-svg .star-fill{fill:var(--star);}
 @keyframes starfloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-11px) rotate(7deg);}}
 
 .star-alive{
-  position:absolute;top:-16px;right:0;
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
   display:flex;align-items:center;gap:5px;
-  font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--cyan);
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#dffaff;z-index:4;
+  background:rgba(2,22,34,0.6);
+  padding:3px 9px;border-radius:11px;
+  border:1px solid rgba(170,225,255,0.35);
+  box-shadow:0 0 10px rgba(0,200,255,0.35);
+  white-space:nowrap;
 }
 .star-alive-dot{
   width:5px;height:5px;border-radius:50%;
@@ -177,31 +224,11 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   animation:blink 1.2s ease-in-out infinite;
 }
 .star-label{
-  position:absolute;bottom:-16px;left:0;right:0;
-  font-size:7px;color:color-mix(in srgb,var(--star) 55%,transparent);
+  position:absolute;bottom:7px;left:0;right:0;z-index:4;
+  font-size:7px;color:rgba(210,245,255,0.85);
   letter-spacing:2px;text-transform:uppercase;text-align:center;
+  text-shadow:0 0 6px rgba(0,160,230,0.6);
 }
-
-/* ★ Star color editor */
-.star-editor{
-  position:absolute;right:24px;bottom:18px;z-index:4;
-  display:flex;flex-direction:column;align-items:flex-end;gap:6px;
-  background:rgba(4,8,15,0.55);border:1px solid var(--border);
-  padding:8px 10px;backdrop-filter:blur(6px);
-}
-.star-editor-label{
-  font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);
-}
-.star-swatches{display:flex;gap:6px;align-items:center;}
-.sw{
-  width:16px;height:16px;border-radius:50%;
-  border:1px solid rgba(255,255,255,0.25);background:var(--c);
-  cursor:pointer;padding:0;transition:transform 0.15s,box-shadow 0.15s;
-}
-.sw:hover{transform:scale(1.18);}
-.sw.active{box-shadow:0 0 0 2px var(--black),0 0 0 3px var(--c);}
-.sw-custom{position:relative;overflow:hidden;background:conic-gradient(red,#ff0,lime,cyan,blue,magenta,red);}
-.sw-custom input{position:absolute;inset:-4px;width:200%;height:200%;opacity:0;cursor:pointer;border:none;padding:0;}
 
 /* Slide dots */
 .hero-dots{
@@ -325,6 +352,22 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .coming-title{font-family:'Bebas Neue',cursive;font-size:clamp(24px,4vw,52px);letter-spacing:6px;color:rgba(255,255,255,0.05);margin-bottom:8px;}
 .coming-sub{font-size:9px;color:var(--dim);letter-spacing:2px;line-height:1.8;}
 .coming-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);margin:12px auto 0;animation:blink 1.5s ease-in-out infinite;}
+/* 月刊号あり：トップは今のコンパクト枠のまま・タップで開く */
+.monthly-live{cursor:pointer;padding:28px 22px;transition:border-color 0.25s;}
+.monthly-live:hover{border-color:var(--cyan);}
+.ml-title{font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,2.4vw,22px);font-weight:700;line-height:1.5;color:var(--white);margin:0 auto 12px;max-width:640px;}
+.ml-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
+body.edit-mode .monthly-coming.monthly-live::after{content:'✏ 月刊号を編集';}
+/* 月刊号あり（画像）：コンパクトな長方形バナーに画像表示・タップで開く */
+.monthly-banner{position:relative;display:block;width:100%;aspect-ratio:3/1;border:1px solid var(--border);background:var(--panel);overflow:hidden;cursor:pointer;transition:border-color 0.25s;}
+.monthly-banner:hover{border-color:var(--cyan);}
+.monthly-banner img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.monthly-banner:hover img{transform:scale(1.04);}
+.monthly-banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,15,0.92),rgba(4,8,15,0.15) 55%,transparent);display:flex;flex-direction:column;justify-content:flex-end;padding:18px 20px;}
+.monthly-banner-badge{align-self:flex-start;font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--black);background:var(--cyan);padding:4px 12px;margin-bottom:10px;}
+.monthly-banner-title{font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,2.4vw,22px);font-weight:700;line-height:1.4;color:var(--white);margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,0.6);}
+.monthly-banner-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
+body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
 
 /* Monthly card (月刊号が来たら使う) */
 .monthly-layout{
@@ -373,7 +416,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   cursor:pointer;border:1px solid var(--border);transition:border-color 0.25s;
 }
 .a-card:hover{border-color:var(--cyan);}
-.a-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.a-card img{width:100%;height:100%;object-fit:contain;background:var(--black);display:block;transition:transform 0.5s;}
 .a-card:hover img{transform:scale(1.05);}
 .a-card-strip{
   position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;
@@ -396,7 +439,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .arch-card{position:relative;aspect-ratio:3/4;background:var(--panel);overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:border-color 0.25s;}
 .arch-card:hover{border-color:var(--cyan);}
 .arch-card.hidden{display:none;}
-.arch-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.arch-card img{width:100%;height:100%;object-fit:contain;background:var(--black);display:block;transition:transform 0.5s;}
 .arch-card:hover img{transform:scale(1.05);}
 .arch-card-strip{position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;background:linear-gradient(to top,rgba(4,8,15,0.98),rgba(4,8,15,0.5) 70%,transparent);}
 .arch-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;margin-bottom:6px;}
@@ -439,61 +482,150 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .modal-article{font-size:12px;line-height:1.9;color:rgba(232,244,255,0.72);flex:1;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
+#modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
+.modal.modal-noimg{grid-template-columns:1fr;}
+.modal.modal-noimg .modal-img{display:none;}
 .modal-footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-by{font-size:8px;color:var(--dim);}
 .modal-nav{display:flex;gap:6px;}
 .modal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
-@media(max-width:640px){.modal{grid-template-columns:1fr;}.modal-img{max-height:38vh;}.modal-body{padding:20px 16px;}}
-
-/* ══ MOBILE OPTIMIZATION ══ */
-@media(max-width:600px){
-  /* 横はみ出し防止 */
-  img,svg{max-width:100%;}
-  /* 余白を詰める */
-  .inner{padding:0 18px;}
-  .home-body{padding:32px 0 56px;}
-  .monthly-section,.articles-section{margin-bottom:36px;}
-  /* セクション見出しは折り返し可に */
-  .sec-hd{flex-wrap:wrap;gap:8px;margin-bottom:16px;}
-  /* ヒーロー：ロゴ */
-  .hero-logo-block{top:18px;left:18px;}
-  .hero-logo{letter-spacing:4px;}
-  .hero-logo-sub{letter-spacing:2px;margin-top:6px;}
-  /* ヒーロー：SNSアイコン（重なり防止で小さめ＆近づける） */
-  .hero-social{top:18px;right:16px;gap:12px;}
-  .hero-social a svg{width:18px;height:18px;}
-  /* ヒーロー：星（ロゴ・SNSと重ならないよう下げて縮小） */
-  .hero-star{top:auto;bottom:34px;transform:none;
-    right:clamp(14px,5vw,40px);width:96px;height:96px;}
-  /* 色エディタ：星の下・右寄せにコンパクト化（ラベルは省略） */
-  .star-editor{right:12px;bottom:8px;padding:5px 7px;}
-  .star-editor-label{display:none;}
-  .sw{width:14px;height:14px;}
-  /* 月刊カード：縦積み時は右境界→下境界に */
-  .monthly-left{border-right:none;border-bottom:1px solid var(--border);padding:30px 22px;}
-  /* フッター：中央寄せで縦に整える */
-  .footer-inner{flex-direction:column;justify-content:center;text-align:center;gap:14px;}
-  .footer-nav{justify-content:center;}
-  .footer-nav a{padding:6px 4px;}
-  .footer-copy{text-align:center;line-height:2;}
-}
-@media(max-width:380px){
-  /* 極小画面では星を隠してロゴ周りをスッキリ */
-  .hero-star{display:none;}
-  .star-editor{display:none;}
-  .hero-logo-sub{display:none;}
+.modal-close-bottom{display:none;width:100%;margin-top:16px;padding:13px;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;border-radius:8px;cursor:pointer;}
+.modal-close-bottom:hover{border-color:var(--cyan);color:var(--cyan);}
+@media(max-width:640px){
+  .modal-wrap{padding:10px;}
+  .modal{
+    display:block;
+    grid-template-columns:1fr;
+    max-height:90vh;
+    overflow-y:auto;
+  }
+  .modal-img{min-height:0;max-height:none;}
+  .modal-img img{height:auto;object-fit:contain;}
+  .modal-body{padding:18px 16px 22px;max-height:none;overflow:visible;}
+  .modal-close{display:none;}          /* 右上のバツは表示しない */
+  .modal-close-bottom{display:block;}  /* 代わりに下に「閉じる」 */
 }
 
 /* ══ FOOTER ══ */
 .site-footer{background:var(--panel);border-top:1px solid var(--border);padding:28px;}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .footer-logo{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:5px;color:var(--blue2);text-shadow:0 0 20px rgba(74,184,255,0.4);}
+.footer-logo .ftlogo{display:block;height:26px;width:auto;overflow:visible;margin-bottom:6px;}
 .footer-logo small{display:block;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--dim);text-shadow:none;margin-top:2px;}
 .footer-nav{display:flex;gap:16px;}
 .footer-nav a{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color 0.2s;}
 .footer-nav a:hover{color:var(--white);}
 .footer-copy{font-size:8px;color:var(--dim);letter-spacing:1px;text-align:right;line-height:1.8;}
+
+/* ══════════════ EDITOR (編集モード) ══════════════ */
+.hero-slides{position:absolute;inset:0;}
+.ed-fab{position:fixed;right:18px;bottom:18px;z-index:600;font-family:'Noto Sans JP',sans-serif;}
+.ed-enter{background:var(--cyan);color:#04080f;border:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:30px;cursor:pointer;box-shadow:0 6px 24px rgba(0,229,255,.4);letter-spacing:1px;}
+.ed-enter:hover{filter:brightness(1.1);}
+.ed-fab.open{right:0;bottom:0;left:0;}
+.ed-panel{background:rgba(7,13,22,.98);border-top:1px solid var(--cyan);padding:12px 14px;box-shadow:0 -8px 30px rgba(0,0,0,.6);}
+@media(min-width:760px){.ed-fab.open{left:auto;}.ed-panel{max-width:360px;border:1px solid var(--cyan);border-radius:12px;margin:0 14px 14px auto;}}
+.ed-panel-h{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-weight:700;font-size:13px;margin-bottom:6px;}
+.ed-done{background:var(--cyan);color:#04080f;border:none;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-size:12px;}
+.ed-tip{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5;}
+.ed-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ed-grid button{background:#0d1622;color:var(--white);border:1px solid var(--border);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;}
+.ed-grid button:hover{border-color:var(--cyan);color:var(--cyan);}
+.ed-grid .ed-reset{color:var(--pink);}
+/* 星の色エディタ */
+.star-swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:4px 0 10px;}
+.star-sw{aspect-ratio:1;width:100%;padding:0;cursor:pointer;border-radius:8px;border:1px solid rgba(255,255,255,0.22);transition:transform 0.12s;}
+.star-sw:hover{transform:scale(1.1);}
+.star-sw.active{outline:2px solid var(--cyan);outline-offset:2px;}
+.star-auto-btn{width:100%;background:#0d1622;color:var(--white);border:1px solid var(--border);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;margin-bottom:8px;}
+.star-auto-btn.active{border-color:var(--cyan);color:var(--cyan);}
+body.edit-mode [data-edit]{outline:1px dashed rgba(0,229,255,.7);outline-offset:3px;cursor:text;border-radius:2px;}
+body.edit-mode [data-edit]:hover{background:rgba(0,229,255,.12);}
+body.edit-mode .a-card,body.edit-mode .arch-card,body.edit-mode .monthly-right,body.edit-mode .monthly-left{cursor:pointer;}
+body.edit-mode .a-card::after,body.edit-mode .monthly-right::after{content:'✏ 編集';position:absolute;top:6px;left:6px;background:rgba(0,229,255,.92);color:#04080f;font-size:9px;font-weight:700;padding:3px 7px;border-radius:4px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
+body.edit-mode .a-card{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+body.edit-mode .a-card img{-webkit-user-drag:none;user-drag:none;}
+.a-card.dragging{z-index:60;opacity:.96;border-color:var(--cyan)!important;box-shadow:0 14px 34px rgba(0,0,0,.6);touch-action:none;transition:none;}
+.a-card.dragging img{transform:none!important;}
+/* 並べ替えハンドル（編集モードのみ表示） */
+.a-card-drag{display:none;}
+body.edit-mode .a-card-drag{display:flex;align-items:center;justify-content:center;position:absolute;top:6px;right:6px;z-index:7;width:34px;height:34px;background:rgba(0,229,255,.95);color:#04080f;border-radius:8px;font-size:16px;font-weight:700;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5);touch-action:none;cursor:grab;}
+body.edit-mode .a-card-drag:active{cursor:grabbing;}
+body.edit-mode .monthly-coming{cursor:pointer;}
+body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
+.ed-wrap{position:fixed;inset:0;z-index:650;display:none;align-items:center;justify-content:center;padding:14px;font-family:'Noto Sans JP',sans-serif;}
+.ed-wrap.open{display:flex;}
+.ed-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);}
+.ed-box{position:relative;z-index:1;background:#0a121d;border:1px solid var(--cyan);border-radius:14px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;padding:18px;}
+.ed-head{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-weight:700;font-size:15px;margin-bottom:14px;}
+.ed-x{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;flex-shrink:0;}
+.ed-x:hover{border-color:var(--pink);color:var(--pink);}
+.ed-field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
+.ed-field>label{font-size:12px;color:var(--muted);font-weight:700;}
+.ed-field input,.ed-field textarea{background:#04080f;border:1px solid var(--border);color:var(--white);padding:9px 11px;border-radius:7px;font-size:13px;font-family:inherit;outline:none;width:100%;}
+.ed-field input[type=color]{height:42px;padding:4px;cursor:pointer;}
+.ed-field input[type=checkbox]{width:auto;}
+.ed-field textarea{resize:vertical;line-height:1.6;}
+.ed-field input:focus,.ed-field textarea:focus{border-color:var(--cyan);}
+.ed-field small{font-size:10px;color:var(--dim);}
+.ed-row{display:flex;gap:12px;}
+.ed-row .ed-field{flex:1;}
+.ed-imgprev{width:100%;height:160px;border:1px dashed var(--border);border-radius:8px;background:#04080f;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.ed-imgprev img{width:100%;height:100%;object-fit:cover;}
+.ed-imgprev span{color:var(--dim);font-size:12px;}
+.ed-upload{display:block;background:var(--cyan);color:#04080f;font-weight:700;text-align:center;padding:9px;border-radius:7px;cursor:pointer;font-size:13px;}
+.ed-upload:hover{filter:brightness(1.1);}
+.ed-btn-mini{background:none;border:1px solid var(--border);color:var(--pink);padding:7px;border-radius:7px;cursor:pointer;font-size:12px;margin-top:6px;}
+.ed-actions{display:flex;justify-content:space-between;gap:10px;margin-top:16px;}
+.ed-save{flex:1;background:var(--cyan);color:#04080f;border:none;font-weight:700;padding:12px;border-radius:8px;cursor:pointer;font-size:14px;}
+.ed-del{background:none;border:1px solid var(--pink);color:var(--pink);padding:12px 16px;border-radius:8px;cursor:pointer;font-size:13px;}
+.ed-slide-item{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:#04080f;border:1px solid var(--border);border-radius:8px;padding:8px;}
+.ed-slide-item img{width:64px;height:40px;object-fit:cover;border-radius:4px;flex-shrink:0;}
+.ed-slide-item .sp{flex:1;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ed-slide-item button{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;flex-shrink:0;}
+.ed-slide-item button:hover{border-color:var(--cyan);color:var(--cyan);}
+.ed-slide-item button:disabled{opacity:.3;cursor:default;}
+
+/* ══════════════ 携帯（縦）でホームを1画面に収める ══════════════ */
+@media(max-width:600px){
+  .hero{height:27vh;min-height:160px;}
+  /* ロゴは左上に小さく、スライドの邪魔にならないように */
+  .hero-logo-block{top:12px;left:14px;}
+  .hero-logo{font-size:19px;letter-spacing:0.5px;}
+  .hero-logo-sub{display:none;}
+  .home-body{padding:10px 0 18px;}
+  .inner{padding:0 14px;}
+  .sec-hd{margin-bottom:8px;}
+
+  /* 月刊：大きめに見せる */
+  .monthly-section{margin-bottom:14px;}
+  .monthly-coming{min-height:150px;}
+  .monthly-layout{grid-template-columns:1fr;min-height:auto;}
+  .monthly-left{padding:18px 18px;}
+  .monthly-right{min-height:150px;}
+
+  /* 他の記事：横並び（横スワイプ）にして縦スクロールを減らす */
+  .articles-grid{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:8px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    padding-bottom:6px;
+  }
+  .articles-grid .a-card{
+    flex:0 0 31%;
+    aspect-ratio:auto;
+    height:140px;
+    scroll-snap-align:start;
+  }
+  .articles-grid .a-card-strip{padding:22px 8px 8px;}
+  .articles-grid .a-card-title{font-size:10px;}
+  .articles-grid .a-card-sub,
+  .articles-grid .a-card-read{display:none;}
+}
 </style>
 </head>
 <body>
@@ -501,18 +633,35 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 <!-- ══ HERO ══ -->
 <div class="hero">
   <!-- Slides -->
-  <div class="slide active" style="background-image:url('hero.png')"></div>
-  <div class="slide" style="background-image:url('paper2.png')"></div>
-  <div class="slide" style="background-image:url('paper3.png')"></div>
-  <div class="slide" style="background-image:url('paper1.png')"></div>
+  <div class="hero-slides" id="heroSlides"></div>
 
   <!-- Overlay -->
   <div class="hero-overlay"></div>
 
   <!-- Logo -->
   <div class="hero-logo-block">
-    <div class="hero-logo">FREE <em>TIMES</em></div>
-    <div class="hero-logo-sub">Breaking News From The Unknown</div>
+    <div class="hero-logo"><svg class="ftlogo" viewBox="0 0 6889 1640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FREE TIMES" preserveAspectRatio="xMinYMid meet">
+  <defs>
+    <filter id="ftGlow" x="-15%" y="-60%" width="130%" height="220%">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="4.0" result="thick"/>
+      <feFlood flood-color="#ffffff" result="col"/>
+      <feComposite in="col" in2="thick" operator="in" result="cglow"/>
+      <feGaussianBlur in="cglow" stdDeviation="12.0" result="b1"/>
+      <feGaussianBlur in="cglow" stdDeviation="30.0" result="b2"/>
+      <feGaussianBlur in="cglow" stdDeviation="60.0" result="b3"/>
+      <feMerge>
+        <feMergeNode in="b3"/><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#ftGlow)">
+    <g transform="translate(120.0,1151.0) scale(1,-1)" fill="#ffffff" stroke="#ffffff" stroke-width="18.0" stroke-linejoin="round" stroke-linecap="round">
+      <path transform="translate(0.0,0)" d="M575 568H350Q271 568 222.5 527.0Q174 486 170 407H575V286H170V0H49V391Q49 460 68.0 515.0Q87 570 125.5 608.5Q164 647 221.0 668.0Q278 689 354 689H575Z"/><path transform="translate(673.0,0)" d="M50 206Q50 306 108.5 356.5Q167 407 267 407H412Q445 407 468.0 430.5Q491 454 491 488Q491 504 484.5 518.5Q478 533 467.5 544.0Q457 555 443.0 561.5Q429 568 413 568H50V689H394Q451 689 492.0 673.0Q533 657 559.5 629.0Q586 601 598.5 564.5Q611 528 611 486Q611 450 599.5 414.0Q588 378 562.0 349.5Q536 321 494.5 303.5Q453 286 394 286H255L627 122V-11L171 195V0H50Z"/><path transform="translate(1394.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(2103.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(3174.0,0)" d="M318 0H198V568H28V689H478V568H318Z"/><path transform="translate(3740.0,0)" d="M49 689H170V0H49Z"/><path transform="translate(4019.0,0)" d="M231 584Q249 635 290.5 663.0Q332 691 386 691Q423 691 455.5 679.0Q488 667 512.0 645.0Q536 623 550.0 591.5Q564 560 564 522V175Q564 115 615 115Q632 115 641.0 125.5Q650 136 657 157L795 584Q812 635 854.5 663.0Q897 691 950 691Q987 691 1019.5 679.0Q1052 667 1076.0 645.0Q1100 623 1114.0 591.5Q1128 560 1128 522V0H1000V510Q1000 570 948 570Q931 570 922.5 558.5Q914 547 907 526L767 100Q753 49 709.5 20.5Q666 -8 613 -8Q575 -8 543.0 4.0Q511 16 487.0 38.0Q463 60 449.5 91.5Q436 123 436 161V510Q436 570 384 570Q367 570 359.0 558.5Q351 547 343 526L159 0H23Z"/><path transform="translate(5256.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(5965.0,0)" d="M645 201Q645 101 587.5 50.5Q530 0 427 0H73V120H450Q482 120 503.0 144.5Q524 169 524 204Q524 237 503.0 261.5Q482 286 450 286H256Q196 286 154.5 304.0Q113 322 87.5 351.0Q62 380 50.5 415.5Q39 451 39 486Q39 528 51.0 564.5Q63 601 89.5 629.0Q116 657 157.0 673.0Q198 689 256 689H600V568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 182.0 430.5Q205 407 238 407H429Q529 407 587.0 356.5Q645 306 645 206Z"/>
+    </g>
+  </g>
+</svg></div>
+    <div class="hero-logo-sub" id="heroSub" data-edit="hero.sub">Breaking News From The Unknown</div>
   </div>
 
   <!-- Social -->
@@ -528,8 +677,15 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
     </a>
   </div>
 
-  <!-- ★ Star Fragment Alive -->
+  <!-- ★ Star Fragment Alive（水槽風） -->
   <div class="hero-star">
+    <div class="tank-water"></div>
+    <div class="water-surface"></div>
+    <span class="bubble b1"></span>
+    <span class="bubble b2"></span>
+    <span class="bubble b3"></span>
+    <span class="bubble b4"></span>
+    <span class="bubble b5"></span>
     <div class="star-ring r1"></div>
     <div class="star-ring r2"></div>
     <div class="star-ring r3"></div>
@@ -537,44 +693,25 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
     <div class="star-label">Star Fragment</div>
     <svg class="star-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(50,50)">
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.85" transform="rotate(0)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.85" transform="rotate(45)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.85" transform="rotate(90)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.85" transform="rotate(135)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.35" transform="rotate(22.5)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.35" transform="rotate(67.5)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.35" transform="rotate(112.5)"/>
-        <ellipse class="star-fill" rx="6" ry="19" opacity="0.35" transform="rotate(157.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(0)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(45)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(90)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(135)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(22.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(67.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(112.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(157.5)"/>
         <circle r="12" fill="#04080f"/>
         <circle r="8" fill="#0a1800"/>
-        <circle class="star-fill" r="5" opacity="0.95"/>
+        <circle r="5" fill="var(--star)" opacity="0.95"/>
         <circle r="2" fill="white"/>
       </g>
     </svg>
-  </div>
-
-  <!-- ★ Star Color Editor -->
-  <div class="star-editor" id="star-editor">
-    <span class="star-editor-label">★ Star Color</span>
-    <div class="star-swatches">
-      <button class="sw" style="--c:#a8ff00" onclick="setStarColor('#a8ff00',this)" title="ライム"></button>
-      <button class="sw" style="--c:#00e5ff" onclick="setStarColor('#00e5ff',this)" title="シアン"></button>
-      <button class="sw" style="--c:#ff3cac" onclick="setStarColor('#ff3cac',this)" title="ピンク"></button>
-      <button class="sw" style="--c:#ffb700" onclick="setStarColor('#ffb700',this)" title="アンバー"></button>
-      <button class="sw" style="--c:#4ab8ff" onclick="setStarColor('#4ab8ff',this)" title="ブルー"></button>
-      <button class="sw" style="--c:#b388ff" onclick="setStarColor('#b388ff',this)" title="パープル"></button>
-      <button class="sw" style="--c:#ffffff" onclick="setStarColor('#ffffff',this)" title="ホワイト"></button>
-      <label class="sw sw-custom" title="カスタム色"><input type="color" id="star-color-input" value="#a8ff00" oninput="setStarColor(this.value)"></label>
-    </div>
+    <div class="tank-glare"></div>
   </div>
 
   <!-- Dots -->
-  <div class="hero-dots">
-    <div class="dot active" onclick="goSlide(0)"></div>
-    <div class="dot" onclick="goSlide(1)"></div>
-    <div class="dot" onclick="goSlide(2)"></div>
-    <div class="dot" onclick="goSlide(3)"></div>
-  </div>
+  <div class="hero-dots" id="heroDots"></div>
 </div>
 
 <!-- ══ NAV ══ -->
@@ -589,18 +726,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 <!-- ══ TICKER ══ -->
 <div class="ticker">
   <div class="ticker-label"><div class="ticker-dot"></div>LIVE</div>
-  <div class="ticker-scroll">
-    <span class="ticker-item"><b>速報</b>銀河ポン酢 — ゼータ星リトルジャパンで大ブーム</span>
-    <span class="ticker-item"><b>号外</b>レインボール — 全累リトルジャパンで子供道に大人気</span>
-    <span class="ticker-item"><b>横浜</b>大さん橋 海からWi-Fi飛んでくる — 過去と未来が混ざる</span>
-    <span class="ticker-item"><b>警戒</b>3IATLAS 第8回攻撃 — 地球ギリギリの危機</span>
-    <span class="ticker-item"><b>特報</b>ルナ特派員 密輸組織ボス特定へ — 近く逮捕</span>
-    <span class="ticker-item"><b>速報</b>銀河ポン酢 — ゼータ星リトルジャパンで大ブーム</span>
-    <span class="ticker-item"><b>号外</b>レインボール — 全累リトルジャパンで子供道に大人気</span>
-    <span class="ticker-item"><b>横浜</b>大さん橋 海からWi-Fi飛んでくる — 過去と未来が混ざる</span>
-    <span class="ticker-item"><b>警戒</b>3IATLAS 第8回攻撃 — 地球ギリギリの危機</span>
-    <span class="ticker-item"><b>特報</b>ルナ特派員 密輸組織ボス特定へ — 近く逮捕</span>
-  </div>
+  <div class="ticker-scroll" id="tickerScroll"></div>
   <div class="ticker-clock">
     <div class="ticker-clock-time" id="clock-time">00:00:00</div>
     <div class="ticker-clock-date" id="clock-date">--- -- --</div>
@@ -638,13 +764,13 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-logo">FREE TIMES<small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
+      <div class="footer-logo"><svg class="ftlogo" viewBox="0 0 6889 1640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FREE TIMES" preserveAspectRatio="xMinYMid meet"><defs><filter id="ftGlowF" x="-15%" y="-60%" width="130%" height="220%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.0" result="thick"/><feFlood flood-color="#ffffff" result="col"/><feComposite in="col" in2="thick" operator="in" result="cglow"/><feGaussianBlur in="cglow" stdDeviation="12.0" result="b1"/><feGaussianBlur in="cglow" stdDeviation="30.0" result="b2"/><feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#ftGlowF)"><g transform="translate(120.0,1151.0) scale(1,-1)" fill="#ffffff" stroke="#ffffff" stroke-width="18.0" stroke-linejoin="round" stroke-linecap="round"><path transform="translate(0.0,0)" d="M575 568H350Q271 568 222.5 527.0Q174 486 170 407H575V286H170V0H49V391Q49 460 68.0 515.0Q87 570 125.5 608.5Q164 647 221.0 668.0Q278 689 354 689H575Z"/><path transform="translate(673.0,0)" d="M50 206Q50 306 108.5 356.5Q167 407 267 407H412Q445 407 468.0 430.5Q491 454 491 488Q491 504 484.5 518.5Q478 533 467.5 544.0Q457 555 443.0 561.5Q429 568 413 568H50V689H394Q451 689 492.0 673.0Q533 657 559.5 629.0Q586 601 598.5 564.5Q611 528 611 486Q611 450 599.5 414.0Q588 378 562.0 349.5Q536 321 494.5 303.5Q453 286 394 286H255L627 122V-11L171 195V0H50Z"/><path transform="translate(1394.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(2103.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(3174.0,0)" d="M318 0H198V568H28V689H478V568H318Z"/><path transform="translate(3740.0,0)" d="M49 689H170V0H49Z"/><path transform="translate(4019.0,0)" d="M231 584Q249 635 290.5 663.0Q332 691 386 691Q423 691 455.5 679.0Q488 667 512.0 645.0Q536 623 550.0 591.5Q564 560 564 522V175Q564 115 615 115Q632 115 641.0 125.5Q650 136 657 157L795 584Q812 635 854.5 663.0Q897 691 950 691Q987 691 1019.5 679.0Q1052 667 1076.0 645.0Q1100 623 1114.0 591.5Q1128 560 1128 522V0H1000V510Q1000 570 948 570Q931 570 922.5 558.5Q914 547 907 526L767 100Q753 49 709.5 20.5Q666 -8 613 -8Q575 -8 543.0 4.0Q511 16 487.0 38.0Q463 60 449.5 91.5Q436 123 436 161V510Q436 570 384 570Q367 570 359.0 558.5Q351 547 343 526L159 0H23Z"/><path transform="translate(5256.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(5965.0,0)" d="M645 201Q645 101 587.5 50.5Q530 0 427 0H73V120H450Q482 120 503.0 144.5Q524 169 524 204Q524 237 503.0 261.5Q482 286 450 286H256Q196 286 154.5 304.0Q113 322 87.5 351.0Q62 380 50.5 415.5Q39 451 39 486Q39 528 51.0 564.5Q63 601 89.5 629.0Q116 657 157.0 673.0Q198 689 256 689H600V568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 182.0 430.5Q205 407 238 407H429Q529 407 587.0 356.5Q645 306 645 206Z"/></g></g></svg><small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
       <div class="footer-nav">
         <a href="#" onclick="showPage('home')">Top</a>
         <a href="#" onclick="showPage('archive')">Archive</a>
         <a href="#" onclick="showPage('search')">Search</a>
       </div>
-      <div class="footer-copy">© 2026 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace</div>
+      <div class="footer-copy">© 2024 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace</div>
     </div>
   </footer>
 </div>
@@ -663,8 +789,8 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   </div>
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-logo">FREE TIMES<small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
-      <div class="footer-copy">© 2026 FREE TIMES All Rights Reserved.</div>
+      <div class="footer-logo"><svg class="ftlogo" viewBox="0 0 6889 1640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FREE TIMES" preserveAspectRatio="xMinYMid meet"><defs><filter id="ftGlowF" x="-15%" y="-60%" width="130%" height="220%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.0" result="thick"/><feFlood flood-color="#ffffff" result="col"/><feComposite in="col" in2="thick" operator="in" result="cglow"/><feGaussianBlur in="cglow" stdDeviation="12.0" result="b1"/><feGaussianBlur in="cglow" stdDeviation="30.0" result="b2"/><feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#ftGlowF)"><g transform="translate(120.0,1151.0) scale(1,-1)" fill="#ffffff" stroke="#ffffff" stroke-width="18.0" stroke-linejoin="round" stroke-linecap="round"><path transform="translate(0.0,0)" d="M575 568H350Q271 568 222.5 527.0Q174 486 170 407H575V286H170V0H49V391Q49 460 68.0 515.0Q87 570 125.5 608.5Q164 647 221.0 668.0Q278 689 354 689H575Z"/><path transform="translate(673.0,0)" d="M50 206Q50 306 108.5 356.5Q167 407 267 407H412Q445 407 468.0 430.5Q491 454 491 488Q491 504 484.5 518.5Q478 533 467.5 544.0Q457 555 443.0 561.5Q429 568 413 568H50V689H394Q451 689 492.0 673.0Q533 657 559.5 629.0Q586 601 598.5 564.5Q611 528 611 486Q611 450 599.5 414.0Q588 378 562.0 349.5Q536 321 494.5 303.5Q453 286 394 286H255L627 122V-11L171 195V0H50Z"/><path transform="translate(1394.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(2103.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(3174.0,0)" d="M318 0H198V568H28V689H478V568H318Z"/><path transform="translate(3740.0,0)" d="M49 689H170V0H49Z"/><path transform="translate(4019.0,0)" d="M231 584Q249 635 290.5 663.0Q332 691 386 691Q423 691 455.5 679.0Q488 667 512.0 645.0Q536 623 550.0 591.5Q564 560 564 522V175Q564 115 615 115Q632 115 641.0 125.5Q650 136 657 157L795 584Q812 635 854.5 663.0Q897 691 950 691Q987 691 1019.5 679.0Q1052 667 1076.0 645.0Q1100 623 1114.0 591.5Q1128 560 1128 522V0H1000V510Q1000 570 948 570Q931 570 922.5 558.5Q914 547 907 526L767 100Q753 49 709.5 20.5Q666 -8 613 -8Q575 -8 543.0 4.0Q511 16 487.0 38.0Q463 60 449.5 91.5Q436 123 436 161V510Q436 570 384 570Q367 570 359.0 558.5Q351 547 343 526L159 0H23Z"/><path transform="translate(5256.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(5965.0,0)" d="M645 201Q645 101 587.5 50.5Q530 0 427 0H73V120H450Q482 120 503.0 144.5Q524 169 524 204Q524 237 503.0 261.5Q482 286 450 286H256Q196 286 154.5 304.0Q113 322 87.5 351.0Q62 380 50.5 415.5Q39 451 39 486Q39 528 51.0 564.5Q63 601 89.5 629.0Q116 657 157.0 673.0Q198 689 256 689H600V568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 182.0 430.5Q205 407 238 407H429Q529 407 587.0 356.5Q645 306 645 206Z"/></g></g></svg><small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
+      <div class="footer-copy">© 2024 FREE TIMES All Rights Reserved.</div>
     </div>
   </footer>
 </div>
@@ -691,8 +817,8 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   </div>
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-logo">FREE TIMES<small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
-      <div class="footer-copy">© 2026 FREE TIMES All Rights Reserved.</div>
+      <div class="footer-logo"><svg class="ftlogo" viewBox="0 0 6889 1640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FREE TIMES" preserveAspectRatio="xMinYMid meet"><defs><filter id="ftGlowF" x="-15%" y="-60%" width="130%" height="220%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.0" result="thick"/><feFlood flood-color="#ffffff" result="col"/><feComposite in="col" in2="thick" operator="in" result="cglow"/><feGaussianBlur in="cglow" stdDeviation="12.0" result="b1"/><feGaussianBlur in="cglow" stdDeviation="30.0" result="b2"/><feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#ftGlowF)"><g transform="translate(120.0,1151.0) scale(1,-1)" fill="#ffffff" stroke="#ffffff" stroke-width="18.0" stroke-linejoin="round" stroke-linecap="round"><path transform="translate(0.0,0)" d="M575 568H350Q271 568 222.5 527.0Q174 486 170 407H575V286H170V0H49V391Q49 460 68.0 515.0Q87 570 125.5 608.5Q164 647 221.0 668.0Q278 689 354 689H575Z"/><path transform="translate(673.0,0)" d="M50 206Q50 306 108.5 356.5Q167 407 267 407H412Q445 407 468.0 430.5Q491 454 491 488Q491 504 484.5 518.5Q478 533 467.5 544.0Q457 555 443.0 561.5Q429 568 413 568H50V689H394Q451 689 492.0 673.0Q533 657 559.5 629.0Q586 601 598.5 564.5Q611 528 611 486Q611 450 599.5 414.0Q588 378 562.0 349.5Q536 321 494.5 303.5Q453 286 394 286H255L627 122V-11L171 195V0H50Z"/><path transform="translate(1394.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(2103.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(3174.0,0)" d="M318 0H198V568H28V689H478V568H318Z"/><path transform="translate(3740.0,0)" d="M49 689H170V0H49Z"/><path transform="translate(4019.0,0)" d="M231 584Q249 635 290.5 663.0Q332 691 386 691Q423 691 455.5 679.0Q488 667 512.0 645.0Q536 623 550.0 591.5Q564 560 564 522V175Q564 115 615 115Q632 115 641.0 125.5Q650 136 657 157L795 584Q812 635 854.5 663.0Q897 691 950 691Q987 691 1019.5 679.0Q1052 667 1076.0 645.0Q1100 623 1114.0 591.5Q1128 560 1128 522V0H1000V510Q1000 570 948 570Q931 570 922.5 558.5Q914 547 907 526L767 100Q753 49 709.5 20.5Q666 -8 613 -8Q575 -8 543.0 4.0Q511 16 487.0 38.0Q463 60 449.5 91.5Q436 123 436 161V510Q436 570 384 570Q367 570 359.0 558.5Q351 547 343 526L159 0H23Z"/><path transform="translate(5256.0,0)" d="M600 568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 181.0 430.5Q203 407 238 407H600V286H237Q221 286 207.0 279.5Q193 273 182.5 262.0Q172 251 165.5 236.5Q159 222 159 206Q159 168 181.0 144.0Q203 120 238 120H600V0H256Q196 0 154.5 17.5Q113 35 87.5 64.0Q62 93 50.5 129.5Q39 166 39 204Q39 246 56.0 284.5Q73 323 113 347Q73 371 56.0 410.0Q39 449 39 486Q39 530 52.0 567.5Q65 605 91.5 632.0Q118 659 159.0 674.0Q200 689 256 689H600Z"/><path transform="translate(5965.0,0)" d="M645 201Q645 101 587.5 50.5Q530 0 427 0H73V120H450Q482 120 503.0 144.5Q524 169 524 204Q524 237 503.0 261.5Q482 286 450 286H256Q196 286 154.5 304.0Q113 322 87.5 351.0Q62 380 50.5 415.5Q39 451 39 486Q39 528 51.0 564.5Q63 601 89.5 629.0Q116 657 157.0 673.0Q198 689 256 689H600V568H237Q221 568 207.0 561.5Q193 555 182.5 544.0Q172 533 165.5 518.5Q159 504 159 488Q159 454 182.0 430.5Q205 407 238 407H429Q529 407 587.0 356.5Q645 306 645 206Z"/></g></g></svg><small>PARALLEL WORLD NEWSPAPER — YOKOHAMA</small></div>
+      <div class="footer-copy">© 2024 FREE TIMES All Rights Reserved.</div>
     </div>
   </footer>
 </div>
@@ -715,20 +841,40 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
           <button class="modal-nav-btn" onclick="navModal(1)">→</button>
         </div>
       </div>
+      <button class="modal-close-bottom" onclick="closeModal()">閉じる</button>
     </div>
   </div>
 </div>
 
+<!-- ══ EDITOR UI ══ -->
+<div class="ed-wrap" id="edWrap">
+  <div class="ed-backdrop" onclick="edClose()"></div>
+  <div class="ed-box" id="edBox"></div>
+</div>
+<div class="ed-fab" id="edFab"></div>
+
 <script>
-// ══ DATA ══
-// monthly:true にすると月刊号として表示される
-const papers = [
-  { id:0, monthly:true, issue:"月刊フリータイムズ — 創刊号 / 2026年6月", category:"special",
-    title:"星のかけら、横浜に墜つ — 脈動する発光体「アライブ」を追え",
-    sub:"大さん橋沖に落下した星のかけらが今も脈動を続ける／忍者一族・影浜が極秘調査に着手／ルナ特派員 独占密着レポート",
-    by:"By 編集長 ポール・ヨタ", imageSrc:"hero.png", color:"#a8ff00",
-    article:`<p>2026年6月、横浜・大さん橋の沖合に「星のかけら」が墜落した。緑色の光を放ちながら今も脈動を続けるその発光体に、本紙は「アライブ」と名付けた。生きているかのように呼吸する光——その正体を追う。</p><p>現場をいち早く押さえたのは横浜忍者一族・影浜だった。「これは普通の隕石ではない。海から飛んでくる謎のWi-Fiとも関係がある」と一族の長は語る。接続すると過去や未来の映像が混ざるあのネットワークと、星のかけらは何かでつながっているのか。</p><p>ルナ特派員は5言語のレポートで「かけらに近づくと心臓の音が聞こえる」と報告。出汁コーボ社は早くも「星のかけら出汁」の開発に着手したという噂もある。創刊号は、この一大事件を総力取材でお届けする。続報を待て——FREE TIMES。</p>`
+// ══ 初期内容（DEFAULT CONTENT） ══
+// localStorage に保存が無いとき、または「初期化」したときに使う内容
+const DEFAULT_CONTENT = {
+  theme:{ cyan:"#00e5ff", blue:"#2a8fd4", blue2:"#4ab8ff", pink:"#ff3cac", lime:"#c8ff45", amber:"#ffb700" },
+  // 星のかけらの色。"auto" = 1ヶ月に1回 自動で切り替え／#RRGGBB = 固定（編集機能で設定）
+  starColor:"auto",
+  hero:{
+    logoFree:"FREE", logoTimes:"TIMES",
+    sub:"Breaking News From The Unknown",
+    slides:["hero.png","paper2.png","paper3.png","paper1.png"]
   },
+  ticker:[
+    "<b>速報</b>銀河ポン酢 — ゼータ星リトルジャパンで大ブーム",
+    "<b>号外</b>レインボール — 全累リトルジャパンで子供道に大人気",
+    "<b>横浜</b>大さん橋 海からWi-Fi飛んでくる — 過去と未来が混ざる",
+    "<b>警戒</b>3IATLAS 第8回攻撃 — 地球ギリギリの危機",
+    "<b>特報</b>ルナ特派員 密輸組織ボス特定へ — 近く逮捕"
+  ],
+  footer:{ copyHtml:"© 2024 FREE TIMES All Rights Reserved.<br>Editor: Paul Yota — Love & Peace" },
+  // monthly:true にすると月刊号として表示される
+  articles: [
   { id:1, monthly:false, issue:"号外 — Gourmet", category:"gourmet",
     title:"ゼータ星リトルジャパンで「銀河ポン酢」発売！",
     sub:"銀ポン大ブーム！出汁コーボの新商品に熱狂／超行列！瓦屋木店に大集結",
@@ -747,32 +893,151 @@ const papers = [
     by:"By 緑マキ男", imageSrc:"paper3.png", color:"#00e5ff",
     article:`<p>横浜・大さん橋で謎のWi-Fiが海から飛んでくるという報告が相次いでいる。接続すると過去の映像が流れ、たまに未来も混ざるという。横浜忍者一族・影浜との関係も浮上。続報を待て。</p>`
   },
-  { id:4, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
+  { id:-1, monthly:false, issue:"号外 — 2024年5月25日", category:"mystery",
+    title:`均衡を壊す"偏極者" 存在浮上！！`,
+    sub:"フリータイムズ本社の屋上受信機が何者かによって破壊される！！",
+    by:"By FREE TIMES 編集部", imageSrc:"henkyokusha.jpg", color:"#ffb700",
+    article:`<p>フリータイムズ本社の屋上に設置された受信機が、何者かによって破壊されているのが発見された。現場には複数の証拠が残されていたが、犯人の正体は依然として不明だ。</p><p>本紙は、意図的に世界の均衡を崩そうとする"偏極者"の存在が浮上したとみている。現場付近では、黒いコートをまとった人物の目撃情報も寄せられている。</p><p>三角県のアヤンは「これは昔話じゃない、真実の曲がり片だ」と語った。続報を待て——FREE TIMES BREAKING NEWS。</p>` },
   { id:5, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
   { id:6, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
-  { id:7, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
-  { id:8, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
-  { id:9, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
+  ]
+};
+
+// ══ 内容の読み込み・保存（localStorage） ══
+const LS_KEY = 'freetimes_content_v1';
+const clone  = o => JSON.parse(JSON.stringify(o));
+
+function mergeContent(base, over){
+  if(!over) return base;
+  if(over.theme)    Object.assign(base.theme, over.theme);
+  if(over.starColor !== undefined) base.starColor = over.starColor;
+  if(over.hero)     Object.assign(base.hero, over.hero);
+  if(over.ticker)   base.ticker = over.ticker;
+  if(over.footer)   Object.assign(base.footer, over.footer);
+  if(over.articles){
+    // 保存データの記事を優先しつつ、公開側で追加した記事(保存データに無いid)は必ず足す
+    const ids = new Set(over.articles.map(a => a.id));
+    const extras = base.articles.filter(a => !ids.has(a.id));
+    base.articles = over.articles.concat(extras);
+  }
+  return base;
+}
+function loadContent(){
+  try{
+    const s = localStorage.getItem(LS_KEY);
+    if(s) return mergeContent(clone(DEFAULT_CONTENT), JSON.parse(s));
+  }catch(e){}
+  return clone(DEFAULT_CONTENT);
+}
+function saveContent(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(content)); return true; }
+  catch(e){ alert('保存できませんでした。画像が大きすぎる可能性があります（合計で約5MBまで）。'); return false; }
+}
+
+let content = loadContent();
+let papers  = content.articles;   // 既存の関数はこの papers を参照する
+
+// ══ 小さなヘルパー ══
+function esc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function stripP(html){ return (html||'').replace(/<\/p>\s*<p>/gi,'\n\n').replace(/<\/?p>/gi,'').replace(/<br\s*\/?>/gi,'\n').trim(); }
+function wrapP(text){ return (text||'').split(/\n{2,}/).map(s=>`<p>${esc(s).replace(/\n/g,'<br>')}</p>`).join(''); }
+function val(id){ return document.getElementById(id).value; }
+function setPath(obj, path, v){ const ks=path.split('.'); const last=ks.pop(); let o=obj; ks.forEach(k=>o=o[k]); o[last]=v; }
+// 画像を選んだら自動で縮小して軽くする（Instagram のように選ぶだけ）
+function fileToDataURL(file, maxW, cb){
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      cv.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(cv.toDataURL('image/jpeg', 0.82));
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ══ 内容を画面に反映 ══
+function applyTheme(){
+  const r = document.documentElement.style;
+  for(const k in content.theme) r.setProperty('--'+k, content.theme[k]);
+  applyStar();
+}
+
+// ══ 星のかけらの色 ══
+// 自動（"auto"）は 1ヶ月に1回、カレンダーの月ごとにパレットを巡回。
+// 編集機能で特定の色（#RRGGBB）を選ぶと、その色で固定される。
+const STAR_PALETTE = [
+  '#a8ff00', // 黄緑
+  '#00e5ff', // 蛍光の青
+  '#ff2d2d', // 蛍光の赤
+  '#ffd400', // 黄色
+  '#ff3cac', // ピンク
+  '#b026ff', // 紫
+  '#eaff00', // 蛍光の黄色
+  '#39ff14', // 蛍光の緑
+  '#000000'  // 黒
 ];
+const STAR_NAMES = ['黄緑','蛍光の青','蛍光の赤','黄色','ピンク','紫','蛍光の黄色','蛍光の緑','黒'];
+function monthlyStarColor(){ return STAR_PALETTE[new Date().getMonth() % STAR_PALETTE.length]; }
+function resolveStarColor(){
+  const c = content.starColor;
+  return (!c || c === 'auto') ? monthlyStarColor() : c;
+}
+function applyStar(){
+  const hex = resolveStarColor();
+  const r = document.documentElement.style;
+  r.setProperty('--star', hex);
+  r.setProperty('--star-rgb', hexRgb(hex));
+}
+// 自動（月替り）のとき、月をまたいだら色を更新（1時間ごとに確認）
+let _starMonth = new Date().getMonth();
+setInterval(() => {
+  const m = new Date().getMonth();
+  if(m !== _starMonth){ _starMonth = m; if(!content.starColor || content.starColor === 'auto') applyStar(); }
+}, 3600000);
+function applyStatic(){
+  const _lf = document.getElementById('logoFree');   if(_lf) _lf.textContent = content.hero.logoFree;
+  const _lt = document.getElementById('logoTimes');  if(_lt) _lt.textContent = content.hero.logoTimes;
+  const _hs = document.getElementById('heroSub');    if(_hs) _hs.textContent = content.hero.sub;
+  document.querySelectorAll('.footer-copy').forEach(el => el.innerHTML = content.footer.copyHtml);
+  renderTicker();
+  renderSlides();
+}
+function renderTicker(){
+  const items = content.ticker;
+  document.getElementById('tickerScroll').innerHTML =
+    [...items, ...items].map(t => `<span class="ticker-item">${t}</span>`).join('');
+}
 
-// ══ SLIDER ══
-let slideIdx = 0;
-const slides = document.querySelectorAll('.slide');
-const dots   = document.querySelectorAll('.dot');
-let timer;
-
-function goSlide(n) {
+// ══ SLIDER（スライド画像） ══
+let slideIdx = 0, slides = [], dots = [], timer = null;
+function renderSlides(){
+  const s = content.hero.slides;
+  document.getElementById('heroSlides').innerHTML =
+    s.map((src,i) => `<div class="slide${i===0?' active':''}" style="background-image:url('${src}')"></div>`).join('');
+  document.getElementById('heroDots').innerHTML =
+    s.map((src,i) => `<div class="dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join('');
+  slides = document.querySelectorAll('#heroSlides .slide');
+  dots   = document.querySelectorAll('#heroDots .dot');
+  slideIdx = 0;
+  clearInterval(timer);
+  if(slides.length > 1) timer = setInterval(() => goSlide(slideIdx + 1), 7000);
+}
+function goSlide(n){
+  if(!slides.length) return;
   slides[slideIdx].classList.remove('active');
-  dots[slideIdx].style.width   = '20px';
-  dots[slideIdx].style.background = 'rgba(255,255,255,0.25)';
+  if(dots[slideIdx]){ dots[slideIdx].style.width='20px'; dots[slideIdx].style.background='rgba(255,255,255,0.25)'; }
   slideIdx = (n + slides.length) % slides.length;
   slides[slideIdx].classList.add('active');
-  dots[slideIdx].style.width   = '34px';
-  dots[slideIdx].style.background = 'var(--cyan)';
+  if(dots[slideIdx]){ dots[slideIdx].style.width='34px'; dots[slideIdx].style.background='var(--cyan)'; }
   clearInterval(timer);
   timer = setInterval(() => goSlide(slideIdx + 1), 7000);
 }
-timer = setInterval(() => goSlide(slideIdx + 1), 7000);
 
 // ══ CLOCK ══
 function tick() {
@@ -806,25 +1071,29 @@ function initHome() {
 
   // Monthly
   if (monthly) {
-    document.getElementById('monthly-area').innerHTML = `
-      <div class="monthly-layout">
-        <div class="monthly-left">
-          <div class="monthly-eyebrow">Monthly Free Times</div>
-          <div class="monthly-h2">${monthly.title}</div>
-          <div class="monthly-sub">${monthly.sub}</div>
-          <button class="monthly-btn" onclick="openModal(${monthly.id})">最新号を読む</button>
-        </div>
-        <div class="monthly-right" onclick="openModal(${monthly.id})">
-          <img src="${monthly.imageSrc}" alt="${monthly.title}">
-          <div class="monthly-right-overlay">
-            <div class="monthly-right-title">${monthly.title}</div>
-            <div class="monthly-right-sub">${monthly.sub}</div>
+    if (monthly.imageSrc) {
+      document.getElementById('monthly-area').innerHTML = `
+        <div class="monthly-banner" onclick="cardClick(${monthly.id})">
+          <img src="${monthly.imageSrc}" alt="">
+          <div class="monthly-banner-overlay">
+            <div class="monthly-banner-badge">Latest Issue</div>
+            <div class="monthly-banner-title">${esc(monthly.title)}</div>
+            <div class="monthly-banner-hint">タップして読む →</div>
           </div>
-        </div>
-      </div>`;
+        </div>`;
+    } else {
+      document.getElementById('monthly-area').innerHTML = `
+        <div class="monthly-coming monthly-live" onclick="cardClick(${monthly.id})">
+          <div class="coming-inner">
+            <div class="coming-badge">Latest Issue</div>
+            <div class="ml-title">${esc(monthly.title)}</div>
+            <div class="ml-hint">タップして読む →</div>
+          </div>
+        </div>`;
+    }
   } else {
     document.getElementById('monthly-area').innerHTML = `
-      <div class="monthly-coming">
+      <div class="monthly-coming" onclick="editMonthly()">
         <div class="coming-inner">
           <div class="coming-badge">Coming Soon</div>
           <div class="coming-title">MONTHLY ISSUE 01</div>
@@ -836,17 +1105,21 @@ function initHome() {
 
   // Articles
   const grid = document.getElementById('articles-grid');
+  grid.innerHTML = '';
   document.getElementById('articles-count').textContent = others.length + ' Articles';
   others.forEach(p => {
     const c = document.createElement('div');
     c.className = 'a-card';
+    c.dataset.id = p.id;
+    c.onclick = () => cardClick(p.id);
     if (p.imageSrc) {
-      c.onclick = () => openModal(p.id);
       c.innerHTML = `
-        <img src="${p.imageSrc}" alt="${p.title}" loading="lazy">
+        <img src="${p.imageSrc}" alt="" loading="lazy" draggable="false">
+        <div class="a-card-drag" aria-hidden="true">⠿</div>
         <div class="a-card-strip">
-          <div class="a-card-title">${p.title}</div>
-          <div class="a-card-sub">${p.sub.substring(0,38)}...</div>
+          <div class="a-card-tag">${esc(p.category || '号外')}</div>
+          <div class="a-card-title">${esc(p.title)}</div>
+          <div class="a-card-sub">${esc((p.sub||'').substring(0,38))}${(p.sub||'').length>38?'…':''}</div>
           <div class="a-card-read">記事を読む</div>
         </div>`;
     } else {
@@ -855,6 +1128,7 @@ function initHome() {
     }
     grid.appendChild(c);
   });
+  if (EDIT) enableCardReorder(grid);
 }
 
 // ══ ARCHIVE ══
@@ -866,12 +1140,13 @@ function initArchive() {
   const grid = document.getElementById('arch-grid');
   real.forEach(p => {
     const c = document.createElement('div');
-    c.className = 'arch-card'; c.onclick = () => openModal(p.id);
+    c.className = 'arch-card'; c.onclick = () => cardClick(p.id);
     c.innerHTML = `
-      <img src="${p.imageSrc}" alt="${p.title}" loading="lazy">
+      <img src="${p.imageSrc}" alt="" loading="lazy">
       <div class="arch-card-strip">
-        <div class="arch-card-issue">${p.issue}</div>
-        <div class="arch-card-title">${p.title}</div>
+        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
+        <div class="arch-card-issue">${esc(p.issue)}</div>
+        <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
       </div>`;
     grid.insertBefore(c, document.getElementById('no-results-arch'));
@@ -896,14 +1171,15 @@ function initSearch() {
   real.forEach(p => {
     const c = document.createElement('div');
     c.className = 'arch-card';
-    c.dataset.title = p.title.toLowerCase();
+    c.dataset.title = (p.title||'').toLowerCase();
     c.dataset.cat   = p.category;
-    c.onclick = () => openModal(p.id);
+    c.onclick = () => cardClick(p.id);
     c.innerHTML = `
-      <img src="${p.imageSrc}" alt="${p.title}" loading="lazy">
+      <img src="${p.imageSrc}" alt="" loading="lazy">
       <div class="arch-card-strip">
-        <div class="arch-card-issue">${p.issue}</div>
-        <div class="arch-card-title">${p.title}</div>
+        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
+        <div class="arch-card-issue">${esc(p.issue)}</div>
+        <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
       </div>`;
     grid.insertBefore(c, document.getElementById('no-results-search'));
@@ -944,11 +1220,26 @@ function openModal(id) {
   document.getElementById('modal-sub').textContent     = p.sub;
   document.getElementById('modal-article').innerHTML   = p.article;
   document.getElementById('modal-by').textContent      = p.by;
-  document.getElementById('modal-img').innerHTML       = p.imageSrc
-    ? `<img src="${p.imageSrc}" alt="${p.title}">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
+  const _mbody = document.querySelector('#modal .modal-body');
+  const _mbox  = document.querySelector('#modal .modal');
+  let _topImg = document.getElementById('modal-top-img');
+  if(!_topImg){ _topImg = document.createElement('div'); _topImg.id = 'modal-top-img'; _mbody.insertBefore(_topImg, _mbody.firstChild); }
+  if(p.monthly && p.imageSrc2){
+    // 月刊号：タップ後は2枚目だけ表示（1枚目＝バナー画像は出さない）
+    _topImg.style.display = ''; _topImg.innerHTML = `<img src="${p.imageSrc2}" alt="">`;
+    document.getElementById('modal-img').innerHTML = '';
+    if(_mbox) _mbox.classList.add('modal-noimg');
+  } else {
+    _topImg.style.display = 'none'; _topImg.innerHTML = '';
+    if(_mbox) _mbox.classList.remove('modal-noimg');
+    document.getElementById('modal-img').innerHTML = p.imageSrc
+      ? `<img src="${p.imageSrc}" alt="${p.title}">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
+  }
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  if(_mbox) _mbox.scrollTop = 0;   // 開くたびに先頭から表示
+  if(_mbody) _mbody.scrollTop = 0;
 }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
@@ -969,29 +1260,379 @@ function hexRgb(h) {
   return `${parseInt(h.slice(1,3),16)},${parseInt(h.slice(3,5),16)},${parseInt(h.slice(5,7),16)}`;
 }
 
-// ══ STAR COLOR EDITOR ══
-// 星のかけらの色を変更し、選択を localStorage に保存する
-const STAR_KEY = 'ft-star-color';
-function setStarColor(hex, btn) {
-  document.documentElement.style.setProperty('--star', hex);
-  try { localStorage.setItem(STAR_KEY, hex); } catch (e) {}
-  // スウォッチの選択状態を同期
-  document.querySelectorAll('.star-swatches .sw').forEach(b => {
-    const c = (b.style.getPropertyValue('--c') || '').trim().toLowerCase();
-    b.classList.toggle('active', c === hex.toLowerCase());
-  });
-  // カスタムピッカーの値も合わせる
-  const input = document.getElementById('star-color-input');
-  if (input && input.value.toLowerCase() !== hex.toLowerCase()) input.value = hex;
-}
-function initStarColor() {
-  let saved;
-  try { saved = localStorage.getItem(STAR_KEY); } catch (e) {}
-  setStarColor(saved || '#a8ff00');
+// ══════════════════════════════════════════════
+//  EDITOR — 外部ツール不要のブラウザ編集モード
+// ══════════════════════════════════════════════
+let EDIT = false;
+// 編集ボタンは「?edit」を付けて開いたときだけ表示する（自分だけの合言葉）
+const CAN_EDIT = new URLSearchParams(location.search).has('edit') || location.hash === '#edit';
+let efImg = '';   // 記事フォームで選択中の画像（1枚目／バナー用）
+let efImg2 = '';  // 月刊号の2枚目（記事内に表示）
+
+// 記事カード／月刊カードをクリックしたとき
+function cardClick(id){
+  if(window.__ftDragged) return;   // 並べ替えドラッグ直後はタップ無効
+  if(EDIT){ editArticle(id); return; }
+  const a = papers.find(x => x.id === id);
+  if(a && a.imageSrc) openModal(id);
 }
 
-initStarColor();
-initHome();
+// ── 記事カードを長押し→指でドラッグして並べ替え（編集モード時のみ） ──
+let _dragState = null;
+function enableCardReorder(grid){
+  grid.querySelectorAll('.a-card').forEach(card => {
+    card.addEventListener('contextmenu', e => { if(EDIT) e.preventDefault(); });
+    // ハンドル(⠿)：押した瞬間からドラッグ開始（確実）
+    const h = card.querySelector('.a-card-drag');
+    if(h){
+      h.addEventListener('pointerdown', e => { e.stopPropagation(); startCardDrag(e, card, grid, h, true); });
+      h.addEventListener('click', e => e.stopPropagation());
+    }
+    // 本体：長押しでドラッグ開始
+    card.addEventListener('pointerdown', e => startCardDrag(e, card, grid, card, false));
+  });
+}
+function startCardDrag(e, card, grid, captureEl, immediate){
+  if(!EDIT) return;
+  if(typeof e.button === 'number' && e.button !== 0) return;
+  endCardDrag(false);  // 念のため前回分を片付け
+  const st = { card, grid, captureEl, pid:e.pointerId, sx:e.clientX, sy:e.clientY, armed:false, moved:false };
+  _dragState = st;
+  st._move = ev => onDragMove(ev);
+  st._up   = ev => onDragEnd(ev);
+  captureEl.addEventListener('pointermove', st._move, {passive:false});
+  captureEl.addEventListener('pointerup', st._up);
+  captureEl.addEventListener('pointercancel', st._up);
+  if(immediate){
+    try{ captureEl.setPointerCapture(e.pointerId); }catch(_){}
+    st.armed = true; pickUpCard(st);
+  } else {
+    st.timer = setTimeout(() => { st.armed = true; try{ captureEl.setPointerCapture(st.pid); }catch(_){} pickUpCard(st); }, 200);
+  }
+}
+function pickUpCard(st){
+  st.card.classList.add('dragging');
+  if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(_){} }
+}
+function onDragMove(e){
+  const st = _dragState; if(!st) return;
+  const dx = e.clientX - st.sx, dy = e.clientY - st.sy;
+  if(!st.armed){
+    if(Math.hypot(dx,dy) > 12){ clearTimeout(st.timer); endCardDrag(false); }  // スクロール意図 → 中止
+    return;
+  }
+  if(e.cancelable) e.preventDefault();
+  st.moved = true;
+  st.card.style.transform = `translate(${dx}px,${dy}px) scale(1.04)`;
+  st.card.style.pointerEvents = 'none';
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  st.card.style.pointerEvents = '';
+  const over = el && el.closest && el.closest('.a-card');
+  if(over && over !== st.card && over.parentElement === st.grid){
+    const r = over.getBoundingClientRect();
+    const ref = (e.clientY < r.top + r.height/2) ? over : over.nextSibling;
+    const prev = st.card.getBoundingClientRect();
+    st.grid.insertBefore(st.card, ref);
+    const now = st.card.getBoundingClientRect();
+    st.sx += (now.left - prev.left);
+    st.sy += (now.top - prev.top);
+    st.card.style.transform = `translate(${e.clientX-st.sx}px,${e.clientY-st.sy}px) scale(1.04)`;
+  }
+}
+function onDragEnd(){
+  const st = _dragState; if(!st) return;
+  clearTimeout(st.timer);
+  endCardDrag(st.moved);
+}
+function endCardDrag(commit){
+  const st = _dragState; if(!st) return;
+  try{ st.captureEl.releasePointerCapture(st.pid); }catch(_){}
+  st.captureEl.removeEventListener('pointermove', st._move, {passive:false});
+  st.captureEl.removeEventListener('pointerup', st._up);
+  st.captureEl.removeEventListener('pointercancel', st._up);
+  st.card.classList.remove('dragging');
+  st.card.style.transform = '';
+  st.card.style.pointerEvents = '';
+  if(commit && st.moved){
+    const ids = [...st.grid.querySelectorAll('.a-card')].map(c => c.dataset.id);
+    const monthlies = content.articles.filter(a => a.monthly);
+    const reordered = ids.map(id => content.articles.find(a => String(a.id) === String(id))).filter(Boolean);
+    const rest = content.articles.filter(a => !a.monthly && !reordered.includes(a));
+    content.articles = [...monthlies, ...reordered, ...rest];
+    papers = content.articles;
+    saveContent();
+    window.__ftDragged = true;
+    setTimeout(() => { window.__ftDragged = false; }, 350);
+  }
+  _dragState = null;
+}
+
+// すべてを内容から再描画
+function renderAll(){
+  applyTheme();
+  applyStatic();
+  papers = content.articles;
+  initHome();
+  resetSecondaryPages();
+}
+// アーカイブ／検索ページは遅延生成なので、内容が変わったら作り直せるようにする
+function resetSecondaryPages(){
+  archInited = false; searchInited = false; currentCat = 'all';
+  const ag = document.getElementById('arch-grid');
+  if(ag) ag.innerHTML = '<div class="no-results" id="no-results-arch">記事がありません</div>';
+  const sg = document.getElementById('search-grid');
+  if(sg) sg.innerHTML = '<div class="no-results" id="no-results-search">該当する記事が見つかりませんでした</div>';
+  const cw = document.getElementById('cat-wrap');
+  if(cw) cw.innerHTML = '<button class="cat-btn active" onclick="setCat(\'all\',this)">All</button>';
+  if(document.getElementById('page-archive').classList.contains('active')) initArchive();
+  if(document.getElementById('page-search').classList.contains('active'))  initSearch();
+}
+
+// 編集モードの ON/OFF
+function toggleEdit(){
+  EDIT = !EDIT;
+  document.body.classList.toggle('edit-mode', EDIT);
+  document.querySelectorAll('[data-edit]').forEach(el => el.contentEditable = EDIT);
+  if(!EDIT){ edClose(); saveContent(); }
+  renderEditChrome();
+  renderAll();
+}
+
+// 画面右下のボタン／パネル
+function renderEditChrome(){
+  const fab = document.getElementById('edFab');
+  if(!EDIT){
+    fab.className = 'ed-fab';
+    // 「?edit」付きでアクセスした人にだけ編集ボタンを見せる
+    fab.innerHTML = CAN_EDIT ? `<button class="ed-enter" onclick="toggleEdit()">✏ 編集する</button>` : '';
+    return;
+  }
+  fab.className = 'ed-fab open';
+  fab.innerHTML = `
+    <div class="ed-panel">
+      <div class="ed-panel-h">編集モード <button class="ed-done" onclick="toggleEdit()">✓ 完了</button></div>
+      <div class="ed-tip">下線の文字は直接クリックで書き換え。記事カードはタップで編集／<b>長押し＋ドラッグで並べ替え</b>できます。</div>
+      <div class="ed-grid">
+        <button onclick="addArticle()">＋ 記事を追加</button>
+        <button onclick="editSlides()">🖼 トップ画像</button>
+        <button onclick="editTicker()">📰 速報テロップ</button>
+        <button onclick="editFooter()">🦶 フッター</button>
+        <button onclick="editTheme()">🎨 色・デザイン</button>
+        <button onclick="editStar()">✨ 星の色</button>
+        <button onclick="exportJSON()">⬇ バックアップ</button>
+        <button onclick="importJSONDialog()">⤴ 読み込み</button>
+        <button class="ed-reset" onclick="resetContent()">♻ 初期化</button>
+      </div>
+    </div>`;
+}
+
+// 共通モーダル
+function edOpen(html){ document.getElementById('edBox').innerHTML = html; document.getElementById('edWrap').classList.add('open'); }
+function edClose(){ document.getElementById('edWrap').classList.remove('open'); }
+
+// ── 記事の編集 ──
+function editArticle(id){
+  const a = content.articles.find(x => x.id === id); if(!a) return;
+  efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || '';
+  edOpen(`
+    <div class="ed-head"><span>記事を編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-field">
+      <label>${a.monthly ? '写真（バナー用・1枚目）' : '写真'}</label>
+      <div class="ed-imgprev" id="edImgPrev">${efImg ? `<img src="${efImg}">` : '<span>画像なし</span>'}</div>
+      <label class="ed-upload">写真を選ぶ<input type="file" accept="image/*" id="edImgInput" hidden></label>
+      <button class="ed-btn-mini" id="edImgDel" style="${efImg?'':'display:none'}">写真を削除</button>
+    </div>
+    ${a.monthly ? `<div class="ed-field">
+      <label>2枚目の画像（タップ後の記事内に表示）</label>
+      <div class="ed-imgprev" id="edImg2Prev">${efImg2 ? `<img src="${efImg2}">` : '<span>画像なし</span>'}</div>
+      <label class="ed-upload">画像を選ぶ<input type="file" accept="image/*" id="edImg2Input" hidden></label>
+      <button class="ed-btn-mini" id="edImg2Del" style="${efImg2?'':'display:none'}">画像を削除</button>
+    </div>` : ''}
+    <div class="ed-field"><label>タイトル</label><input id="ef-title" type="text" value="${esc(a.title)}"></div>
+    <div class="ed-field"><label>サブ見出し</label><textarea id="ef-sub" rows="2">${esc(a.sub)}</textarea></div>
+    <div class="ed-row">
+      <div class="ed-field"><label>カテゴリ（英字）</label><input id="ef-category" type="text" value="${esc(a.category)}"></div>
+      <div class="ed-field"><label>号（issue）</label><input id="ef-issue" type="text" value="${esc(a.issue)}"></div>
+    </div>
+    <div class="ed-field"><label>署名</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
+    <div class="ed-field"><label>本文</label><textarea id="ef-article" rows="6">${esc(stripP(a.article))}</textarea><small>段落は空行で区切ります</small></div>
+    <div class="ed-row">
+      <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
+      <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
+    </div>
+    <div class="ed-actions">
+      <button class="ed-del" onclick="deleteArticle(${id})">削除</button>
+      <button class="ed-save" onclick="saveArticle(${id})">保存する</button>
+    </div>`);
+  const inp = document.getElementById('edImgInput');
+  const del = document.getElementById('edImgDel');
+  inp.onchange = () => { const f = inp.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg = d; document.getElementById('edImgPrev').innerHTML = `<img src="${d}">`; del.style.display=''; }); };
+  del.onclick  = () => { efImg = ''; document.getElementById('edImgPrev').innerHTML = '<span>画像なし</span>'; del.style.display='none'; };
+  if(a.monthly){
+    const inp2 = document.getElementById('edImg2Input');
+    const del2 = document.getElementById('edImg2Del');
+    if(inp2) inp2.onchange = () => { const f = inp2.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg2 = d; document.getElementById('edImg2Prev').innerHTML = `<img src="${d}">`; del2.style.display=''; }); };
+    if(del2) del2.onclick  = () => { efImg2 = ''; document.getElementById('edImg2Prev').innerHTML = '<span>画像なし</span>'; del2.style.display='none'; };
+  }
+}
+function saveArticle(id){
+  const a = content.articles.find(x => x.id === id); if(!a) return;
+  a.title    = val('ef-title');
+  a.sub      = val('ef-sub');
+  a.category = val('ef-category').trim();
+  a.issue    = val('ef-issue');
+  a.by       = val('ef-by');
+  a.color    = document.getElementById('ef-color').value;
+  a.monthly  = document.getElementById('ef-monthly').checked;
+  a.article  = wrapP(val('ef-article'));
+  a.imageSrc = efImg;
+  a.imageSrc2 = efImg2;
+  if(!saveContent()) return;
+  edClose(); renderAll();
+}
+function addArticle(){
+  const id = Math.max(0, ...content.articles.map(a => a.id)) + 1;
+  content.articles.push({ id, monthly:false, issue:'号外', category:'', title:'新しい記事', sub:'', by:'FREE TIMES', imageSrc:'', color:'#1e3a52', article:'<p>本文をここに書きます。</p>' });
+  saveContent();
+  editArticle(id);
+}
+// メインの月刊号エリアを編集（無ければ新規作成）
+function editMonthly(){
+  if(!EDIT) return;
+  let m = content.articles.find(a => a.monthly);
+  if(!m){
+    const id = Math.max(0, ...content.articles.map(a => a.id)) + 1;
+    m = { id, monthly:true, issue:'月刊号', category:'', title:'月刊フリータイムズ 創刊号', sub:'', by:'FREE TIMES', imageSrc:'', color:'#00e5ff', article:'<p>本文をここに書きます。</p>' };
+    content.articles.unshift(m);
+    saveContent();
+  }
+  editArticle(m.id);
+}
+function deleteArticle(id){
+  if(!confirm('この記事を削除しますか？')) return;
+  content.articles = content.articles.filter(x => x.id !== id);
+  saveContent(); edClose(); renderAll();
+}
+
+// ── トップ画像（スライド） ──
+function editSlides(){ renderSlidesEditor(); }
+function renderSlidesEditor(){
+  const s = content.hero.slides;
+  edOpen(`
+    <div class="ed-head"><span>トップ画像（スライド）</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div id="edSlideList">${s.map((src,i) => `
+      <div class="ed-slide-item">
+        <img src="${src}">
+        <span class="sp">${src.startsWith('data:') ? 'アップロード画像' : esc(src)}</span>
+        <button onclick="slideMove(${i},-1)" ${i===0?'disabled':''}>↑</button>
+        <button onclick="slideMove(${i},1)" ${i===s.length-1?'disabled':''}>↓</button>
+        <button onclick="slideDel(${i})">✕</button>
+      </div>`).join('')}</div>
+    <label class="ed-upload" style="margin-top:8px">＋ 画像を追加<input type="file" accept="image/*" id="edSlideInput" hidden></label>`);
+  const inp = document.getElementById('edSlideInput');
+  inp.onchange = () => { const f = inp.files[0]; if(!f) return; fileToDataURL(f, 1600, d => { content.hero.slides.push(d); saveContent(); renderSlides(); renderSlidesEditor(); }); };
+}
+function slideMove(i, dir){ const s = content.hero.slides; const j = i + dir; if(j<0||j>=s.length) return; [s[i],s[j]]=[s[j],s[i]]; saveContent(); renderSlides(); renderSlidesEditor(); }
+function slideDel(i){ if(content.hero.slides.length<=1){ alert('画像は最低1枚必要です。'); return; } content.hero.slides.splice(i,1); saveContent(); renderSlides(); renderSlidesEditor(); }
+
+// ── 速報テロップ ──
+function editTicker(){
+  edOpen(`
+    <div class="ed-head"><span>速報テロップ</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-field"><label>1行に1つ。&lt;b&gt;速報&lt;/b&gt; のように太字も使えます</label>
+      <textarea id="ef-ticker" rows="8">${esc(content.ticker.join('\n'))}</textarea></div>
+    <div class="ed-actions"><button class="ed-save" onclick="saveTicker()">保存する</button></div>`);
+}
+function saveTicker(){
+  content.ticker = val('ef-ticker').split('\n').map(x => x.trim()).filter(Boolean);
+  if(!content.ticker.length) content.ticker = ['<b>NEWS</b>FREE TIMES'];
+  if(!saveContent()) return;
+  edClose(); renderAll();
+}
+
+// ── フッター ──
+function editFooter(){
+  edOpen(`
+    <div class="ed-head"><span>フッター</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-field"><label>コピーライト等（改行は &lt;br&gt;）</label>
+      <textarea id="ef-footer" rows="4">${esc(content.footer.copyHtml)}</textarea></div>
+    <div class="ed-actions"><button class="ed-save" onclick="saveFooter()">保存する</button></div>`);
+}
+function saveFooter(){ content.footer.copyHtml = val('ef-footer'); if(!saveContent()) return; edClose(); renderAll(); }
+
+// ── 色・デザイン ──
+function editTheme(){
+  const t = content.theme;
+  const fields = [['cyan','メインの光る色（シアン）'],['blue2','青系アクセント'],['lime','ライム'],['amber','アンバー'],['pink','ピンク'],['blue','ブルー']];
+  edOpen(`
+    <div class="ed-head"><span>色・デザイン</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    ${fields.map(([k,label]) => `<div class="ed-field"><label>${label}</label><input type="color" id="th-${k}" value="${t[k]}" oninput="liveTheme('${k}',this.value)"></div>`).join('')}
+    <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
+}
+function liveTheme(k, v){ content.theme[k] = v; applyTheme(); saveContent(); }
+
+// 星のかけらの色を編集（自動＝月替り／プリセット9色／カスタム）
+function editStar(){
+  const cur = content.starColor || 'auto';
+  const isAuto = (cur === 'auto');
+  const swatches = STAR_PALETTE.map((c,i) =>
+    `<button class="star-sw${(!isAuto && cur.toLowerCase()===c.toLowerCase())?' active':''}" style="background:${c}" title="${STAR_NAMES[i]}" onclick="setStarColor('${c}',true)"></button>`
+  ).join('');
+  const customVal = isAuto ? '#a8ff00' : cur;
+  edOpen(`
+    <div class="ed-head"><span>星の色</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-tip">自動は<b>1ヶ月に1回</b>、色が切り替わります。好きな色に固定したいときは下から選んでください。</div>
+    <button class="star-auto-btn${isAuto?' active':''}" onclick="setStarColor('auto',true)">🔄 自動（月替り）${isAuto?' ✓':''}</button>
+    <div class="star-swatches">${swatches}</div>
+    <div class="ed-field"><label>カスタムカラー</label><input type="color" id="st-custom" value="${customVal}" oninput="setStarColor(this.value,false)"></div>
+    <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
+}
+// 星の色を設定して保存（'auto' または '#RRGGBB'）。rebuild=true でパネルの選択状態を更新
+function setStarColor(v, rebuild){
+  content.starColor = v;
+  applyStar();
+  saveContent();
+  if(rebuild) editStar();
+}
+
+// ── バックアップ／読み込み／初期化 ──
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(content, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'freetimes-content.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function importJSONDialog(){
+  const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json';
+  i.onchange = () => {
+    const f = i.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => { try { content = mergeContent(clone(DEFAULT_CONTENT), JSON.parse(r.result)); papers = content.articles; saveContent(); renderAll(); alert('読み込みました。'); } catch(e){ alert('読み込みに失敗しました。'); } };
+    r.readAsText(f);
+  };
+  i.click();
+}
+function resetContent(){
+  if(!confirm('すべて初期状態に戻します。よろしいですか？')) return;
+  localStorage.removeItem(LS_KEY);
+  content = loadContent(); papers = content.articles;
+  renderAll();
+}
+
+// ══ 起動 ══
+// 下線つきテキスト（data-edit）を直接編集できるようにする
+document.querySelectorAll('[data-edit]').forEach(el => {
+  el.addEventListener('blur', () => { if(!EDIT) return; setPath(content, el.dataset.edit, el.textContent.trim()); saveContent(); });
+  el.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); el.blur(); } });
+});
+renderAll();
+renderEditChrome();
 </script>
+<!-- 【あとで付ける】アクセス解析（GoatCounter）— いまは無効。
+     GoatCounter に code=freetimes で登録したら、下の2行のコメントを外せば有効になります:
+<script data-goatcounter="https://freetimes.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+-->
 </body>
 </html>
