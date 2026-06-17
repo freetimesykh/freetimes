@@ -872,7 +872,7 @@ const DEFAULT_CONTENT = {
     by:"By 緑マキ男", imageSrc:"paper3.png", color:"#00e5ff",
     article:`<p>横浜・大さん橋で謎のWi-Fiが海から飛んでくるという報告が相次いでいる。接続すると過去の映像が流れ、たまに未来も混ざるという。横浜忍者一族・影浜との関係も浮上。続報を待て。</p>`
   },
-  { id:4, monthly:false, issue:"号外 — 2024年5月25日", category:"mystery",
+  { id:-1, monthly:false, issue:"号外 — 2024年5月25日", category:"mystery",
     title:`均衡を壊す"偏極者" 存在浮上！！`,
     sub:"フリータイムズ本社の屋上受信機が何者かによって破壊される！！",
     by:"By FREE TIMES 編集部", imageSrc:"henkyokusha.jpg", color:"#ffb700",
@@ -892,7 +892,12 @@ function mergeContent(base, over){
   if(over.hero)     Object.assign(base.hero, over.hero);
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
-  if(over.articles) base.articles = over.articles;
+  if(over.articles){
+    // 保存データの記事を優先しつつ、公開側で追加した記事(保存データに無いid)は必ず足す
+    const ids = new Set(over.articles.map(a => a.id));
+    const extras = base.articles.filter(a => !ids.has(a.id));
+    base.articles = over.articles.concat(extras);
+  }
   return base;
 }
 function loadContent(){
