@@ -22,6 +22,9 @@
   --pink:#ff3cac;
   --lime:#c8ff45;
   --amber:#ffb700;
+  /* ★ 星のかけらの色（自動は月替り／編集機能で変更可） */
+  --star:#a8ff00;
+  --star-rgb:168,255,0;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
@@ -190,16 +193,17 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   position:absolute;border-radius:50%;z-index:1;
   animation:rpulse 3.5s ease-in-out infinite;
 }
-.star-ring.r1{width:100%;height:100%;border:1px solid rgba(168,255,0,0.18);}
-.star-ring.r2{width:72%;height:72%;border:1px solid rgba(168,255,0,0.12);animation-delay:0.7s;}
-.star-ring.r3{width:46%;height:46%;border:1px solid rgba(168,255,0,0.25);animation-delay:1.4s;}
+.star-ring.r1{width:100%;height:100%;border:1px solid rgba(var(--star-rgb),0.18);transition:border-color 0.8s ease;}
+.star-ring.r2{width:72%;height:72%;border:1px solid rgba(var(--star-rgb),0.12);animation-delay:0.7s;transition:border-color 0.8s ease;}
+.star-ring.r3{width:46%;height:46%;border:1px solid rgba(var(--star-rgb),0.25);animation-delay:1.4s;transition:border-color 0.8s ease;}
 @keyframes rpulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.06);opacity:0.4;}}
 
 .star-svg{
   width:36%;height:36%;
   position:relative;z-index:2;
   animation:starfloat 6s ease-in-out infinite;
-  filter:drop-shadow(0 0 18px rgba(168,255,0,0.95)) drop-shadow(0 0 50px rgba(168,255,0,0.45));
+  filter:drop-shadow(0 0 18px rgba(var(--star-rgb),0.95)) drop-shadow(0 0 50px rgba(var(--star-rgb),0.45));
+  transition:filter 0.8s ease;
 }
 @keyframes starfloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-11px) rotate(7deg);}}
 
@@ -529,6 +533,13 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .ed-grid button{background:#0d1622;color:var(--white);border:1px solid var(--border);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;}
 .ed-grid button:hover{border-color:var(--cyan);color:var(--cyan);}
 .ed-grid .ed-reset{color:var(--pink);}
+/* 星の色エディタ */
+.star-swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:4px 0 10px;}
+.star-sw{aspect-ratio:1;width:100%;padding:0;cursor:pointer;border-radius:8px;border:1px solid rgba(255,255,255,0.22);transition:transform 0.12s;}
+.star-sw:hover{transform:scale(1.1);}
+.star-sw.active{outline:2px solid var(--cyan);outline-offset:2px;}
+.star-auto-btn{width:100%;background:#0d1622;color:var(--white);border:1px solid var(--border);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;margin-bottom:8px;}
+.star-auto-btn.active{border-color:var(--cyan);color:var(--cyan);}
 body.edit-mode [data-edit]{outline:1px dashed rgba(0,229,255,.7);outline-offset:3px;cursor:text;border-radius:2px;}
 body.edit-mode [data-edit]:hover{background:rgba(0,229,255,.12);}
 body.edit-mode .a-card,body.edit-mode .arch-card,body.edit-mode .monthly-right,body.edit-mode .monthly-left{cursor:pointer;}
@@ -682,17 +693,17 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
     <div class="star-label">Star Fragment</div>
     <svg class="star-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(50,50)">
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(0)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(45)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(90)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(135)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(22.5)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(67.5)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(112.5)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(157.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(0)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(45)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(90)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(135)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(22.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(67.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(112.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(157.5)"/>
         <circle r="12" fill="#04080f"/>
         <circle r="8" fill="#0a1800"/>
-        <circle r="5" fill="#a8ff00" opacity="0.95"/>
+        <circle r="5" fill="var(--star)" opacity="0.95"/>
         <circle r="2" fill="white"/>
       </g>
     </svg>
@@ -847,6 +858,8 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 // localStorage に保存が無いとき、または「初期化」したときに使う内容
 const DEFAULT_CONTENT = {
   theme:{ cyan:"#00e5ff", blue:"#2a8fd4", blue2:"#4ab8ff", pink:"#ff3cac", lime:"#c8ff45", amber:"#ffb700" },
+  // 星のかけらの色。"auto" = 1ヶ月に1回 自動で切り替え／#RRGGBB = 固定（編集機能で設定）
+  starColor:"auto",
   hero:{
     logoFree:"FREE", logoTimes:"TIMES",
     sub:"Breaking News From The Unknown",
@@ -897,6 +910,7 @@ const clone  = o => JSON.parse(JSON.stringify(o));
 function mergeContent(base, over){
   if(!over) return base;
   if(over.theme)    Object.assign(base.theme, over.theme);
+  if(over.starColor !== undefined) base.starColor = over.starColor;
   if(over.hero)     Object.assign(base.hero, over.hero);
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
@@ -951,7 +965,41 @@ function fileToDataURL(file, maxW, cb){
 function applyTheme(){
   const r = document.documentElement.style;
   for(const k in content.theme) r.setProperty('--'+k, content.theme[k]);
+  applyStar();
 }
+
+// ══ 星のかけらの色 ══
+// 自動（"auto"）は 1ヶ月に1回、カレンダーの月ごとにパレットを巡回。
+// 編集機能で特定の色（#RRGGBB）を選ぶと、その色で固定される。
+const STAR_PALETTE = [
+  '#a8ff00', // 黄緑
+  '#00e5ff', // 蛍光の青
+  '#ff2d2d', // 蛍光の赤
+  '#ffd400', // 黄色
+  '#ff3cac', // ピンク
+  '#b026ff', // 紫
+  '#eaff00', // 蛍光の黄色
+  '#39ff14', // 蛍光の緑
+  '#000000'  // 黒
+];
+const STAR_NAMES = ['黄緑','蛍光の青','蛍光の赤','黄色','ピンク','紫','蛍光の黄色','蛍光の緑','黒'];
+function monthlyStarColor(){ return STAR_PALETTE[new Date().getMonth() % STAR_PALETTE.length]; }
+function resolveStarColor(){
+  const c = content.starColor;
+  return (!c || c === 'auto') ? monthlyStarColor() : c;
+}
+function applyStar(){
+  const hex = resolveStarColor();
+  const r = document.documentElement.style;
+  r.setProperty('--star', hex);
+  r.setProperty('--star-rgb', hexRgb(hex));
+}
+// 自動（月替り）のとき、月をまたいだら色を更新（1時間ごとに確認）
+let _starMonth = new Date().getMonth();
+setInterval(() => {
+  const m = new Date().getMonth();
+  if(m !== _starMonth){ _starMonth = m; if(!content.starColor || content.starColor === 'auto') applyStar(); }
+}, 3600000);
 function applyStatic(){
   const _lf = document.getElementById('logoFree');   if(_lf) _lf.textContent = content.hero.logoFree;
   const _lt = document.getElementById('logoTimes');  if(_lt) _lt.textContent = content.hero.logoTimes;
@@ -1370,6 +1418,7 @@ function renderEditChrome(){
         <button onclick="editTicker()">📰 速報テロップ</button>
         <button onclick="editFooter()">🦶 フッター</button>
         <button onclick="editTheme()">🎨 色・デザイン</button>
+        <button onclick="editStar()">✨ 星の色</button>
         <button onclick="exportJSON()">⬇ バックアップ</button>
         <button onclick="importJSONDialog()">⤴ 読み込み</button>
         <button class="ed-reset" onclick="resetContent()">♻ 初期化</button>
@@ -1521,6 +1570,30 @@ function editTheme(){
     <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
 }
 function liveTheme(k, v){ content.theme[k] = v; applyTheme(); saveContent(); }
+
+// 星のかけらの色を編集（自動＝月替り／プリセット9色／カスタム）
+function editStar(){
+  const cur = content.starColor || 'auto';
+  const isAuto = (cur === 'auto');
+  const swatches = STAR_PALETTE.map((c,i) =>
+    `<button class="star-sw${(!isAuto && cur.toLowerCase()===c.toLowerCase())?' active':''}" style="background:${c}" title="${STAR_NAMES[i]}" onclick="setStarColor('${c}',true)"></button>`
+  ).join('');
+  const customVal = isAuto ? '#a8ff00' : cur;
+  edOpen(`
+    <div class="ed-head"><span>星の色</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-tip">自動は<b>1ヶ月に1回</b>、色が切り替わります。好きな色に固定したいときは下から選んでください。</div>
+    <button class="star-auto-btn${isAuto?' active':''}" onclick="setStarColor('auto',true)">🔄 自動（月替り）${isAuto?' ✓':''}</button>
+    <div class="star-swatches">${swatches}</div>
+    <div class="ed-field"><label>カスタムカラー</label><input type="color" id="st-custom" value="${customVal}" oninput="setStarColor(this.value,false)"></div>
+    <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
+}
+// 星の色を設定して保存（'auto' または '#RRGGBB'）。rebuild=true でパネルの選択状態を更新
+function setStarColor(v, rebuild){
+  content.starColor = v;
+  applyStar();
+  saveContent();
+  if(rebuild) editStar();
+}
 
 // ── バックアップ／読み込み／初期化 ──
 function exportJSON(){
