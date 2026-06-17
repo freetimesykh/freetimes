@@ -20,6 +20,9 @@
   --pink:#ff3cac;
   --lime:#c8ff45;
   --amber:#ffb700;
+  /* ★ 星のかけらの色（JSで定期的に／編集機能で変更） */
+  --star:#a8ff00;
+  --star-rgb:168,255,0;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
@@ -137,17 +140,19 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .star-ring{
   position:absolute;border-radius:50%;
   animation:rpulse 3.5s ease-in-out infinite;
+  transition:border-color 0.8s ease;
 }
-.star-ring.r1{width:100%;height:100%;border:1px solid rgba(168,255,0,0.18);}
-.star-ring.r2{width:72%;height:72%;border:1px solid rgba(168,255,0,0.12);animation-delay:0.7s;}
-.star-ring.r3{width:46%;height:46%;border:1px solid rgba(168,255,0,0.25);animation-delay:1.4s;}
+.star-ring.r1{width:100%;height:100%;border:1px solid rgba(var(--star-rgb),0.18);}
+.star-ring.r2{width:72%;height:72%;border:1px solid rgba(var(--star-rgb),0.12);animation-delay:0.7s;}
+.star-ring.r3{width:46%;height:46%;border:1px solid rgba(var(--star-rgb),0.25);animation-delay:1.4s;}
 @keyframes rpulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.06);opacity:0.4;}}
 
 .star-svg{
   width:36%;height:36%;
   position:relative;z-index:2;
   animation:starfloat 6s ease-in-out infinite;
-  filter:drop-shadow(0 0 18px rgba(168,255,0,0.95)) drop-shadow(0 0 50px rgba(168,255,0,0.45));
+  filter:drop-shadow(0 0 18px rgba(var(--star-rgb),0.95)) drop-shadow(0 0 50px rgba(var(--star-rgb),0.45));
+  transition:filter 0.8s ease;
 }
 @keyframes starfloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-11px) rotate(7deg);}}
 
@@ -164,8 +169,26 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 }
 .star-label{
   position:absolute;bottom:-16px;left:0;right:0;
-  font-size:7px;color:rgba(168,255,0,0.45);
+  font-size:7px;color:rgba(var(--star-rgb),0.45);
   letter-spacing:2px;text-transform:uppercase;text-align:center;
+  transition:color 0.8s ease;
+}
+/* ★ 星のかけら 色編集コントロール */
+.star-edit{
+  position:absolute;bottom:-42px;left:0;right:0;
+  display:flex;gap:6px;justify-content:center;z-index:4;
+}
+.star-edit-btn{
+  position:relative;font-family:'Space Mono',monospace;
+  font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:rgba(var(--star-rgb),0.7);background:none;
+  border:1px solid rgba(var(--star-rgb),0.3);
+  padding:4px 9px;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.star-edit-btn:hover{background:rgba(var(--star-rgb),0.12);color:rgb(var(--star-rgb));}
+.star-edit-btn input[type=color]{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0;cursor:pointer;border:none;padding:0;
 }
 
 /* Slide dots */
@@ -431,6 +454,8 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   /* ヒーロー：星（ロゴ・SNSと重ならないよう下げて縮小） */
   .hero-star{top:auto;bottom:34px;transform:none;
     right:clamp(14px,5vw,40px);width:96px;height:96px;}
+  /* 編集ボタンは省スペースのため小画面では非表示（自動色変更は継続） */
+  .star-edit{display:none;}
   /* 月刊カード：縦積み時は右境界→下境界に */
   .monthly-left{border-right:none;border-bottom:1px solid var(--border);padding:30px 22px;}
   /* フッター：中央寄せで縦に整える */
@@ -497,20 +522,26 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
     <div class="star-label">Star Fragment</div>
     <svg class="star-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(50,50)">
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(0)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(45)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(90)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.85" transform="rotate(135)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(22.5)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(67.5)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(112.5)"/>
-        <ellipse rx="6" ry="19" fill="#a8ff00" opacity="0.35" transform="rotate(157.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(0)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(45)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(90)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.85" transform="rotate(135)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(22.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(67.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(112.5)"/>
+        <ellipse rx="6" ry="19" fill="var(--star)" opacity="0.35" transform="rotate(157.5)"/>
         <circle r="12" fill="#04080f"/>
         <circle r="8" fill="#0a1800"/>
-        <circle r="5" fill="#a8ff00" opacity="0.95"/>
+        <circle r="5" fill="var(--star)" opacity="0.95"/>
         <circle r="2" fill="white"/>
       </g>
     </svg>
+    <div class="star-edit">
+      <label class="star-edit-btn" title="星のかけらの色を編集">✎ Edit
+        <input type="color" id="star-color" value="#a8ff00" oninput="setStarColor(this.value, true)">
+      </label>
+      <button class="star-edit-btn" id="star-auto-btn" onclick="toggleStarAuto()" title="自動で色を変える">Auto ❚❚</button>
+    </div>
   </div>
 
   <!-- Dots -->
@@ -910,6 +941,39 @@ document.addEventListener('keydown', e => {
 function hexRgb(h) {
   return `${parseInt(h.slice(1,3),16)},${parseInt(h.slice(3,5),16)},${parseInt(h.slice(5,7),16)}`;
 }
+
+// ══ STAR FRAGMENT COLOR ══
+// 星のかけらの色：定期的に自動で変わる／編集機能（カラーピッカー）で手動変更
+const STAR_PALETTE = ['#a8ff00','#00e5ff','#ff3cac','#ffb700','#4ab8ff','#c8ff45','#ff5e3a','#9d4bff'];
+let starIdx  = 0;
+let starAuto = true;
+
+function setStarColor(hex, manual) {
+  document.documentElement.style.setProperty('--star', hex);
+  document.documentElement.style.setProperty('--star-rgb', hexRgb(hex));
+  const picker = document.getElementById('star-color');
+  if (picker && picker.value !== hex) picker.value = hex;
+  if (manual) {                 // 編集で選んだら自動切り替えを停止
+    starAuto = false;
+    const btn = document.getElementById('star-auto-btn');
+    if (btn) btn.textContent = 'Auto ▶';
+  }
+}
+
+function cycleStarColor() {
+  starIdx = (starIdx + 1) % STAR_PALETTE.length;
+  setStarColor(STAR_PALETTE[starIdx]);
+}
+
+function toggleStarAuto() {
+  starAuto = !starAuto;
+  const btn = document.getElementById('star-auto-btn');
+  if (btn) btn.textContent = starAuto ? 'Auto ❚❚' : 'Auto ▶';
+  if (starAuto) cycleStarColor();   // 再開したらすぐ次の色へ
+}
+
+// 4秒ごとに自動で色を変える（編集中は停止）
+setInterval(() => { if (starAuto) cycleStarColor(); }, 4000);
 
 initHome();
 </script>
