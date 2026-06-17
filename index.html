@@ -1234,42 +1234,46 @@ let _dragState = null;
 function enableCardReorder(grid){
   grid.querySelectorAll('.a-card').forEach(card => {
     card.addEventListener('contextmenu', e => { if(EDIT) e.preventDefault(); });
-    // 本体：長押しでドラッグ開始
-    card.addEventListener('pointerdown', e => onCardPointerDown(e, card, grid, false));
     // ハンドル(⠿)：押した瞬間からドラッグ開始（確実）
     const h = card.querySelector('.a-card-drag');
     if(h){
-      h.addEventListener('pointerdown', e => { e.stopPropagation(); onCardPointerDown(e, card, grid, true); });
-      h.addEventListener('click', e => { e.stopPropagation(); });
+      h.addEventListener('pointerdown', e => { e.stopPropagation(); startCardDrag(e, card, grid, h, true); });
+      h.addEventListener('click', e => e.stopPropagation());
     }
+    // 本体：長押しでドラッグ開始
+    card.addEventListener('pointerdown', e => startCardDrag(e, card, grid, card, false));
   });
 }
-function onCardPointerDown(e, card, grid, immediate){
+function startCardDrag(e, card, grid, captureEl, immediate){
   if(!EDIT) return;
   if(typeof e.button === 'number' && e.button !== 0) return;
-  const st = { card, grid, sx:e.clientX, sy:e.clientY, armed:false, moved:false };
-  if(immediate){ st.armed = true; e.preventDefault(); }
-  else { st.timer = setTimeout(() => { st.armed = true; pickUpCard(st); }, 220); }
-  st._move = ev => onCardPointerMove(ev);
-  st._up   = ev => onCardPointerUp(ev);
+  endCardDrag(false);  // 念のため前回分を片付け
+  const st = { card, grid, captureEl, pid:e.pointerId, sx:e.clientX, sy:e.clientY, armed:false, moved:false };
   _dragState = st;
-  window.addEventListener('pointermove', st._move, {passive:false});
-  window.addEventListener('pointerup', st._up);
-  window.addEventListener('pointercancel', st._up);
-  if(immediate) pickUpCard(st);
+  st._move = ev => onDragMove(ev);
+  st._up   = ev => onDragEnd(ev);
+  captureEl.addEventListener('pointermove', st._move, {passive:false});
+  captureEl.addEventListener('pointerup', st._up);
+  captureEl.addEventListener('pointercancel', st._up);
+  if(immediate){
+    try{ captureEl.setPointerCapture(e.pointerId); }catch(_){}
+    st.armed = true; pickUpCard(st);
+  } else {
+    st.timer = setTimeout(() => { st.armed = true; try{ captureEl.setPointerCapture(st.pid); }catch(_){} pickUpCard(st); }, 200);
+  }
 }
 function pickUpCard(st){
   st.card.classList.add('dragging');
-  if(navigator.vibrate) try{ navigator.vibrate(15); }catch(_){}
+  if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(_){} }
 }
-function onCardPointerMove(e){
+function onDragMove(e){
   const st = _dragState; if(!st) return;
   const dx = e.clientX - st.sx, dy = e.clientY - st.sy;
   if(!st.armed){
-    if(Math.hypot(dx,dy) > 10){ clearTimeout(st.timer); cleanupDrag(false); }  // スクロール意図 → 中止
+    if(Math.hypot(dx,dy) > 12){ clearTimeout(st.timer); endCardDrag(false); }  // スクロール意図 → 中止
     return;
   }
-  e.preventDefault();
+  if(e.cancelable) e.preventDefault();
   st.moved = true;
   st.card.style.transform = `translate(${dx}px,${dy}px) scale(1.04)`;
   st.card.style.pointerEvents = 'none';
@@ -1287,20 +1291,21 @@ function onCardPointerMove(e){
     st.card.style.transform = `translate(${e.clientX-st.sx}px,${e.clientY-st.sy}px) scale(1.04)`;
   }
 }
-function onCardPointerUp(){
+function onDragEnd(){
   const st = _dragState; if(!st) return;
   clearTimeout(st.timer);
-  cleanupDrag(st.moved);
+  endCardDrag(st.moved);
 }
-function cleanupDrag(commit){
+function endCardDrag(commit){
   const st = _dragState; if(!st) return;
-  window.removeEventListener('pointermove', st._move, {passive:false});
-  window.removeEventListener('pointerup', st._up);
-  window.removeEventListener('pointercancel', st._up);
+  try{ st.captureEl.releasePointerCapture(st.pid); }catch(_){}
+  st.captureEl.removeEventListener('pointermove', st._move, {passive:false});
+  st.captureEl.removeEventListener('pointerup', st._up);
+  st.captureEl.removeEventListener('pointercancel', st._up);
   st.card.classList.remove('dragging');
   st.card.style.transform = '';
   st.card.style.pointerEvents = '';
-  if(commit){
+  if(commit && st.moved){
     const ids = [...st.grid.querySelectorAll('.a-card')].map(c => c.dataset.id);
     const monthlies = content.articles.filter(a => a.monthly);
     const reordered = ids.map(id => content.articles.find(a => String(a.id) === String(id))).filter(Boolean);
