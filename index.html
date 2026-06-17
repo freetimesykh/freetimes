@@ -638,9 +638,73 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
   .articles-grid .a-card-sub,
   .articles-grid .a-card-read{display:none;}
 }
+
+/* ══ パスコードロック（関係者だけ閲覧） ══ */
+#gate{position:fixed;inset:0;z-index:9999;background:#04080f;display:flex;align-items:center;justify-content:center;padding:24px;}
+#gate.hide{display:none;}
+.gate-box{width:100%;max-width:300px;text-align:center;}
+.gate-logo{font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:6px;color:var(--cyan);text-shadow:0 0 18px rgba(0,229,255,0.6);margin-bottom:6px;}
+.gate-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:26px;}
+.gate-input{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--white);font-family:'Space Mono',monospace;font-size:22px;letter-spacing:10px;text-align:center;padding:14px 12px;outline:none;transition:border-color 0.2s;}
+.gate-input:focus{border-color:var(--cyan);}
+.gate-btn{width:100%;margin-top:12px;background:var(--cyan);color:var(--black);border:none;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:13px;cursor:pointer;transition:background 0.2s;}
+.gate-btn:hover{background:var(--white);}
+.gate-err{min-height:16px;margin-top:12px;font-size:9px;letter-spacing:2px;color:var(--pink);opacity:0;transition:opacity 0.2s;}
+.gate-err.show{opacity:1;}
+@keyframes gateshake{10%,90%{transform:translateX(-2px);}30%,70%{transform:translateX(4px);}50%{transform:translateX(-6px);}}
+.gate-box.shake{animation:gateshake 0.4s;}
 </style>
 </head>
 <body>
+
+<!-- ══ パスコードロック（このURLを知っても、合言葉が無ければ中は見えない） ══ -->
+<div id="gate">
+  <div class="gate-box" id="gateBox">
+    <div class="gate-logo">FREE TIMES</div>
+    <div class="gate-sub">Enter Passcode</div>
+    <input class="gate-input" id="gateInput" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="••••" maxlength="12">
+    <button class="gate-btn" id="gateBtn">Unlock</button>
+    <div class="gate-err" id="gateErr">パスコードが違います</div>
+  </div>
+</div>
+<script>
+// 合言葉（数字）を知っている人だけ閲覧可。数字はソースに直書きせず SHA-256 で照合。
+(function(){
+  var PASS_HASH = "71af0fdd2e7f62c1c351432a69fdf8f6579e9dce0c12c2b3af90f964540bdb83";
+  var KEY = "ft-gate-ok";
+  var gate = document.getElementById('gate');
+  var box  = document.getElementById('gateBox');
+  var inp  = document.getElementById('gateInput');
+  var btn  = document.getElementById('gateBtn');
+  var err  = document.getElementById('gateErr');
+  function open(){ gate.classList.add('hide'); document.body.style.overflow=''; }
+  // 一度入れたら記憶（この端末のブラウザ）
+  try { if(localStorage.getItem(KEY) === PASS_HASH){ open(); return; } } catch(e){}
+  document.body.style.overflow = 'hidden';
+  async function sha256(s){
+    if(window.crypto && crypto.subtle){
+      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return [].map.call(new Uint8Array(buf), function(b){return b.toString(16).padStart(2,'0');}).join('');
+    }
+    return null; // セキュアコンテキスト外（file://等）では照合不可
+  }
+  async function tryUnlock(){
+    var h = await sha256(inp.value.trim());
+    if(h && h === PASS_HASH){
+      try { localStorage.setItem(KEY, PASS_HASH); } catch(e){}
+      open();
+    } else {
+      err.classList.add('show'); box.classList.add('shake');
+      inp.value=''; inp.focus();
+      setTimeout(function(){ box.classList.remove('shake'); }, 450);
+    }
+  }
+  btn.addEventListener('click', tryUnlock);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+  inp.addEventListener('input', function(){ err.classList.remove('show'); });
+  window.addEventListener('DOMContentLoaded', function(){ inp.focus(); });
+})();
+</script>
 
 <!-- ══ HERO ══ -->
 <div class="hero">
