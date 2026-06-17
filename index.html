@@ -34,7 +34,7 @@
   --pink:#ff3cac;
   --lime:#c8ff45;
   --amber:#ffb700;
-  /* ★ 星のかけらの色（自動は月替り／編集機能で変更可） */
+  /* ★ 星のかけらの色（自動は2ヶ月ごと／編集機能で変更可） */
   --star:#a8ff00;
   --star-rgb:168,255,0;
 }
@@ -981,7 +981,7 @@ function applyTheme(){
 }
 
 // ══ 星のかけらの色 ══
-// 自動（"auto"）は 1ヶ月に1回、カレンダーの月ごとにパレットを巡回。
+// 自動（"auto"）は 2ヶ月に1回、パレットを順に巡回（2ヶ月ごとに次の色へ）。
 // 編集機能で特定の色（#RRGGBB）を選ぶと、その色で固定される。
 const STAR_PALETTE = [
   '#a8ff00', // 黄緑
@@ -995,10 +995,12 @@ const STAR_PALETTE = [
   '#000000'  // 黒
 ];
 const STAR_NAMES = ['黄緑','蛍光の青','蛍光の赤','黄色','ピンク','紫','蛍光の黄色','蛍光の緑','黒'];
-function monthlyStarColor(){ return STAR_PALETTE[new Date().getMonth() % STAR_PALETTE.length]; }
+// 2ヶ月ごとに1つ進む期間番号（年をまたいでも連続。例：1-2月=0, 3-4月=1, …）
+function starPeriodIndex(){ const n = new Date(); return Math.floor((n.getFullYear()*12 + n.getMonth()) / 2); }
+function autoStarColor(){ return STAR_PALETTE[starPeriodIndex() % STAR_PALETTE.length]; }
 function resolveStarColor(){
   const c = content.starColor;
-  return (!c || c === 'auto') ? monthlyStarColor() : c;
+  return (!c || c === 'auto') ? autoStarColor() : c;
 }
 function applyStar(){
   const hex = resolveStarColor();
@@ -1006,11 +1008,11 @@ function applyStar(){
   r.setProperty('--star', hex);
   r.setProperty('--star-rgb', hexRgb(hex));
 }
-// 自動（月替り）のとき、月をまたいだら色を更新（1時間ごとに確認）
-let _starMonth = new Date().getMonth();
+// 自動のとき、2ヶ月の期間をまたいだら色を更新（1時間ごとに確認）
+let _starPeriod = starPeriodIndex();
 setInterval(() => {
-  const m = new Date().getMonth();
-  if(m !== _starMonth){ _starMonth = m; if(!content.starColor || content.starColor === 'auto') applyStar(); }
+  const p = starPeriodIndex();
+  if(p !== _starPeriod){ _starPeriod = p; if(!content.starColor || content.starColor === 'auto') applyStar(); }
 }, 3600000);
 function applyStatic(){
   const _lf = document.getElementById('logoFree');   if(_lf) _lf.textContent = content.hero.logoFree;
@@ -1583,7 +1585,7 @@ function editTheme(){
 }
 function liveTheme(k, v){ content.theme[k] = v; applyTheme(); saveContent(); }
 
-// 星のかけらの色を編集（自動＝月替り／プリセット9色／カスタム）
+// 星のかけらの色を編集（自動＝2ヶ月ごと／プリセット9色／カスタム）
 function editStar(){
   const cur = content.starColor || 'auto';
   const isAuto = (cur === 'auto');
@@ -1594,7 +1596,7 @@ function editStar(){
   edOpen(`
     <div class="ed-head"><span>星の色</span><button class="ed-x" onclick="edClose()">✕</button></div>
     <div class="ed-tip">自動は<b>1ヶ月に1回</b>、色が切り替わります。好きな色に固定したいときは下から選んでください。</div>
-    <button class="star-auto-btn${isAuto?' active':''}" onclick="setStarColor('auto',true)">🔄 自動（月替り）${isAuto?' ✓':''}</button>
+    <button class="star-auto-btn${isAuto?' active':''}" onclick="setStarColor('auto',true)">🔄 自動（2ヶ月ごと）${isAuto?' ✓':''}</button>
     <div class="star-swatches">${swatches}</div>
     <div class="ed-field"><label>カスタムカラー</label><input type="color" id="st-custom" value="${customVal}" oninput="setStarColor(this.value,false)"></div>
     <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
