@@ -537,6 +537,10 @@ body.edit-mode .a-card{-webkit-user-select:none;user-select:none;-webkit-touch-c
 body.edit-mode .a-card img{-webkit-user-drag:none;user-drag:none;}
 .a-card.dragging{z-index:60;opacity:.96;border-color:var(--cyan)!important;box-shadow:0 14px 34px rgba(0,0,0,.6);touch-action:none;transition:none;}
 .a-card.dragging img{transform:none!important;}
+/* 並べ替えハンドル（編集モードのみ表示） */
+.a-card-drag{display:none;}
+body.edit-mode .a-card-drag{display:flex;align-items:center;justify-content:center;position:absolute;top:6px;right:6px;z-index:7;width:34px;height:34px;background:rgba(0,229,255,.95);color:#04080f;border-radius:8px;font-size:16px;font-weight:700;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.5);touch-action:none;cursor:grab;}
+body.edit-mode .a-card-drag:active{cursor:grabbing;}
 body.edit-mode .monthly-coming{cursor:pointer;}
 body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
 .ed-wrap{position:fixed;inset:0;z-index:650;display:none;align-items:center;justify-content:center;padding:14px;font-family:'Noto Sans JP',sans-serif;}
@@ -1063,6 +1067,7 @@ function initHome() {
     if (p.imageSrc) {
       c.innerHTML = `
         <img src="${p.imageSrc}" alt="" loading="lazy" draggable="false">
+        <div class="a-card-drag" aria-hidden="true">⠿</div>
         <div class="a-card-strip">
           <div class="a-card-tag">${esc(p.category || '号外')}</div>
           <div class="a-card-title">${esc(p.title)}</div>
@@ -1228,21 +1233,30 @@ function cardClick(id){
 let _dragState = null;
 function enableCardReorder(grid){
   grid.querySelectorAll('.a-card').forEach(card => {
-    card.addEventListener('pointerdown', e => onCardPointerDown(e, card, grid));
     card.addEventListener('contextmenu', e => { if(EDIT) e.preventDefault(); });
+    // 本体：長押しでドラッグ開始
+    card.addEventListener('pointerdown', e => onCardPointerDown(e, card, grid, false));
+    // ハンドル(⠿)：押した瞬間からドラッグ開始（確実）
+    const h = card.querySelector('.a-card-drag');
+    if(h){
+      h.addEventListener('pointerdown', e => { e.stopPropagation(); onCardPointerDown(e, card, grid, true); });
+      h.addEventListener('click', e => { e.stopPropagation(); });
+    }
   });
 }
-function onCardPointerDown(e, card, grid){
+function onCardPointerDown(e, card, grid, immediate){
   if(!EDIT) return;
   if(typeof e.button === 'number' && e.button !== 0) return;
   const st = { card, grid, sx:e.clientX, sy:e.clientY, armed:false, moved:false };
-  st.timer = setTimeout(() => { st.armed = true; pickUpCard(st); }, 220);
+  if(immediate){ st.armed = true; e.preventDefault(); }
+  else { st.timer = setTimeout(() => { st.armed = true; pickUpCard(st); }, 220); }
   st._move = ev => onCardPointerMove(ev);
   st._up   = ev => onCardPointerUp(ev);
   _dragState = st;
   window.addEventListener('pointermove', st._move, {passive:false});
   window.addEventListener('pointerup', st._up);
   window.addEventListener('pointercancel', st._up);
+  if(immediate) pickUpCard(st);
 }
 function pickUpCard(st){
   st.card.classList.add('dragging');
