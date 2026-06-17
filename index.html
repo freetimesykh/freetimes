@@ -175,8 +175,8 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 }
 /* ★ 星のかけら 色編集コントロール */
 .star-edit{
-  position:absolute;bottom:-42px;left:0;right:0;
-  display:flex;gap:6px;justify-content:center;z-index:4;
+  position:absolute;bottom:-34px;left:0;right:0;
+  display:flex;justify-content:center;z-index:6;
 }
 .star-edit-btn{
   position:relative;font-family:'Space Mono',monospace;
@@ -190,6 +190,26 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   position:absolute;inset:0;width:100%;height:100%;
   opacity:0;cursor:pointer;border:none;padding:0;
 }
+/* 編集パネル（プリセット色＋カスタム） */
+.star-panel{
+  display:none;position:absolute;top:24px;right:0;
+  flex-direction:column;gap:9px;align-items:stretch;
+  background:rgba(4,8,15,0.96);border:1px solid rgba(var(--star-rgb),0.4);
+  padding:11px;width:max-content;
+  box-shadow:0 8px 30px rgba(0,0,0,0.65);
+}
+.star-panel.open{display:flex;}
+.star-panel-ttl{
+  font-size:6px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(232,244,255,0.4);text-align:left;
+}
+.star-swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.star-sw{
+  width:20px;height:20px;padding:0;cursor:pointer;border-radius:2px;
+  border:1px solid rgba(255,255,255,0.22);transition:transform 0.15s;
+}
+.star-sw:hover{transform:scale(1.18);}
+.star-sw.active{outline:2px solid #fff;outline-offset:1px;}
 
 /* Slide dots */
 .hero-dots{
@@ -537,10 +557,15 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
       </g>
     </svg>
     <div class="star-edit">
-      <label class="star-edit-btn" title="星のかけらの色を編集">✎ Edit
-        <input type="color" id="star-color" value="#a8ff00" oninput="setStarColor(this.value, true)">
-      </label>
-      <button class="star-edit-btn" id="star-auto-btn" onclick="toggleStarAuto()" title="自動で色を変える">Auto ❚❚</button>
+      <button class="star-edit-btn" onclick="toggleStarPanel()" title="星のかけらの色を編集">✎ Edit</button>
+      <div class="star-panel" id="star-panel">
+        <div class="star-panel-ttl">Color</div>
+        <div class="star-swatches" id="star-swatches"></div>
+        <label class="star-edit-btn" title="自由に色を選ぶ" style="text-align:center;">Custom
+          <input type="color" id="star-color" value="#a8ff00" oninput="setStarColor(this.value, true)">
+        </label>
+        <button class="star-edit-btn" onclick="resetStarAuto()" title="月替りの自動色に戻す" style="text-align:center;">自動 (月替り)</button>
+      </div>
     </div>
   </div>
 
@@ -943,37 +968,86 @@ function hexRgb(h) {
 }
 
 // ══ STAR FRAGMENT COLOR ══
-// 星のかけらの色：定期的に自動で変わる／編集機能（カラーピッカー）で手動変更
-const STAR_PALETTE = ['#a8ff00','#00e5ff','#ff3cac','#ffb700','#4ab8ff','#c8ff45','#ff5e3a','#9d4bff'];
-let starIdx  = 0;
-let starAuto = true;
+// 星のかけらの色：自動は「1ヶ月に1回」（月ごとに色が変わる）／編集機能で手動変更
+const STAR_PALETTE = [
+  '#a8ff00', // 黄緑
+  '#00e5ff', // 蛍光の青
+  '#ff2d2d', // 蛍光の赤
+  '#ffd400', // 黄色
+  '#ff3cac', // ピンク
+  '#b026ff', // 紫
+  '#eaff00', // 蛍光の黄色
+  '#39ff14', // 蛍光の緑
+  '#000000'  // 黒
+];
+const STAR_NAMES = ['黄緑','蛍光の青','蛍光の赤','黄色','ピンク','紫','蛍光の黄色','蛍光の緑','黒'];
+
+let starAuto = true;          // true = 月替りの自動色
+let lastMonth = new Date().getMonth();
+
+// 今月の自動色（月ごとにパレットを巡回 → 1ヶ月に1回変わる）
+function monthlyColor() {
+  return STAR_PALETTE[new Date().getMonth() % STAR_PALETTE.length];
+}
 
 function setStarColor(hex, manual) {
   document.documentElement.style.setProperty('--star', hex);
   document.documentElement.style.setProperty('--star-rgb', hexRgb(hex));
   const picker = document.getElementById('star-color');
-  if (picker && picker.value !== hex) picker.value = hex;
-  if (manual) {                 // 編集で選んだら自動切り替えを停止
-    starAuto = false;
-    const btn = document.getElementById('star-auto-btn');
-    if (btn) btn.textContent = 'Auto ▶';
+  if (picker && picker.value.toLowerCase() !== hex.toLowerCase()) picker.value = hex;
+  document.querySelectorAll('.star-sw').forEach(s =>
+    s.classList.toggle('active', s.dataset.c.toLowerCase() === hex.toLowerCase()));
+  if (manual) starAuto = false; // 手動で選んだら自動を停止
+}
+
+function applyMonthly() {       // 自動（月替り）を適用
+  starAuto = true;
+  setStarColor(monthlyColor());
+}
+
+function resetStarAuto() {      // 編集パネルから「自動（月替り）」に戻す
+  applyMonthly();
+  toggleStarPanel(false);
+}
+
+function toggleStarPanel(force) {
+  const panel = document.getElementById('star-panel');
+  if (!panel) return;
+  if (force === undefined) panel.classList.toggle('open');
+  else panel.classList.toggle('open', force);
+}
+
+// プリセット色のスウォッチを生成
+(function buildStarSwatches() {
+  const wrap = document.getElementById('star-swatches');
+  if (!wrap) return;
+  STAR_PALETTE.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.className = 'star-sw';
+    b.dataset.c = c;
+    b.title = STAR_NAMES[i];
+    b.style.background = c;
+    b.onclick = () => setStarColor(c, true);
+    wrap.appendChild(b);
+  });
+})();
+
+// パネル外をクリックしたら閉じる
+document.addEventListener('click', e => {
+  const edit = e.target.closest('.star-edit');
+  if (!edit) toggleStarPanel(false);
+});
+
+// 月が変わったら自動色を更新（自動モードのときのみ・1時間ごとに確認）
+setInterval(() => {
+  const m = new Date().getMonth();
+  if (m !== lastMonth) {
+    lastMonth = m;
+    if (starAuto) setStarColor(monthlyColor());
   }
-}
+}, 3600000);
 
-function cycleStarColor() {
-  starIdx = (starIdx + 1) % STAR_PALETTE.length;
-  setStarColor(STAR_PALETTE[starIdx]);
-}
-
-function toggleStarAuto() {
-  starAuto = !starAuto;
-  const btn = document.getElementById('star-auto-btn');
-  if (btn) btn.textContent = starAuto ? 'Auto ❚❚' : 'Auto ▶';
-  if (starAuto) cycleStarColor();   // 再開したらすぐ次の色へ
-}
-
-// 4秒ごとに自動で色を変える（編集中は停止）
-setInterval(() => { if (starAuto) cycleStarColor(); }, 4000);
+applyMonthly();   // 初期表示は今月の自動色
 
 initHome();
 </script>
