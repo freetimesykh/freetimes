@@ -654,6 +654,14 @@ body.standalone #appReload{display:flex;}
 
 /* ══ NEW バッジ（新着記事の目印） ══ */
 .card-new{position:absolute;top:6px;right:6px;z-index:6;background:#ff2424;color:#fff;font-family:'Space Mono',monospace;font-size:7px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:4px;box-shadow:0 0 12px rgba(255,36,36,0.65);pointer-events:none;}
+
+/* ══ 星のかけら水槽：タップで大きく表示 ══ */
+.hero-star{cursor:pointer;}
+#starZoom{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:rgba(2,5,10,0.93);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:20px;}
+#starZoom.open{display:flex;}
+#starZoom .zoom-tank{position:relative!important;top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;transform:none!important;width:min(82vw,72vh)!important;height:auto!important;aspect-ratio:110/120;z-index:1;animation:starZoomIn 0.5s cubic-bezier(.2,.85,.25,1);}
+@keyframes starZoomIn{from{transform:scale(.18);opacity:0;}to{transform:scale(1);opacity:1;}}
+.zoom-hint{position:absolute;bottom:7%;left:0;right:0;text-align:center;color:rgba(190,230,255,0.6);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;animation:blink 2s ease-in-out infinite;}
 </style>
 </head>
 <body>
@@ -673,6 +681,9 @@ body.standalone #appReload{display:flex;}
 <button id="toTop" aria-label="トップへ戻る" title="トップへ戻る">↑</button>
 <!-- アプリ内の更新ボタン（ホーム画面アプリで開いた時だけ表示） -->
 <button id="appReload" aria-label="最新に更新" title="最新に更新">🔄</button>
+
+<!-- 星のかけら水槽：タップで拡大表示 -->
+<div id="starZoom" aria-hidden="true"><div class="zoom-hint">tap to close</div></div>
 <script>
 // 合言葉（数字）を知っている人だけ閲覧可。数字はソースに直書きせず SHA-256 で照合。
 (function(){
@@ -1722,6 +1733,27 @@ document.querySelectorAll('[data-edit]').forEach(el => {
 });
 renderAll();
 renderEditChrome();
+
+// ══ 星のかけら水槽：タップで画面いっぱいに拡大（誰でも） ══
+(function(){
+  var zoom = document.getElementById('starZoom');
+  var hs   = document.querySelector('.hero-star');
+  if(!zoom || !hs) return;
+  function openZoom(){
+    var old = zoom.querySelector('.zoom-tank'); if(old) old.remove();
+    var clone = hs.cloneNode(true);          // 今の色・状態のまま複製
+    clone.removeAttribute('id');
+    clone.style.cssText = '';
+    clone.classList.add('zoom-tank');
+    zoom.insertBefore(clone, zoom.firstChild);
+    zoom.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeZoom(){ zoom.classList.remove('open'); document.body.style.overflow = ''; }
+  hs.addEventListener('click', openZoom);
+  zoom.addEventListener('click', closeZoom);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && zoom.classList.contains('open')) closeZoom(); });
+})();
 </script>
 <!-- 【あとで付ける】アクセス解析（GoatCounter）— いまは無効。
      GoatCounter に code=freetimes で登録したら、下の2行のコメントを外せば有効になります:
