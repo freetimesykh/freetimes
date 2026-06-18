@@ -1023,7 +1023,16 @@ function mergeContent(base, over){
   if(!over) return base;
   if(over.theme)    Object.assign(base.theme, over.theme);
   if(over.starAuto !== undefined) base.starAuto = over.starAuto;
-  if(over.hero)     Object.assign(base.hero, over.hero);
+  if(over.hero){
+    const baseSlides = base.hero.slides || [];
+    Object.assign(base.hero, over.hero);
+    // 保存データのスライドを優先しつつ、公開側で追加した新しいスライドは必ず足す
+    if(over.hero.slides){
+      const have = new Set(over.hero.slides);
+      const extras = baseSlides.filter(s => !have.has(s));
+      base.hero.slides = over.hero.slides.concat(extras);
+    }
+  }
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
   if(over.articles){
