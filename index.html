@@ -833,6 +833,7 @@ body.standalone #appReload{display:flex;}
     <button class="nav-btn active" id="nav-home"    onclick="showPage('home')">Top</button>
     <button class="nav-btn"        id="nav-archive" onclick="showPage('archive')">Archive</button>
     <button class="nav-btn"        id="nav-search"  onclick="showPage('search')">Search</button>
+    <button class="nav-btn"        id="nav-random"  onclick="openRandom()" title="きまぐれ1面（ランダムに記事を開く）">🎲</button>
   </div>
 </nav>
 
@@ -917,7 +918,7 @@ body.standalone #appReload{display:flex;}
       <div class="sec-hd-line"></div>
     </div>
     <div class="search-bar">
-      <input class="search-input" id="search-input" type="text" placeholder="タイトルで検索..." oninput="doSearch()">
+      <input class="search-input" id="search-input" type="text" placeholder="タイトル・本文で検索..." oninput="doSearch()">
       <button class="search-btn" onclick="doSearch()">Search</button>
     </div>
     <div class="cat-wrap" id="cat-wrap">
@@ -1293,6 +1294,7 @@ function initSearch() {
     const c = document.createElement('div');
     c.className = 'arch-card';
     c.dataset.title = (p.title||'').toLowerCase();
+    c.dataset.text  = [p.title, p.sub, p.issue, p.category, stripP(p.article)].join(' ').toLowerCase();
     c.dataset.cat   = p.category;
     c.onclick = () => cardClick(p.id);
     c.innerHTML = `
@@ -1324,7 +1326,7 @@ function filterSearch() {
   const cards = document.querySelectorAll('#search-grid .arch-card');
   let shown = 0;
   cards.forEach(c => {
-    const ok = (currentCat === 'all' || c.dataset.cat === currentCat) && (!q || c.dataset.title.includes(q));
+    const ok = (currentCat === 'all' || c.dataset.cat === currentCat) && (!q || (c.dataset.text||c.dataset.title).includes(q));
     c.classList.toggle('hidden', !ok);
     if (ok) shown++;
   });
@@ -1371,6 +1373,14 @@ function navModal(dir) {
   const list = papers.filter(p => p.imageSrc);
   const next = list[list.findIndex(x => x.id === currentId) + dir];
   if (next) openModal(next.id);
+}
+// 🎲 きまぐれ1面：ランダムに記事を開く
+function openRandom() {
+  const list = papers.filter(p => p.imageSrc);
+  if (!list.length) return;
+  let pick = list[Math.floor(Math.random() * list.length)];
+  if (list.length > 1) { while (pick.id === currentId) pick = list[Math.floor(Math.random() * list.length)]; }
+  openModal(pick.id);
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape')     closeModal();
@@ -1771,6 +1781,29 @@ renderEditChrome();
   hs.addEventListener('click', openZoom);
   zoom.addEventListener('click', closeZoom);
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && zoom.classList.contains('open')) closeZoom(); });
+})();
+
+// ══ スワイプ操作（ヒーロー切替・記事の前後送り） ══
+(function(){
+  function addSwipe(el, onLeft, onRight){
+    if(!el) return;
+    var x0=null, y0=null;
+    el.addEventListener('touchstart', function(e){ var t=e.changedTouches[0]; x0=t.clientX; y0=t.clientY; }, {passive:true});
+    el.addEventListener('touchend', function(e){
+      if(x0===null) return;
+      var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0;
+      if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.5){ (dx<0?onLeft:onRight)(); }
+      x0=y0=null;
+    }, {passive:true});
+  }
+  // ヒーロー：左スワイプ＝次, 右スワイプ＝前
+  addSwipe(document.querySelector('.hero'),
+    function(){ if(typeof goSlide==='function') goSlide(slideIdx+1); },
+    function(){ if(typeof goSlide==='function') goSlide(slideIdx-1); });
+  // 記事モーダル：左スワイプ＝次の記事, 右スワイプ＝前の記事
+  addSwipe(document.querySelector('#modal .modal'),
+    function(){ navModal(1); },
+    function(){ navModal(-1); });
 })();
 </script>
 <!-- 【あとで付ける】アクセス解析（GoatCounter）— いまは無効。
