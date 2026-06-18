@@ -972,10 +972,11 @@ body.standalone #appReload{display:flex;}
 const DEFAULT_CONTENT = {
   theme:{ cyan:"#00e5ff", blue:"#2a8fd4", blue2:"#4ab8ff", pink:"#ff3cac", lime:"#c8ff45", amber:"#ffb700", black:"#04080f", white:"#e8f4ff", star:"#a8ff00" },
   starAuto:true,   // 星のかけらの色を2ヶ月ごとに自動で変える（編集機能でオフにして手動色も可）
+  heroSlidesVer:2, // 公開側でスライドを正式更新したら +1（古い保存スライドを置き換える）
   hero:{
     logoFree:"FREE", logoTimes:"TIMES",
     sub:"Breaking News From The Unknown",
-    slides:["hero.png","hero-spaceport.jpg","hero-ufo.jpg","paper2.png","paper3.png","paper1.png"]
+    slides:["hero1.jpg","hero2.jpg","hero3.jpg","hero4.jpg"]
   },
   ticker:[
     "<b>速報</b>銀河ポン酢 — ゼータ星リトルジャパンで大ブーム",
@@ -1025,14 +1026,21 @@ function mergeContent(base, over){
   if(over.starAuto !== undefined) base.starAuto = over.starAuto;
   if(over.hero){
     const baseSlides = base.hero.slides || [];
+    const baseVer = base.heroSlidesVer || 0;
+    const overVer = over.heroSlidesVer || 0;
     Object.assign(base.hero, over.hero);
-    // 保存データのスライドを優先しつつ、公開側で追加した新しいスライドは必ず足す
     if(over.hero.slides){
-      const have = new Set(over.hero.slides);
-      const extras = baseSlides.filter(s => !have.has(s));
-      base.hero.slides = over.hero.slides.concat(extras);
+      if(overVer < baseVer){
+        // 公開側でスライドを正式更新 → 古い保存スライドを置き換える
+        base.hero.slides = baseSlides;
+      } else {
+        // 同じ版：保存データを優先しつつ、新しく足された分だけ追記
+        const have = new Set(over.hero.slides);
+        base.hero.slides = over.hero.slides.concat(baseSlides.filter(s => !have.has(s)));
+      }
     }
   }
+  base.heroSlidesVer = Math.max(base.heroSlidesVer || 0, over.heroSlidesVer || 0);
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
   if(over.articles){
