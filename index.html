@@ -672,6 +672,10 @@ body.standalone #appReload{display:flex;}
 .star-reward.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .star-reward .rw-title{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:14px;color:var(--cyan);margin-bottom:6px;}
 .star-reward .rw-msg{font-family:'Noto Sans JP',sans-serif;font-size:12px;color:#e9f3fd;line-height:1.6;}
+.star-reward.rw-rare{border-color:#ffd400;box-shadow:0 0 32px rgba(255,212,0,0.45);}
+.star-reward.rw-rare .rw-title{color:#ffd400;}
+.star-reward.rw-legend{border-color:#ff3cac;box-shadow:0 0 44px rgba(255,60,172,0.55);}
+.star-reward.rw-legend .rw-title{color:#ff3cac;}
 #starZoom .star-dodge.caught{transform:translate(0,0)!important;filter:drop-shadow(0 0 30px var(--star));}
 /* 起動アニメ（新聞がパッと開く） */
 #splash{position:fixed;inset:0;z-index:800;background:#04080f;display:flex;align-items:center;justify-content:center;}
@@ -1802,14 +1806,52 @@ renderEditChrome();
   if(!zoom || !hs) return;
   var hint = document.getElementById('zoomHint');
   var reward = document.getElementById('starReward');
-  // 捕まえた時の“ごほうび”（パラレル号外）
-  var SECRETS = [
-    ['⭐ つかまえた！', '号外：星のかけらは、願いを一つ覚えて帰るらしい。'],
-    ['⭐ つかまえた！', '特ダネ：忍者一族・影浜が、夜ごと星のかけらを護衛していた。'],
-    ['⭐ つかまえた！', '秘密：ルナ特派員も追えなかった光を、あなたは捕まえた。'],
-    ['⭐ つかまえた！', '速報：出汁コーボ社、「星のかけら出汁」を極秘開発中との噂。'],
-    ['⭐ つかまえた！', '横浜：大さん橋のWi-Fiに、星のかけらの座標が流れていた。']
+  // ── ごほうび号外：実際の記事データから自動生成＋レア度＋毎月パターン入替 ──
+  function esc2(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function rwArticle(){
+    var list = (content.articles||[]).filter(function(a){ return a.imageSrc && a.title; });
+    return list.length ? list[Math.floor(Math.random()*list.length)] : null;
+  }
+  function byName(a){ return (a.by||'').replace(/^By\s*/i,'') || '本紙'; }
+  var RW_COMMON = [
+    function(a){ return '号外：「'+a.title+'」の裏に、星のかけらの影があった。'; },
+    function(a){ return '特ダネ：'+byName(a)+'が追う「'+a.title+'」、続報は星が知っている。'; },
+    function(a){ return '速報：星のかけらが指した先は、'+(a.category||'謎')+'の記事だった。'; },
+    function(a){ return '深掘り：「'+a.title+'」— この光、ただの偶然ではない。'; },
+    function(a){ return '横浜発：星のかけらと「'+a.title+'」、つながる線が浮上。'; },
+    function(a){ return '独占：星に触れた者だけが読める、「'+a.title+'」の真相。'; },
+    function(a){ return '謎：「'+a.title+'」の現場に、緑の光の粒が落ちていた。'; },
+    function(a){ return '今月の一面：星のかけらは「'+a.title+'」を選んだ。'; }
   ];
+  var RW_RARE = [
+    function(a){ return '星のかけらが「'+a.title+'」の結末を、こっそり書き換えたらしい。'; },
+    function(a){ return '忍者一族・影浜だけが知る、「'+a.title+'」の裏ページ。'; },
+    function(a){ return 'ルナ特派員 5言語レポート —「'+a.title+'」は宇宙へ届いた。'; },
+    function(a){ return '号外の号外：「'+a.title+'」、実は星のかけらの目撃談だった。'; }
+  ];
+  var RW_LEGEND = [
+    function(a){ return '星のかけら「アライブ」が目を覚ました。「'+a.title+'」はその序章。'; },
+    function(a){ return 'あなたは100年に一度の捕獲者。「'+a.title+'」の真実が解放される。'; }
+  ];
+  var RW_FALLBACK = ['号外：星のかけらは、願いを一つ覚えて帰るらしい。','秘密：あなたが捕まえた光は、まだ誰も記事にしていない。'];
+  function monthSeed(){ var n=new Date(); return n.getFullYear()*12 + n.getMonth() + 1; }
+  function seededPick(arr, count, seed){
+    var a=arr.slice(), s=(seed*2654435761)%2147483647; if(s<0) s+=2147483647;
+    for(var i=a.length-1;i>0;i--){ s=(s*48271)%2147483647; var j=s%(i+1); var t=a[i];a[i]=a[j];a[j]=t; }
+    return a.slice(0, Math.min(count, a.length));
+  }
+  function monthlySet(){   // 毎月、有効なパターンが自動で入れ替わる
+    var seed = monthSeed();
+    return { common: seededPick(RW_COMMON,5,seed), rare: seededPick(RW_RARE,2,seed+7), legend: seededPick(RW_LEGEND,1,seed+13) };
+  }
+  function makeReward(){
+    var a = rwArticle();
+    if(!a) return { tier:'common', title:'⭐ つかまえた！', msg: RW_FALLBACK[Math.floor(Math.random()*RW_FALLBACK.length)] };
+    var set = monthlySet(), r = Math.random();
+    if(r < 0.05 && set.legend.length) return { tier:'legend', title:'💫 超レア！伝説の号外', msg: set.legend[Math.floor(Math.random()*set.legend.length)](a) };
+    if(r < 0.25 && set.rare.length)   return { tier:'rare',   title:'🌟 レア号外をGET！',   msg: set.rare[Math.floor(Math.random()*set.rare.length)](a) };
+    return { tier:'common', title:'⭐ つかまえた！', msg: set.common[Math.floor(Math.random()*set.common.length)](a) };
+  }
   var dodges = 0, catchAt = 0, caught = false;
   function openZoom(){
     var old = zoom.querySelector('.zoom-tank'); if(old) old.remove();
@@ -1825,7 +1867,7 @@ renderEditChrome();
     document.body.style.overflow = 'hidden';
     // 追いかけっこをリセット（5〜8回逃げたら捕まえられる）
     dodges = 0; caught = false; catchAt = 5 + Math.floor(Math.random()*4);
-    if(reward) reward.classList.remove('show');
+    if(reward) reward.className = 'star-reward';
     if(hint) hint.style.display = '';
   }
   function closeZoom(){ zoom.classList.remove('open'); document.body.style.overflow = ''; }
@@ -1845,9 +1887,9 @@ renderEditChrome();
     caught = true;
     if(hint) hint.style.display = 'none';
     if(reward){
-      var s = SECRETS[Math.floor(Math.random()*SECRETS.length)];
-      reward.innerHTML = '<div class="rw-title">'+s[0]+'</div><div class="rw-msg">'+s[1]+'</div>';
-      reward.classList.add('show');
+      var rw = makeReward();
+      reward.className = 'star-reward show rw-' + rw.tier;
+      reward.innerHTML = '<div class="rw-title">'+esc2(rw.title)+'</div><div class="rw-msg">'+esc2(rw.msg)+'</div>';
     }
   }
   hs.addEventListener('click', openZoom);
