@@ -499,6 +499,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
 .modal-close-bottom{display:none;width:100%;margin-top:16px;padding:13px;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;border-radius:8px;cursor:pointer;}
 .modal-close-bottom:hover{border-color:var(--cyan);color:var(--cyan);}
+.modal-browse{display:block;width:100%;margin-top:16px;padding:13px;background:none;border:1px solid var(--cyan);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border-radius:8px;cursor:pointer;transition:all 0.2s;}
+.modal-browse:hover{background:var(--cyan);color:var(--black);}
 @media(max-width:640px){
   .modal-wrap{padding:10px;}
   .modal{
@@ -955,6 +957,7 @@ body.standalone #appReload{display:flex;}
           <button class="modal-nav-btn" onclick="navModal(1)">→</button>
         </div>
       </div>
+      <button class="modal-browse" onclick="browseArticles()">📰 他の記事を選ぶ（一覧へ）</button>
       <button class="modal-close-bottom" onclick="closeModal()">閉じる</button>
     </div>
   </div>
@@ -1374,6 +1377,8 @@ function navModal(dir) {
   const next = list[list.findIndex(x => x.id === currentId) + dir];
   if (next) openModal(next.id);
 }
+// 📰 他の記事を選ぶ：記事を閉じてアーカイブ一覧へ戻す
+function browseArticles(){ closeModal(); showPage('archive'); }
 // 🎲 きまぐれ1面：ランダムに記事を開く
 function openRandom() {
   const list = papers.filter(p => p.imageSrc);
