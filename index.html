@@ -676,6 +676,7 @@ body.standalone #appReload{display:flex;}
 .star-reward.rw-rare .rw-title{color:#ffd400;}
 .star-reward.rw-legend{border-color:#ff3cac;box-shadow:0 0 44px rgba(255,60,172,0.55);}
 .star-reward.rw-legend .rw-title{color:#ff3cac;}
+.snd-toggle{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:14px;z-index:5;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:rgba(4,8,15,0.6);color:var(--cyan);font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);}
 #starZoom .star-dodge.caught{transform:translate(0,0)!important;filter:drop-shadow(0 0 30px var(--star));}
 /* 起動アニメ（新聞がパッと開く） */
 #splash{position:fixed;inset:0;z-index:800;background:#04080f;display:flex;align-items:center;justify-content:center;}
@@ -715,7 +716,7 @@ body.standalone #appReload{display:flex;}
 <button id="appReload" aria-label="最新に更新" title="最新に更新">🔄</button>
 
 <!-- 星のかけら水槽：タップで拡大表示 -->
-<div id="starZoom" aria-hidden="true"><div class="zoom-hint" id="zoomHint">星にタッチ＝逃げる ／ 外をタッチ＝閉じる</div><div class="star-reward" id="starReward"></div></div>
+<div id="starZoom" aria-hidden="true"><button id="sndToggle" class="snd-toggle" aria-label="音のオン/オフ">🔊</button><div class="zoom-hint" id="zoomHint">星にタッチ＝逃げる ／ 外をタッチ＝閉じる</div><div class="star-reward" id="starReward"></div></div>
 <script>
 // 合言葉（数字）を知っている人だけ閲覧可。数字はソースに直書きせず SHA-256 で照合。
 (function(){
@@ -1806,6 +1807,40 @@ renderEditChrome();
   if(!zoom || !hs) return;
   var hint = document.getElementById('zoomHint');
   var reward = document.getElementById('starReward');
+  // ── 捕獲効果音（Web Audio・ファイル不要／タップ起点なので再生OK） ──
+  var AudioCtx = window.AudioContext || window.webkitAudioContext;
+  var actx = null, muted = false;
+  try { muted = localStorage.getItem('ft-sound-off') === '1'; } catch(e){}
+  function beep(freq, start, dur, gainVal){
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'triangle'; o.frequency.value = freq;
+    o.connect(g); g.connect(actx.destination);
+    var t = actx.currentTime + start;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gainVal, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  function playCatchSound(tier){
+    if(muted || !AudioCtx) return;
+    try{
+      if(!actx) actx = new AudioCtx();
+      if(actx.state === 'suspended') actx.resume();
+      var notes = tier==='legend' ? [523,659,784,1047,1319] : tier==='rare' ? [659,880,1175] : [880,1245];
+      notes.forEach(function(f,i){ beep(f, i*0.085, 0.5, 0.16); });
+    }catch(e){}
+  }
+  var sndBtn = document.getElementById('sndToggle');
+  if(sndBtn){
+    sndBtn.textContent = muted ? '🔇' : '🔊';
+    sndBtn.addEventListener('click', function(e){
+      e.stopPropagation();                 // 音切替で水槽を閉じない
+      muted = !muted;
+      try { localStorage.setItem('ft-sound-off', muted ? '1' : '0'); } catch(e2){}
+      sndBtn.textContent = muted ? '🔇' : '🔊';
+      if(!muted) playCatchSound('common');  // オンにした合図に一度鳴らす
+    });
+  }
   // ── ごほうび号外：実際の記事データから自動生成＋レア度＋毎月パターン入替 ──
   function esc2(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function rwArticle(){
@@ -1905,6 +1940,7 @@ renderEditChrome();
       var rw = makeReward();
       reward.className = 'star-reward show rw-' + rw.tier;
       reward.innerHTML = '<div class="rw-title">'+esc2(rw.title)+'</div><div class="rw-msg">'+esc2(rw.msg)+'</div>';
+      playCatchSound(rw.tier);
     }
   }
   hs.addEventListener('click', openZoom);
