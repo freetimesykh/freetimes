@@ -667,9 +667,32 @@ body.standalone #appReload{display:flex;}
 #starZoom .star-dodge .star-svg{width:100%;height:100%;}
 @keyframes starZoomIn{from{transform:scale(.18);opacity:0;}to{transform:scale(1);opacity:1;}}
 .zoom-hint{position:absolute;bottom:7%;left:0;right:0;text-align:center;color:rgba(190,230,255,0.6);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;animation:blink 2s ease-in-out infinite;}
+/* 星を捕まえた“ごほうび”カード */
+.star-reward{position:absolute;left:50%;bottom:12%;transform:translateX(-50%) translateY(12px);width:max-content;max-width:84vw;background:rgba(7,13,22,0.94);border:1px solid var(--cyan);border-radius:12px;padding:14px 18px;text-align:center;opacity:0;pointer-events:none;transition:opacity 0.45s,transform 0.45s;z-index:4;box-shadow:0 0 30px rgba(0,229,255,0.35);}
+.star-reward.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.star-reward .rw-title{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:14px;color:var(--cyan);margin-bottom:6px;}
+.star-reward .rw-msg{font-family:'Noto Sans JP',sans-serif;font-size:12px;color:#e9f3fd;line-height:1.6;}
+#starZoom .star-dodge.caught{transform:translate(0,0)!important;filter:drop-shadow(0 0 30px var(--star));}
+/* 起動アニメ（新聞がパッと開く） */
+#splash{position:fixed;inset:0;z-index:800;background:#04080f;display:flex;align-items:center;justify-content:center;}
+#splash.hidden{display:none;}
+#splash.done{opacity:0;pointer-events:none;transition:opacity 0.5s;}
+.splash-inner{text-align:center;transform:scaleY(0.04);opacity:0;transform-origin:center;}
+#splash.play .splash-inner{animation:ftUnfold 0.75s cubic-bezier(.2,.9,.2,1) forwards;}
+@keyframes ftUnfold{0%{transform:scaleY(0.04);opacity:0;}45%{opacity:1;}65%{transform:scaleY(1.05);}100%{transform:scaleY(1);opacity:1;}}
+.splash-logo{font-family:'Bebas Neue',cursive;font-size:clamp(40px,12vw,92px);letter-spacing:6px;color:var(--white);text-shadow:0 0 24px rgba(0,229,255,0.5);line-height:1;}
+.splash-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:5px;color:var(--muted);margin-top:10px;}
 </style>
 </head>
 <body>
+
+<!-- 起動アニメ（新聞がパッと開く）。最初は隠しておき、ロック解除後に再生 -->
+<div id="splash" class="hidden">
+  <div class="splash-inner">
+    <div class="splash-logo">FREE TIMES</div>
+    <div class="splash-sub">PARALLEL WORLD NEWSPAPER — YOKOHAMA</div>
+  </div>
+</div>
 
 <!-- ══ パスコードロック（このURLを知っても、合言葉が無ければ中は見えない） ══ -->
 <div id="gate">
@@ -688,7 +711,7 @@ body.standalone #appReload{display:flex;}
 <button id="appReload" aria-label="最新に更新" title="最新に更新">🔄</button>
 
 <!-- 星のかけら水槽：タップで拡大表示 -->
-<div id="starZoom" aria-hidden="true"><div class="zoom-hint">星にタッチ＝逃げる ／ 外をタッチ＝閉じる</div></div>
+<div id="starZoom" aria-hidden="true"><div class="zoom-hint" id="zoomHint">星にタッチ＝逃げる ／ 外をタッチ＝閉じる</div><div class="star-reward" id="starReward"></div></div>
 <script>
 // 合言葉（数字）を知っている人だけ閲覧可。数字はソースに直書きせず SHA-256 で照合。
 (function(){
@@ -699,7 +722,13 @@ body.standalone #appReload{display:flex;}
   var inp  = document.getElementById('gateInput');
   var btn  = document.getElementById('gateBtn');
   var err  = document.getElementById('gateErr');
-  function open(){ gate.classList.add('hide'); document.body.style.overflow=''; }
+  function playSplash(){
+    var s = document.getElementById('splash'); if(!s) return;
+    s.classList.remove('hidden'); s.classList.add('play');
+    setTimeout(function(){ s.classList.add('done'); }, 950);
+    setTimeout(function(){ s.classList.add('hidden'); }, 1500);
+  }
+  function open(){ gate.classList.add('hide'); document.body.style.overflow=''; playSplash(); }
   try { if(localStorage.getItem(KEY) === PASS_HASH){ open(); return; } } catch(e){}
   document.body.style.overflow = 'hidden';
   async function sha256(s){
@@ -1771,6 +1800,17 @@ renderEditChrome();
   var zoom = document.getElementById('starZoom');
   var hs   = document.querySelector('.hero-star');
   if(!zoom || !hs) return;
+  var hint = document.getElementById('zoomHint');
+  var reward = document.getElementById('starReward');
+  // 捕まえた時の“ごほうび”（パラレル号外）
+  var SECRETS = [
+    ['⭐ つかまえた！', '号外：星のかけらは、願いを一つ覚えて帰るらしい。'],
+    ['⭐ つかまえた！', '特ダネ：忍者一族・影浜が、夜ごと星のかけらを護衛していた。'],
+    ['⭐ つかまえた！', '秘密：ルナ特派員も追えなかった光を、あなたは捕まえた。'],
+    ['⭐ つかまえた！', '速報：出汁コーボ社、「星のかけら出汁」を極秘開発中との噂。'],
+    ['⭐ つかまえた！', '横浜：大さん橋のWi-Fiに、星のかけらの座標が流れていた。']
+  ];
+  var dodges = 0, catchAt = 0, caught = false;
   function openZoom(){
     var old = zoom.querySelector('.zoom-tank'); if(old) old.remove();
     var clone = hs.cloneNode(true);          // 今の色・状態のまま複製
@@ -1783,6 +1823,10 @@ renderEditChrome();
     zoom.insertBefore(clone, zoom.firstChild);
     zoom.classList.add('open');
     document.body.style.overflow = 'hidden';
+    // 追いかけっこをリセット（5〜8回逃げたら捕まえられる）
+    dodges = 0; caught = false; catchAt = 5 + Math.floor(Math.random()*4);
+    if(reward) reward.classList.remove('show');
+    if(hint) hint.style.display = '';
   }
   function closeZoom(){ zoom.classList.remove('open'); document.body.style.overflow = ''; }
   // 星を水槽の中のランダムな位置へ逃がす
@@ -1794,11 +1838,26 @@ renderEditChrome();
     var y = (Math.random()*2 - 1) * Math.max(maxY, 10);
     dodge.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
   }
+  // 捕まえた！ごほうび表示
+  function catchStar(tank){
+    var dodge = tank.querySelector('.star-dodge');
+    if(dodge){ dodge.style.transform = 'translate(0,0)'; dodge.classList.add('caught'); }
+    caught = true;
+    if(hint) hint.style.display = 'none';
+    if(reward){
+      var s = SECRETS[Math.floor(Math.random()*SECRETS.length)];
+      reward.innerHTML = '<div class="rw-title">'+s[0]+'</div><div class="rw-msg">'+s[1]+'</div>';
+      reward.classList.add('show');
+    }
+  }
   hs.addEventListener('click', openZoom);
   zoom.addEventListener('click', function(e){
     var tank = zoom.querySelector('.zoom-tank');
     if(tank && tank.contains(e.target)){
-      runAway(tank);          // 水槽の中（星）をタッチ → 逃げる
+      if(caught){ closeZoom(); return; }   // 捕まえた後はタッチで閉じる
+      dodges++;
+      if(dodges >= catchAt){ catchStar(tank); }  // 何回か逃げたら捕まえられる
+      else { runAway(tank); }                     // それまでは逃げる
     } else {
       closeZoom();            // 水槽の外をタッチ → ホームに戻る
     }
