@@ -1822,19 +1822,31 @@ renderEditChrome();
     function(a){ return '言い伝え：「'+a.title+'」を3回読むと星のかけらが踊るらしい（諸説あり）。'; },
     function(a){ return '星のかけら、捕獲記念に「'+(a.category||'なんでも')+'」担当記者を希望。'; },
     function(a){ return '星のかけら「次の一面、オレで頼む」と編集長に直談判。'; },
-    function(a){ return '号外：星のかけらに銀河ポン酢をかけると光が増すと判明（誰得）。'; }
+    function(a){ return '号外：星のかけらに銀河ポン酢をかけると光が増すと判明（誰得）。'; },
+    function(a){ return '星のかけら、つかまった瞬間に「写真うつり気にするタイプ」と判明。'; },
+    function(a){ return '星のかけら、「'+a.title+'」の感想を求められ「うーん、続編希望」。'; },
+    function(a){ return '星のかけら、'+byName(a)+'にサインを求めるも丁重に断られる。'; },
+    function(a){ return '星のかけら、レインボールで遊びすぎて任務を忘れる。'; },
+    function(a){ return '星のかけら「'+(a.category||'号外')+'って響きカッコいいよね」と急に語り出す。'; },
+    function(a){ return '号外：星のかけら、横浜の夜景に見とれて3秒間フリーズ。'; },
+    function(a){ return '星のかけら、ポン酢をかけられそうになり全力で逃走。'; },
+    function(a){ return '星のかけら、お礼に「'+a.title+'」を音読してくれる（やたら長い）。'; }
   ];
   // レア＝ガチめ（本格・かっこいい）
   var RW_RARE = [
     function(a){ return '星のかけら「アライブ」の脈動が、「'+a.title+'」の現場記録と完全に一致。'; },
     function(a){ return '機密：「'+a.title+'」は、星のかけら接触者だけが辿り着ける真相だった。'; },
     function(a){ return '忍者一族・影浜の極秘記録に、「'+a.title+'」と星を結ぶ一文があった。'; },
-    function(a){ return byName(a)+'が掴んだ確証——「'+a.title+'」の裏で、星は確かに動いていた。'; }
+    function(a){ return byName(a)+'が掴んだ確証——「'+a.title+'」の裏で、星は確かに動いていた。'; },
+    function(a){ return '解析結果：「'+a.title+'」の発生時刻と、星のかけらの発光周期が一致。'; },
+    function(a){ return '未公開メモ：'+byName(a)+'は「'+a.title+'」の取材中、緑の光を確かに見ていた。'; },
+    function(a){ return '観測史上初——「'+a.title+'」の座標に、星のかけらの軌道が重なった。'; }
   ];
   // 超レア＝伝説（最高にガチ）
   var RW_LEGEND = [
     function(a){ return '星のかけら「アライブ」完全覚醒。「'+a.title+'」は、すべての始まりの記録だった。'; },
-    function(a){ return '100年に一度の捕獲者へ。「'+a.title+'」に隠された座標が、いま解き放たれる。'; }
+    function(a){ return '100年に一度の捕獲者へ。「'+a.title+'」に隠された座標が、いま解き放たれる。'; },
+    function(a){ return '全記録の最深部にひとつの真実——「'+a.title+'」と星のかけらは、最初から繋がっていた。'; }
   ];
   var RW_FALLBACK = ['星のかけら、特にやることもなく光っていた。','星のかけら「記事まだ？」と急かしてくる。'];
   function monthSeed(){ var n=new Date(); return n.getFullYear()*12 + n.getMonth() + 1; }
@@ -1843,9 +1855,9 @@ renderEditChrome();
     for(var i=a.length-1;i>0;i--){ s=(s*48271)%2147483647; var j=s%(i+1); var t=a[i];a[i]=a[j];a[j]=t; }
     return a.slice(0, Math.min(count, a.length));
   }
-  function monthlySet(){   // 毎月、有効なパターンが自動で入れ替わる
+  function monthlySet(){   // 毎月、有効なパターンが自動で入れ替わる（合計15：並10＋レア4＋超レア1）
     var seed = monthSeed();
-    return { common: seededPick(RW_COMMON,5,seed), rare: seededPick(RW_RARE,2,seed+7), legend: seededPick(RW_LEGEND,1,seed+13) };
+    return { common: seededPick(RW_COMMON,10,seed), rare: seededPick(RW_RARE,4,seed+7), legend: seededPick(RW_LEGEND,1,seed+13) };
   }
   function makeReward(){
     var a = rwArticle();
