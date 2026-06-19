@@ -661,8 +661,10 @@ body.standalone #appReload{display:flex;}
 #starZoom{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:rgba(2,5,10,0.93);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:20px;}
 #starZoom.open{display:flex;}
 #starZoom .zoom-tank{position:relative!important;top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;transform:none!important;width:min(82vw,72vh)!important;height:auto!important;aspect-ratio:110/120;z-index:1;animation:starZoomIn 0.5s cubic-bezier(.2,.85,.25,1);}
-/* 拡大時の星：タッチで逃げる（自動フロートは止めて手動で動かす） */
-#starZoom .zoom-tank .star-svg{animation:none!important;transition:transform 0.32s cubic-bezier(.34,1.56,.64,1);cursor:pointer;}
+/* 拡大時：星を“動く層”で包む（フワフワは残しつつ、タッチで逃げる） */
+#starZoom .zoom-tank{cursor:pointer;}
+#starZoom .star-dodge{width:36%;height:36%;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;transition:transform 0.45s cubic-bezier(.34,1.56,.64,1);will-change:transform;}
+#starZoom .star-dodge .star-svg{width:100%;height:100%;}
 @keyframes starZoomIn{from{transform:scale(.18);opacity:0;}to{transform:scale(1);opacity:1;}}
 .zoom-hint{position:absolute;bottom:7%;left:0;right:0;text-align:center;color:rgba(190,230,255,0.6);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;animation:blink 2s ease-in-out infinite;}
 </style>
@@ -1775,6 +1777,9 @@ renderEditChrome();
     clone.removeAttribute('id');
     clone.style.cssText = '';
     clone.classList.add('zoom-tank');
+    // 星を“逃げる用の層”で包む（星自体のフワフワ動きは維持）
+    var st = clone.querySelector('.star-svg');
+    if(st){ var dg = document.createElement('div'); dg.className = 'star-dodge'; st.parentNode.insertBefore(dg, st); dg.appendChild(st); }
     zoom.insertBefore(clone, zoom.firstChild);
     zoom.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -1782,12 +1787,12 @@ renderEditChrome();
   function closeZoom(){ zoom.classList.remove('open'); document.body.style.overflow = ''; }
   // 星を水槽の中のランダムな位置へ逃がす
   function runAway(tank){
-    var star = tank.querySelector('.star-svg'); if(!star) return;
-    var maxX = (tank.clientWidth  - star.offsetWidth)  / 2 - 6;
-    var maxY = (tank.clientHeight - star.offsetHeight) / 2 - 6;
-    var x = (Math.random()*2 - 1) * Math.max(maxX,0);
-    var y = (Math.random()*2 - 1) * Math.max(maxY,0);
-    star.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+    var dodge = tank.querySelector('.star-dodge'); if(!dodge) return;
+    var maxX = (tank.clientWidth  - dodge.offsetWidth)  / 2 - 8;
+    var maxY = (tank.clientHeight - dodge.offsetHeight) / 2 - 8;
+    var x = (Math.random()*2 - 1) * Math.max(maxX, 10);
+    var y = (Math.random()*2 - 1) * Math.max(maxY, 10);
+    dodge.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
   }
   hs.addEventListener('click', openZoom);
   zoom.addEventListener('click', function(e){
