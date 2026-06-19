@@ -86,10 +86,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   line-height:0.95;
   color:#ffffff;
   position:relative;
-  text-shadow:
-    0 2px 0 rgba(0,0,0,0.45),
-    0 0 12px rgba(168,255,0,0.35),
-    0 0 22px rgba(255,255,255,0.25);
+  text-shadow:0 2px 6px rgba(0,0,0,0.5);
   -webkit-text-stroke:1px rgba(4,8,15,0.6);
   padding-bottom:4px;
 }
@@ -285,14 +282,14 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   display:flex;align-items:center;
 }
 .ticker-label{
-  flex-shrink:0;background:#e63946;color:white;
-  font-size:7px;font-weight:700;letter-spacing:2px;
-  padding:0 12px;height:100%;
+  flex-shrink:0;background:none;color:var(--cyan);
+  font-size:7px;font-weight:700;letter-spacing:3px;
+  padding:0 14px;height:100%;border-right:1px solid var(--border);
   display:flex;align-items:center;gap:6px;
 }
-.ticker-dot{width:5px;height:5px;border-radius:50%;background:white;animation:blink 1s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-.ticker-scroll{display:flex;white-space:nowrap;animation:rtl 38s linear infinite;flex:1;overflow:hidden;}
+.ticker-dot{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:blink 1.8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.45}}
+.ticker-scroll{display:flex;white-space:nowrap;animation:rtl 64s linear infinite;flex:1;overflow:hidden;}
 .ticker-scroll:hover{animation-play-state:paused;}
 @keyframes rtl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .ticker-item{font-size:9px;color:rgba(232,244,255,0.65);padding:0 24px;border-right:1px solid var(--border);flex-shrink:0;}
@@ -308,13 +305,9 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .ticker-clock-time{
   font-family:'Orbitron',monospace;
   font-size:15px;font-weight:900;
-  color:#00cfff;
+  color:#cfe9ff;
   letter-spacing:3px;
-  text-shadow:
-    0 0 4px #fff,
-    0 0 10px #00cfff,
-    0 0 22px #00cfff,
-    0 0 44px #0077ff;
+  text-shadow:0 0 6px rgba(0,200,255,0.35);
   line-height:1;
 }
 .ticker-clock-date{
@@ -322,7 +315,7 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
   font-size:7px;font-weight:700;
   color:rgba(0,180,255,0.6);
   letter-spacing:2px;
-  text-shadow:0 0 8px rgba(0,150,255,0.5);
+  text-shadow:none;
   line-height:1;
 }
 
@@ -331,8 +324,8 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 .page.active{display:block;}
 
 /* ══ SHARED ══ */
-.inner{max-width:1100px;margin:0 auto;padding:0 28px;}
-.sec-hd{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.inner{max-width:1080px;margin:0 auto;padding:0 40px;}
+.sec-hd{display:flex;align-items:center;gap:14px;margin-bottom:30px;}
 .sec-hd-en{font-size:8px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--cyan);}
 .sec-hd-jp{font-family:'Noto Sans JP',sans-serif;font-size:10px;color:var(--muted);margin-left:4px;}
 .sec-hd-line{flex:1;height:1px;background:var(--border);}
@@ -340,10 +333,10 @@ body{background:var(--black);color:var(--white);font-family:'Space Mono',monospa
 
 /* ══ HOME ══ */
 #page-home{padding-top:0;}
-.home-body{padding:48px 0 80px;}
+.home-body{padding:72px 0 112px;}
 
 /* Monthly */
-.monthly-section{margin-bottom:52px;}
+.monthly-section{margin-bottom:80px;}
 .monthly-coming{
   border:1px solid var(--border);background:var(--panel);
   min-height:260px;display:flex;align-items:center;justify-content:center;
@@ -411,25 +404,25 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .monthly-right-sub{font-size:9px;color:rgba(232,244,255,0.55);line-height:1.6;}
 
 /* Articles grid */
-.articles-section{margin-bottom:52px;}
+.articles-section{margin-bottom:80px;}
 .articles-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
 }
 @media(max-width:700px){.articles-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:420px){.articles-grid{grid-template-columns:1fr;}}
 
 .a-card{
   position:relative;aspect-ratio:3/4;background:var(--panel);overflow:hidden;
-  cursor:pointer;border:1px solid var(--border);transition:border-color 0.25s;
+  cursor:pointer;border:none;border-radius:10px;transition:transform 0.3s,box-shadow 0.3s;
 }
-.a-card:hover{border-color:var(--cyan);}
+.a-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.5);}
 .a-card img{width:100%;height:100%;object-fit:contain;background:var(--black);display:block;transition:transform 0.5s;}
 .a-card:hover img{transform:scale(1.05);}
 .a-card-strip{
   position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;
   background:linear-gradient(to top,rgba(4,8,15,0.98),rgba(4,8,15,0.5) 70%,transparent);
 }
-.a-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;margin-bottom:6px;background:var(--blue);color:white;}
+.a-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;margin-bottom:8px;background:none;border:1px solid rgba(232,244,255,0.28);color:rgba(232,244,255,0.7);border-radius:3px;}
 .a-card-title{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;line-height:1.3;color:var(--white);margin-bottom:4px;}
 .a-card-sub{font-size:9px;color:rgba(232,244,255,0.45);line-height:1.5;margin-bottom:10px;}
 .a-card-read{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:5px;border:1px solid rgba(0,229,255,0.4);padding:5px 10px;width:fit-content;transition:all 0.2s;}
@@ -440,16 +433,16 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 
 /* ══ ARCHIVE PAGE ══ */
 #page-archive{padding-top:60px;}
-.arch-inner{max-width:1100px;margin:0 auto;padding:32px 28px 80px;}
-.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.arch-inner{max-width:1080px;margin:0 auto;padding:52px 40px 112px;}
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 @media(max-width:700px){.arch-grid{grid-template-columns:repeat(2,1fr);}}
-.arch-card{position:relative;aspect-ratio:3/4;background:var(--panel);overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:border-color 0.25s;}
+.arch-card{position:relative;aspect-ratio:3/4;background:var(--panel);overflow:hidden;cursor:pointer;border:none;border-radius:10px;transition:transform 0.3s,box-shadow 0.3s;}
 .arch-card:hover{border-color:var(--cyan);}
 .arch-card.hidden{display:none;}
 .arch-card img{width:100%;height:100%;object-fit:contain;background:var(--black);display:block;transition:transform 0.5s;}
 .arch-card:hover img{transform:scale(1.05);}
 .arch-card-strip{position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;background:linear-gradient(to top,rgba(4,8,15,0.98),rgba(4,8,15,0.5) 70%,transparent);}
-.arch-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;margin-bottom:6px;}
+.arch-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;margin-bottom:6px;background:none;border:1px solid rgba(232,244,255,0.28);color:rgba(232,244,255,0.7);border-radius:3px;}
 .arch-card-issue{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .arch-card-title{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;line-height:1.2;color:var(--white);}
 .arch-card-read{margin-top:8px;font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:5px;opacity:0;transition:opacity 0.25s;}
@@ -459,7 +452,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 
 /* ══ SEARCH PAGE ══ */
 #page-search{padding-top:60px;}
-.search-inner{max-width:1100px;margin:0 auto;padding:32px 28px 80px;}
+.search-inner{max-width:1080px;margin:0 auto;padding:52px 40px 112px;}
 .search-bar{display:flex;gap:8px;margin-bottom:20px;}
 .search-input{flex:1;background:var(--panel);border:1px solid var(--border);color:var(--white);font-family:'Space Mono',monospace;font-size:11px;padding:12px 16px;outline:none;transition:border-color 0.2s;}
 .search-input::placeholder{color:var(--dim);}
@@ -517,7 +510,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 /* ══ FOOTER ══ */
 .site-footer{background:var(--panel);border-top:1px solid var(--border);padding:28px;}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.footer-logo{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:5px;color:var(--blue2);text-shadow:0 0 20px rgba(74,184,255,0.4);}
+.footer-logo{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:6px;color:var(--white);text-shadow:none;}
 .footer-logo .ftlogo{display:block;height:26px;width:auto;overflow:visible;margin-bottom:6px;}
 .footer-logo small{display:block;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--dim);text-shadow:none;margin-top:2px;}
 .footer-nav{display:flex;gap:16px;}
@@ -1304,7 +1297,7 @@ function initArchive() {
       <img src="${p.imageSrc}" alt="" loading="lazy">
       ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
+        <span class="arch-card-tag">${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${esc(p.issue)}</div>
         <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
@@ -1339,7 +1332,7 @@ function initSearch() {
       <img src="${p.imageSrc}" alt="" loading="lazy">
       ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
+        <span class="arch-card-tag">${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${esc(p.issue)}</div>
         <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
