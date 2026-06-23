@@ -490,8 +490,6 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-title{font-family:'Bebas Neue',cursive;font-size:clamp(22px,3.5vw,38px);line-height:1.0;letter-spacing:2px;margin-bottom:8px;}
 .modal-sub{font-size:11px;color:#a9c6da;line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .modal-article{font-size:14px;line-height:2.0;color:#e9f3fd;flex:1;max-width:var(--read-col);margin-left:auto;margin-right:auto;}
-.modal-article strong{font-weight:800;color:#ffffff;}
-.modal-article .big{font-size:1.4em;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
@@ -571,16 +569,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .bf-sizes{display:flex;gap:6px;margin-left:auto;}
 .bf-sz{width:38px;height:34px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:7px;cursor:pointer;font-size:13px;font-family:inherit;}
 .bf-sz:active{border-color:var(--cyan);color:var(--cyan);}
-.bodyfull-tools{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.bf-tip{font-size:10px;color:var(--muted);font-family:'Noto Sans JP',sans-serif;}
-.bf-fmt{padding:0 12px;height:34px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:7px;cursor:pointer;font-size:13px;font-family:'Noto Sans JP',sans-serif;}
-.bf-fmt:active{border-color:var(--cyan);color:var(--cyan);}
-.bf-fmt .big{font-size:1.2em;}
-.bodyfull-edit{flex:1;align-self:center;width:100%;max-width:var(--read-col);background:#04080f;color:#eef6ff;font-family:'Noto Sans JP',sans-serif;font-size:var(--bf-fs,16px);line-height:2.0;padding:16px 0;outline:none;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.bodyfull-edit strong{font-weight:800;color:#fff;}
-.bodyfull-edit .big{font-size:1.4em;}
-.bodyfull-edit:empty::before{content:'本文を入力...';color:#5b7488;}
-.bodyfull-edit p{margin:0 0 1em;}
+.bodyfull-ta{flex:1;align-self:center;width:100%;max-width:var(--read-col);background:#04080f;border:none;color:#eef6ff;font-family:'Noto Sans JP',sans-serif;font-size:var(--bf-fs,16px);line-height:2.0;padding:16px 0;outline:none;resize:none;}
 .ed-head{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-weight:700;font-size:15px;margin-bottom:14px;}
 .ed-x{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;flex-shrink:0;}
 .ed-x:hover{border-color:var(--pink);color:var(--pink);}
@@ -596,10 +585,6 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .ed-fmtbar{display:flex;gap:6px;margin-bottom:6px;}
 .ed-fmt{padding:7px 12px;border:1px solid var(--border);background:#0d1622;color:var(--cyan);border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;}
 .ed-fmt:active{border-color:var(--cyan);}
-.ed-prev-box{border:1px dashed var(--border);border-radius:8px;padding:10px 12px;background:#04080f;font-size:13px;line-height:1.8;color:#e9f3fd;max-height:120px;overflow:auto;margin-bottom:6px;}
-.ed-prev-box strong{font-weight:800;color:#fff;}
-.ed-prev-box .big{font-size:1.3em;}
-.ed-prev-empty{color:#5b7488;}
 .ed-row{display:flex;gap:12px;}
 .ed-row .ed-field{flex:1;}
 .ed-imgprev{width:100%;height:160px;border:1px dashed var(--border);border-radius:8px;background:#04080f;display:flex;align-items:center;justify-content:center;overflow:hidden;}
@@ -1056,14 +1041,8 @@ body.standalone #appReload{display:flex;}
 </div>
 <!-- 本文を全画面で編集（iPad向け） -->
 <div class="bodyfull" id="bodyFull">
-  <div class="bodyfull-bar"><span>本文を編集</span><div class="bf-sizes"><button class="bf-sz" onclick="bfFont(-2)" title="表示を小さく">A−</button><button class="bf-sz" onclick="bfFont(2)" title="表示を大きく">A＋</button></div><button class="bodyfull-done" onclick="closeBodyFull(true)">✓ 完了</button></div>
-  <div class="bodyfull-tools">
-    <span class="bf-tip">文字をなぞって →</span>
-    <button class="bf-fmt" type="button" onmousedown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="bfFormat('bold')"><strong>太字</strong></button>
-    <button class="bf-fmt" type="button" onmousedown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="bfFormat('big')"><span class="big">大きく</span></button>
-    <button class="bf-fmt" type="button" onmousedown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="bfFormat('clear')">標準に戻す</button>
-  </div>
-  <div class="bodyfull-edit" id="bodyFullCE" contenteditable="true"></div>
+  <div class="bodyfull-bar"><span>本文を編集</span><div class="bf-sizes"><button class="bf-sz" onclick="bfFont(-2)" title="文字を小さく">A−</button><button class="bf-sz" onclick="bfFont(2)" title="文字を大きく">A＋</button></div><button class="bodyfull-done" onclick="closeBodyFull(true)">✓ 完了</button></div>
+  <textarea id="bodyFullTa" class="bodyfull-ta" placeholder="本文を入力..."></textarea>
 </div>
 <div class="ed-fab" id="edFab"></div>
 
@@ -1500,7 +1479,6 @@ let EDIT = false;
 const CAN_EDIT = new URLSearchParams(location.search).has('edit') || location.hash === '#edit';
 let efImg = '';   // 記事フォームで選択中の画像（1枚目／バナー用）
 let efImg2 = '';  // 月刊号の2枚目（記事内に表示）
-let efArticleHtml = '';  // 編集中の本文HTML（太字・大きく対応）
 
 // 記事カード／月刊カードをクリックしたとき
 function cardClick(id){
@@ -1661,12 +1639,13 @@ function renderEditChrome(){
 // 共通モーダル
 // 本文を全画面で編集（iPad向け）
 function openBodyFull(){
-  var ce = document.getElementById('bodyFullCE'); if(!ce) return;
-  ce.innerHTML = (efArticleHtml && efArticleHtml !== '<p></p>') ? efArticleHtml : '';
+  var ta = document.getElementById('ef-article'); if(!ta) return;
+  var ft = document.getElementById('bodyFullTa');
+  ft.value = ta.value;
   var saved = 16; try { saved = parseInt(localStorage.getItem('ft-bf-fs')) || 16; } catch(e){}
   document.getElementById('bodyFull').style.setProperty('--bf-fs', saved + 'px');
   document.getElementById('bodyFull').classList.add('open');
-  ce.focus();
+  ft.focus();
 }
 // 全画面エディタの文字サイズ変更（列はem基準なので1行の文字数は変わらない）
 function bfFont(d){
@@ -1677,55 +1656,9 @@ function bfFont(d){
   try { localStorage.setItem('ft-bf-fs', n); } catch(e){}
 }
 function closeBodyFull(apply){
-  if(apply){ efArticleHtml = sanitizeBody(document.getElementById('bodyFullCE')); updateBodyPrev(); }
+  var ft = document.getElementById('bodyFullTa'), ta = document.getElementById('ef-article');
+  if(apply && ta) ta.value = ft.value;
   document.getElementById('bodyFull').classList.remove('open');
-}
-// 選択範囲を 太字 / 大きく / 標準に戻す
-function bfFormat(kind){
-  var ce = document.getElementById('bodyFullCE'); if(!ce) return;
-  var sel = window.getSelection(); if(!sel.rangeCount) return;
-  var r = sel.getRangeAt(0); if(r.collapsed) return;
-  if(kind === 'clear'){
-    var txt = r.toString(); r.deleteContents(); r.insertNode(document.createTextNode(txt));
-    sel.removeAllRanges(); return;
-  }
-  var el = (kind === 'bold') ? document.createElement('strong')
-                             : (function(){ var s=document.createElement('span'); s.className='big'; return s; })();
-  try { r.surroundContents(el); }
-  catch(e){ var frag = r.extractContents(); el.appendChild(frag); r.insertNode(el); }
-  sel.removeAllRanges();
-}
-// 本文HTMLを許可タグ(<p><br><strong><span class="big">)だけに安全化
-function sanitizeBody(root){
-  function inline(node){
-    var out = '';
-    node.childNodes.forEach(function(n){
-      if(n.nodeType === 3){ out += esc(n.nodeValue); return; }
-      if(n.nodeType !== 1){ return; }
-      var tag = n.tagName.toLowerCase();
-      if(tag === 'br'){ out += '<br>'; return; }
-      var bold = (tag==='strong'||tag==='b') || /^(bold|[6-9]\d\d)$/.test(n.style.fontWeight||'');
-      var big  = (tag==='span' && n.classList && n.classList.contains('big')) || (tag==='font' && +n.getAttribute('size')>=4) || /large/.test(n.style.fontSize||'');
-      var inner = inline(n);
-      if(bold) inner = '<strong>'+inner+'</strong>';
-      if(big)  inner = '<span class="big">'+inner+'</span>';
-      out += inner;
-    });
-    return out;
-  }
-  var blocks = [];
-  root.childNodes.forEach(function(n){
-    if(n.nodeType === 1 && (n.tagName==='P'||n.tagName==='DIV')){ blocks.push(inline(n)); }
-    else if(n.nodeType === 3){ if(n.nodeValue.trim()!=='') blocks.push(esc(n.nodeValue)); }
-    else { blocks.push(inline(n)); }
-  });
-  blocks = blocks.map(function(b){ return b.replace(/^(<br>)+|(<br>)+$/g,''); }).filter(function(b){ return b !== ''; });
-  return blocks.length ? blocks.map(function(b){ return '<p>'+b+'</p>'; }).join('') : '<p></p>';
-}
-// 編集フォーム内の本文プレビュー
-function updateBodyPrev(){
-  var pv = document.getElementById('ef-article-prev');
-  if(pv) pv.innerHTML = (efArticleHtml && efArticleHtml !== '<p></p>') ? efArticleHtml : '<span class="ed-prev-empty">本文なし（「本文を編集」で入力）</span>';
 }
 function edOpen(html){ document.getElementById('edBox').innerHTML = html; document.getElementById('edWrap').classList.add('open'); }
 function edClose(){ document.getElementById('edWrap').classList.remove('open'); }
@@ -1733,7 +1666,7 @@ function edClose(){ document.getElementById('edWrap').classList.remove('open'); 
 // ── 記事の編集 ──
 function editArticle(id){
   const a = content.articles.find(x => x.id === id); if(!a) return;
-  efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || ''; efArticleHtml = a.article || '<p></p>';
+  efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || '';
   edOpen(`
     <div class="ed-head"><span>記事を編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
     <div class="ed-field">
@@ -1756,9 +1689,8 @@ function editArticle(id){
     </div>
     <div class="ed-field"><label>署名</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
     <div class="ed-field"><label>本文</label>
-      <div class="ed-prev-box" id="ef-article-prev"></div>
-      <button type="button" class="ed-fmt" onclick="openBodyFull()">⤢ 本文を編集（太字・大きく）</button>
-      <small>「本文を編集」を開いて入力。文字をなぞって太字・大きくできます</small></div>
+      <div class="ed-fmtbar"><button type="button" class="ed-fmt" onclick="openBodyFull()">⤢ 大きく編集</button></div>
+      <textarea id="ef-article" rows="6">${esc(stripP(a.article))}</textarea><small>段落は空行で区切ります</small></div>
     <div class="ed-row">
       <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
       <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
@@ -1768,7 +1700,6 @@ function editArticle(id){
       <button class="ed-del" onclick="deleteArticle(${id})">削除</button>
       <button class="ed-save" onclick="saveArticle(${id})">保存する</button>
     </div>`);
-  updateBodyPrev();
   const inp = document.getElementById('edImgInput');
   const del = document.getElementById('edImgDel');
   inp.onchange = () => { const f = inp.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg = d; document.getElementById('edImgPrev').innerHTML = `<img src="${d}">`; del.style.display=''; }); };
@@ -1790,7 +1721,7 @@ function saveArticle(id){
   a.color    = document.getElementById('ef-color').value;
   a.monthly  = document.getElementById('ef-monthly').checked;
   a.new      = document.getElementById('ef-new').checked;
-  a.article  = efArticleHtml || '<p></p>';
+  a.article  = wrapP(val('ef-article'));
   a.imageSrc = efImg;
   a.imageSrc2 = efImg2;
   if(!saveContent()) return;
