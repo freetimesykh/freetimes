@@ -1715,11 +1715,25 @@ function beFont(d){
   el.style.setProperty('--be-fs', n + 'px');
   try { localStorage.setItem('ft-be-fs', n); } catch(e){}
 }
+var _bePlaceholder = null;
 function toggleBodyFull(){
   var el = document.getElementById('bodyEdit'); if(!el) return;
-  el.classList.toggle('full');
-  if(el.classList.contains('full')){ document.body.style.overflow='hidden'; document.getElementById('bodyCE').focus(); }
-  else { document.body.style.overflow=''; }
+  if(!el.classList.contains('full')){
+    // 全画面へ：iOSのfixed不具合を避けるため body 直下へ移動
+    _bePlaceholder = document.createComment('bodyedit');
+    el.parentNode.insertBefore(_bePlaceholder, el);
+    document.body.appendChild(el);
+    el.classList.add('full');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('bodyCE').focus();
+  } else {
+    el.classList.remove('full');
+    document.body.style.overflow = '';
+    if(_bePlaceholder && _bePlaceholder.parentNode){
+      _bePlaceholder.parentNode.insertBefore(el, _bePlaceholder);
+      _bePlaceholder.remove(); _bePlaceholder = null;
+    }
+  }
 }
 function edOpen(html){ document.getElementById('edBox').innerHTML = html; document.getElementById('edWrap').classList.add('open'); }
 function edClose(){ document.getElementById('edWrap').classList.remove('open'); }
