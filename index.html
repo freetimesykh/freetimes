@@ -31,7 +31,6 @@
   --lime:#c8ff45;
   --amber:#ffb700;
   --star:#a8ff00;
-  --font-scale:1;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
@@ -433,8 +432,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
   background:linear-gradient(to top,rgba(4,8,15,0.98),rgba(4,8,15,0.5) 70%,transparent);
 }
 .a-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;margin-bottom:6px;background:var(--blue);color:white;}
-.a-card-title{font-family:'Noto Sans JP',sans-serif;font-size:calc(13px*var(--font-scale));font-weight:700;line-height:1.3;color:var(--white);margin-bottom:4px;}
-.a-card-sub{font-size:calc(9px*var(--font-scale));color:rgba(232,244,255,0.45);line-height:1.5;margin-bottom:10px;}
+.a-card-title{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;line-height:1.3;color:var(--white);margin-bottom:4px;}
+.a-card-sub{font-size:9px;color:rgba(232,244,255,0.45);line-height:1.5;margin-bottom:10px;}
 .a-card-read{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:5px;border:1px solid rgba(0,229,255,0.4);padding:5px 10px;width:fit-content;transition:all 0.2s;}
 .a-card-read::after{content:'→';}
 .a-card:hover .a-card-read{background:var(--cyan);color:var(--black);border-color:var(--cyan);}
@@ -454,7 +453,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .arch-card-strip{position:absolute;bottom:0;left:0;right:0;padding:48px 14px 14px;background:linear-gradient(to top,rgba(4,8,15,0.98),rgba(4,8,15,0.5) 70%,transparent);}
 .arch-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;margin-bottom:6px;}
 .arch-card-issue{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-.arch-card-title{font-family:'Noto Sans JP',sans-serif;font-size:calc(13px*var(--font-scale));font-weight:700;line-height:1.2;color:var(--white);}
+.arch-card-title{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;line-height:1.2;color:var(--white);}
 .arch-card-read{margin-top:8px;font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:5px;opacity:0;transition:opacity 0.25s;}
 .arch-card:hover .arch-card-read{opacity:1;}
 .arch-card-read::after{content:'→';}
@@ -488,16 +487,9 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-issue{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .modal-issue::before{content:'';width:16px;height:1px;background:var(--cyan);}
 .modal-title{font-family:'Bebas Neue',cursive;font-size:clamp(22px,3.5vw,38px);line-height:1.0;letter-spacing:2px;margin-bottom:8px;}
-.modal-sub{font-size:calc(11px*var(--font-scale));color:#a9c6da;line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-.modal-article{font-size:calc(14px*var(--font-scale));line-height:2.0;color:#e9f3fd;flex:1;}
+.modal-sub{font-size:11px;color:#a9c6da;line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.modal-article{font-size:14px;line-height:2.0;color:#e9f3fd;flex:1;}
 .modal-article p{margin-bottom:12px;}
-body.fw-thin .modal-article,body.fw-thin .modal-sub,body.fw-thin .a-card-sub{font-weight:300;}
-body.fw-thick .modal-article,body.fw-thick .modal-sub,body.fw-thick .a-card-sub{font-weight:700;}
-body.fw-thick .a-card-title,body.fw-thick .arch-card-title{font-weight:900;}
-/* 文字スタイル編集パネルのボタン */
-.txt-opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
-.txt-opt{flex:1;min-width:52px;padding:10px 6px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;}
-.txt-opt.active{border-color:var(--cyan);color:var(--cyan);}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
 .modal.modal-noimg{grid-template-columns:1fr;}
@@ -633,7 +625,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
     scroll-snap-align:start;
   }
   .articles-grid .a-card-strip{padding:22px 8px 8px;}
-  .articles-grid .a-card-title{font-size:calc(10px*var(--font-scale));}
+  .articles-grid .a-card-title{font-size:10px;}
   .articles-grid .a-card-sub,
   .articles-grid .a-card-read{display:none;}
 }
@@ -1043,8 +1035,6 @@ const DEFAULT_CONTENT = {
   theme:{ cyan:"#00e5ff", blue:"#2a8fd4", blue2:"#4ab8ff", pink:"#ff3cac", lime:"#c8ff45", amber:"#ffb700", black:"#04080f", white:"#e8f4ff", star:"#a8ff00" },
   starAuto:true,   // 星のかけらの色を2ヶ月ごとに自動で変える（編集機能でオフにして手動色も可）
   heroSlidesVer:2, // 公開側でスライドを正式更新したら +1（古い保存スライドを置き換える）
-  fontScale:1,         // 文字の大きさ（0.9 / 1 / 1.15 / 1.3）
-  fontWeight:"normal", // 文字の太さ（thin / normal / thick）
   hero:{
     logoFree:"FREE", logoTimes:"TIMES",
     sub:"Breaking News From The Unknown",
@@ -1113,8 +1103,6 @@ function mergeContent(base, over){
     }
   }
   base.heroSlidesVer = Math.max(base.heroSlidesVer || 0, over.heroSlidesVer || 0);
-  if(over.fontScale !== undefined)  base.fontScale  = over.fontScale;
-  if(over.fontWeight !== undefined) base.fontWeight = over.fontWeight;
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
   if(over.articles){
@@ -1178,14 +1166,6 @@ function applyTheme(){
   const r = document.documentElement.style;
   for(const k in content.theme) r.setProperty('--'+k, content.theme[k]);
   if(content.starAuto) r.setProperty('--star', autoStarColor());   // 自動のとき星だけ上書き
-  applyText();
-}
-// 文字の大きさ・太さを反映
-function applyText(){
-  document.documentElement.style.setProperty('--font-scale', String(content.fontScale || 1));
-  const w = content.fontWeight || 'normal';
-  document.body.classList.toggle('fw-thin',  w === 'thin');
-  document.body.classList.toggle('fw-thick', w === 'thick');
 }
 // 自動のとき、2ヶ月の期間をまたいだら色を更新（1時間ごとに確認）
 let _starPeriod = starPeriodIndex();
@@ -1631,7 +1611,6 @@ function renderEditChrome(){
         <button onclick="editTicker()">📰 速報テロップ</button>
         <button onclick="editFooter()">🦶 フッター</button>
         <button onclick="editTheme()">🎨 色・デザイン</button>
-        <button onclick="editTextStyle()">🔠 文字（太さ・大きさ）</button>
         <button onclick="exportJSON()">⬇ バックアップ</button>
         <button onclick="importJSONDialog()">⤴ 読み込み</button>
         <button class="ed-reset" onclick="resetContent()">♻ 初期化</button>
@@ -1776,31 +1755,6 @@ function editFooter(){
 function saveFooter(){ content.footer.copyHtml = val('ef-footer'); if(!saveContent()) return; edClose(); renderAll(); }
 
 // ── 色・デザイン ──
-// ── 文字（太さ・大きさ） ──
-function editTextStyle(){
-  const sc = content.fontScale || 1, w = content.fontWeight || 'normal';
-  const sizes = [['小',0.9],['標準',1],['大',1.15],['特大',1.3]];
-  const weights = [['細い','thin'],['標準','normal'],['太い','thick']];
-  edOpen(`
-    <div class="ed-head"><span>文字（太さ・大きさ）</span><button class="ed-x" onclick="edClose()">✕</button></div>
-    <div class="ed-field" style="align-items:stretch;">
-      <label>文字の大きさ</label>
-      <div class="txt-opts">
-        ${sizes.map(([lbl,v]) => `<button class="txt-opt${Math.abs(sc-v)<0.001?' active':''}" onclick="setFontScale(${v})">${lbl}</button>`).join('')}
-      </div>
-    </div>
-    <div class="ed-field" style="align-items:stretch;">
-      <label>文字の太さ</label>
-      <div class="txt-opts">
-        ${weights.map(([lbl,v]) => `<button class="txt-opt${w===v?' active':''}" onclick="setFontWeight('${v}')">${lbl}</button>`).join('')}
-      </div>
-    </div>
-    <div style="font-size:10px;line-height:1.6;color:var(--muted);">記事本文・サブ見出し・記事カードの文字に反映されます。</div>
-    <div class="ed-actions"><button class="ed-save" onclick="edClose()">完了</button></div>`);
-}
-function setFontScale(v){ content.fontScale = v; applyText(); saveContent(); editTextStyle(); }
-function setFontWeight(w){ content.fontWeight = w; applyText(); saveContent(); editTextStyle(); }
-
 function editTheme(){
   const t = content.theme;
   const fields = [['cyan','アクセント色（見出し・ボタン・光る部分）'],['black','背景の色'],['white','文字の色（全体）'],['blue','記事カテゴリタグの色'],['pink','削除・閉じるボタンの色']];
