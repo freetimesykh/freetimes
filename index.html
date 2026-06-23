@@ -31,6 +31,7 @@
   --lime:#c8ff45;
   --amber:#ffb700;
   --star:#a8ff00;
+  --read-col:26em;   /* 本文＆全画面エディタ共通の1行幅（全角約26文字） */
 }
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
@@ -488,7 +489,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-issue::before{content:'';width:16px;height:1px;background:var(--cyan);}
 .modal-title{font-family:'Bebas Neue',cursive;font-size:clamp(22px,3.5vw,38px);line-height:1.0;letter-spacing:2px;margin-bottom:8px;}
 .modal-sub{font-size:11px;color:#a9c6da;line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-.modal-article{font-size:14px;line-height:2.0;color:#e9f3fd;flex:1;}
+.modal-article{font-size:14px;line-height:2.0;color:#e9f3fd;flex:1;max-width:var(--read-col);margin-left:auto;margin-right:auto;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
@@ -565,7 +566,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .bodyfull.open{display:flex;}
 .bodyfull-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px;border-bottom:1px solid var(--border);color:var(--cyan);font-weight:700;font-family:'Noto Sans JP',sans-serif;font-size:14px;}
 .bodyfull-done{background:var(--cyan);color:#04080f;border:none;border-radius:8px;padding:9px 18px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;}
-.bodyfull-ta{flex:1;width:100%;background:#04080f;border:none;color:#eef6ff;font-family:'Noto Sans JP',sans-serif;font-size:16px;line-height:1.9;padding:16px;outline:none;resize:none;}
+.bodyfull-ta{flex:1;align-self:center;width:100%;max-width:var(--read-col);background:#04080f;border:none;color:#eef6ff;font-family:'Noto Sans JP',sans-serif;font-size:16px;line-height:2.0;padding:16px 0;outline:none;resize:none;}
 .ed-head{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-weight:700;font-size:15px;margin-bottom:14px;}
 .ed-x{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;flex-shrink:0;}
 .ed-x:hover{border-color:var(--pink);color:var(--pink);}
