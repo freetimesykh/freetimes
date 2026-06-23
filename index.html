@@ -417,6 +417,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 }
 @media(max-width:700px){.articles-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:420px){.articles-grid{grid-template-columns:1fr;}}
+/* PC/iPad：TOPのFeatured（月刊号以外）は最大9枚まで。残りはArchiveで閲覧 */
+@media(min-width:701px){#articles-grid .a-card:nth-child(n+10){display:none;}}
 
 .a-card{
   position:relative;aspect-ratio:3/4;background:var(--panel);overflow:hidden;
