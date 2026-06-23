@@ -687,7 +687,8 @@ body.standalone #appReload{display:flex;}
 .splash-inner{text-align:center;transform:scaleY(0.04);opacity:0;transform-origin:center;}
 #splash.play .splash-inner{animation:ftUnfold 0.75s cubic-bezier(.2,.9,.2,1) forwards;}
 @keyframes ftUnfold{0%{transform:scaleY(0.04);opacity:0;}45%{opacity:1;}65%{transform:scaleY(1.05);}100%{transform:scaleY(1);opacity:1;}}
-.splash-logo{font-family:'Bebas Neue',cursive;font-size:clamp(40px,12vw,92px);letter-spacing:6px;color:var(--white);text-shadow:0 0 24px rgba(0,229,255,0.5);line-height:1;}
+.splash-logo{display:flex;justify-content:center;align-items:center;}
+.splash-logo .ftlogo{height:clamp(60px,15vw,140px);width:auto;display:block;overflow:visible;}
 .splash-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:5px;color:var(--muted);margin-top:10px;}
 </style>
 </head>
@@ -696,7 +697,7 @@ body.standalone #appReload{display:flex;}
 <!-- 起動アニメ（新聞がパッと開く）。最初は隠しておき、ロック解除後に再生 -->
 <div id="splash" class="hidden">
   <div class="splash-inner">
-    <div class="splash-logo">FREE TIMES</div>
+    <div class="splash-logo" id="splashLogo"></div>
     <div class="splash-sub">Reality Is Stranger Than News</div>
   </div>
 </div>
@@ -731,6 +732,10 @@ body.standalone #appReload{display:flex;}
   var err  = document.getElementById('gateErr');
   function playSplash(){
     var s = document.getElementById('splash'); if(!s) return;
+    // TOPページと同じロゴ（SVG）を複製して使う
+    var sl = document.getElementById('splashLogo');
+    var heroLogo = document.querySelector('.hero-logo .ftlogo');
+    if(sl && heroLogo && !sl.firstChild){ sl.appendChild(heroLogo.cloneNode(true)); }
     s.classList.remove('hidden'); s.classList.add('play');
     setTimeout(function(){ s.classList.add('done'); }, 950);
     setTimeout(function(){ s.classList.add('hidden'); }, 1500);
