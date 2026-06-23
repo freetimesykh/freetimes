@@ -490,8 +490,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-title{font-family:'Bebas Neue',cursive;font-size:clamp(22px,3.5vw,38px);line-height:1.0;letter-spacing:2px;margin-bottom:8px;}
 .modal-sub{font-size:11px;color:#a9c6da;line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .modal-article{font-size:14px;line-height:2.0;color:#e9f3fd;flex:1;max-width:var(--read-col);margin-left:auto;margin-right:auto;}
-.modal-article.mbig{font-size:18px;}
-.modal-article.mbold{font-weight:700;}
+.modal-article strong{font-weight:800;color:#ffffff;}
+.modal-article .big{font-size:1.4em;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
@@ -563,15 +563,25 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .ed-wrap.open{display:flex;}
 .ed-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);}
 .ed-box{position:relative;z-index:1;background:#0a121d;border:1px solid var(--cyan);border-radius:14px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;padding:18px;}
-/* 本文の全画面編集（iPad向け） */
-.bodyfull{position:fixed;inset:0;z-index:680;background:#0a121d;display:none;flex-direction:column;}
-.bodyfull.open{display:flex;}
-.bodyfull-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px;border-bottom:1px solid var(--border);color:var(--cyan);font-weight:700;font-family:'Noto Sans JP',sans-serif;font-size:14px;}
-.bodyfull-done{background:var(--cyan);color:#04080f;border:none;border-radius:8px;padding:9px 18px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;}
-.bf-sizes{display:flex;gap:6px;margin-left:auto;}
-.bf-sz{width:38px;height:34px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:7px;cursor:pointer;font-size:13px;font-family:inherit;}
-.bf-sz:active{border-color:var(--cyan);color:var(--cyan);}
-.bodyfull-ta{flex:1;align-self:center;width:100%;max-width:var(--read-col);background:#04080f;border:none;color:#eef6ff;font-family:'Noto Sans JP',sans-serif;font-size:var(--bf-fs,16px);line-height:2.0;padding:16px 0;outline:none;resize:none;}
+/* 本文リッチエディタ（大/太の打ち込みモード＋全画面） */
+.bodyedit{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#04080f;}
+.be-tools{display:flex;align-items:center;gap:6px;padding:6px;border-bottom:1px solid var(--border);background:#0a121d;}
+.be-btn{min-width:36px;height:34px;padding:0 10px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:7px;cursor:pointer;font-size:13px;font-family:'Noto Sans JP',sans-serif;}
+.be-btn.on{background:var(--cyan);color:var(--black);border-color:var(--cyan);font-weight:700;}
+.be-btn .big{font-size:1.2em;}
+.be-spacer{flex:1;}
+.be-done{display:none;}
+.be-area{min-height:140px;max-height:240px;overflow-y:auto;padding:12px;color:#eef6ff;font-family:'Noto Sans JP',sans-serif;font-size:var(--be-fs,15px);line-height:2.0;outline:none;}
+.be-area:empty::before{content:'本文を入力...';color:#5b7488;}
+.be-area strong{font-weight:800;color:#fff;}
+.be-area .big{font-size:1.4em;}
+.be-area p{margin:0 0 1em;}
+.be-area font[size="5"]{font-size:1.4em;}
+.bodyedit.full{position:fixed;inset:0;z-index:680;border-radius:0;display:flex;flex-direction:column;}
+.bodyedit.full .be-tools{padding-top:calc(env(safe-area-inset-top,0px) + 10px);}
+.bodyedit.full .be-full{display:none;}
+.bodyedit.full .be-done{display:inline-block;margin-left:6px;background:var(--cyan);color:var(--black);border-color:var(--cyan);font-weight:700;}
+.bodyedit.full .be-area{flex:1;max-height:none;width:100%;max-width:var(--read-col);margin:0 auto;}
 .ed-head{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-weight:700;font-size:15px;margin-bottom:14px;}
 .ed-x{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;flex-shrink:0;}
 .ed-x:hover{border-color:var(--pink);color:var(--pink);}
@@ -587,9 +597,6 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .ed-fmtbar{display:flex;gap:6px;margin-bottom:6px;}
 .ed-fmt{padding:7px 12px;border:1px solid var(--border);background:#0d1622;color:var(--cyan);border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;}
 .ed-fmt:active{border-color:var(--cyan);}
-.ed-fmt.on{border-color:var(--cyan);color:var(--black);background:var(--cyan);font-weight:700;}
-.ed-field textarea.ta-big{font-size:17px;}
-.ed-field textarea.ta-bold{font-weight:700;}
 .ed-row{display:flex;gap:12px;}
 .ed-row .ed-field{flex:1;}
 .ed-imgprev{width:100%;height:160px;border:1px dashed var(--border);border-radius:8px;background:#04080f;display:flex;align-items:center;justify-content:center;overflow:hidden;}
@@ -1045,10 +1052,6 @@ body.standalone #appReload{display:flex;}
   <div class="ed-box" id="edBox"></div>
 </div>
 <!-- 本文を全画面で編集（iPad向け） -->
-<div class="bodyfull" id="bodyFull">
-  <div class="bodyfull-bar"><span>本文を編集</span><div class="bf-sizes"><button class="bf-sz" onclick="bfFont(-2)" title="文字を小さく">A−</button><button class="bf-sz" onclick="bfFont(2)" title="文字を大きく">A＋</button></div><button class="bodyfull-done" onclick="closeBodyFull(true)">✓ 完了</button></div>
-  <textarea id="bodyFullTa" class="bodyfull-ta" placeholder="本文を入力..."></textarea>
-</div>
 <div class="ed-fab" id="edFab"></div>
 
 <script>
@@ -1426,10 +1429,7 @@ function openModal(id) {
   document.getElementById('modal-issue').textContent   = p.issue;
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
-  var _ma = document.getElementById('modal-article');
-  _ma.innerHTML = p.article;
-  _ma.classList.toggle('mbig',  !!p.bodyBig);
-  _ma.classList.toggle('mbold', !!p.bodyBold);
+  document.getElementById('modal-article').innerHTML = p.article;
   document.getElementById('modal-by').textContent      = p.by;
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
@@ -1486,7 +1486,6 @@ let EDIT = false;
 // 編集ボタンは「?edit」を付けて開いたときだけ表示する（自分だけの合言葉）
 const CAN_EDIT = new URLSearchParams(location.search).has('edit') || location.hash === '#edit';
 let efImg = '';   // 記事フォームで選択中の画像（1枚目／バナー用）
-let efBodyBig = false, efBodyBold = false;  // 本文の 大きく / 太字（記事ごと・全体）
 let efImg2 = '';  // 月刊号の2枚目（記事内に表示）
 
 // 記事カード／月刊カードをクリックしたとき
@@ -1647,27 +1646,34 @@ function renderEditChrome(){
 
 // 共通モーダル
 // 本文を全画面で編集（iPad向け）
-function openBodyFull(){
-  var ta = document.getElementById('ef-article'); if(!ta) return;
-  var ft = document.getElementById('bodyFullTa');
-  ft.value = ta.value;
-  var saved = 16; try { saved = parseInt(localStorage.getItem('ft-bf-fs')) || 16; } catch(e){}
-  document.getElementById('bodyFull').style.setProperty('--bf-fs', saved + 'px');
-  document.getElementById('bodyFull').classList.add('open');
-  ft.focus();
+// 本文リッチエディタ：大/太は“打ち込みモード”のトグル（押すと以降の入力が大きく/太く）
+let beBig = false;
+function bodyCmd(kind){
+  var ce = document.getElementById('bodyCE'); if(!ce) return;
+  ce.focus();
+  try { document.execCommand('styleWithCSS', false, false); } catch(e){}
+  if(kind === 'bold'){ try { document.execCommand('bold'); } catch(e){} }
+  else if(kind === 'big'){ beBig = !beBig; try { document.execCommand('fontSize', false, beBig ? '5' : '3'); } catch(e){} }
+  syncBeButtons();
 }
-// 全画面エディタの文字サイズ変更（列はem基準なので1行の文字数は変わらない）
-function bfFont(d){
-  var el = document.getElementById('bodyFull');
-  var cur = parseInt(getComputedStyle(el).getPropertyValue('--bf-fs')) || 16;
+function syncBeButtons(){
+  var bold = false; try { bold = document.queryCommandState('bold'); } catch(e){}
+  var bb = document.getElementById('be-bold'); if(bb) bb.classList.toggle('on', bold);
+  var bg = document.getElementById('be-big');  if(bg) bg.classList.toggle('on', beBig);
+}
+// 表示サイズ（見やすさ用。列はem基準なので1行の文字数は不変）
+function beFont(d){
+  var el = document.getElementById('bodyEdit'); if(!el) return;
+  var cur = parseInt(getComputedStyle(el).getPropertyValue('--be-fs')) || 15;
   var n = Math.max(12, Math.min(40, cur + d));
-  el.style.setProperty('--bf-fs', n + 'px');
-  try { localStorage.setItem('ft-bf-fs', n); } catch(e){}
+  el.style.setProperty('--be-fs', n + 'px');
+  try { localStorage.setItem('ft-be-fs', n); } catch(e){}
 }
-function closeBodyFull(apply){
-  var ft = document.getElementById('bodyFullTa'), ta = document.getElementById('ef-article');
-  if(apply && ta) ta.value = ft.value;
-  document.getElementById('bodyFull').classList.remove('open');
+function toggleBodyFull(){
+  var el = document.getElementById('bodyEdit'); if(!el) return;
+  el.classList.toggle('full');
+  if(el.classList.contains('full')){ document.body.style.overflow='hidden'; document.getElementById('bodyCE').focus(); }
+  else { document.body.style.overflow=''; }
 }
 function edOpen(html){ document.getElementById('edBox').innerHTML = html; document.getElementById('edWrap').classList.add('open'); }
 function edClose(){ document.getElementById('edWrap').classList.remove('open'); }
@@ -1675,7 +1681,7 @@ function edClose(){ document.getElementById('edWrap').classList.remove('open'); 
 // ── 記事の編集 ──
 function editArticle(id){
   const a = content.articles.find(x => x.id === id); if(!a) return;
-  efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || ''; efBodyBig = !!a.bodyBig; efBodyBold = !!a.bodyBold;
+  efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || '';
   edOpen(`
     <div class="ed-head"><span>記事を編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
     <div class="ed-field">
@@ -1698,12 +1704,19 @@ function editArticle(id){
     </div>
     <div class="ed-field"><label>署名</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
     <div class="ed-field"><label>本文</label>
-      <div class="ed-fmtbar">
-        <button type="button" class="ed-fmt${a.bodyBig?' on':''}" id="ef-big-btn" onclick="toggleBodyBig()">大</button>
-        <button type="button" class="ed-fmt${a.bodyBold?' on':''}" id="ef-bold-btn" onclick="toggleBodyBold()">太</button>
-        <button type="button" class="ed-fmt" onclick="openBodyFull()">⤢ 大きく編集</button>
+      <div class="bodyedit" id="bodyEdit">
+        <div class="be-tools">
+          <button type="button" class="be-btn" id="be-big"  onmousedown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="bodyCmd('big')"><span class="big">大</span></button>
+          <button type="button" class="be-btn" id="be-bold" onmousedown="event.preventDefault()" ontouchstart="event.preventDefault()" onclick="bodyCmd('bold')"><strong>太</strong></button>
+          <span class="be-spacer"></span>
+          <button type="button" class="be-btn be-zoom" onclick="beFont(-2)" title="表示を小さく">A−</button>
+          <button type="button" class="be-btn be-zoom" onclick="beFont(2)" title="表示を大きく">A＋</button>
+          <button type="button" class="be-btn be-full" onclick="toggleBodyFull()" title="大きく編集">⤢</button>
+          <button type="button" class="be-btn be-done" onclick="toggleBodyFull()">完了</button>
+        </div>
+        <div class="be-area" id="bodyCE" contenteditable="true"></div>
       </div>
-      <textarea id="ef-article" rows="6" class="${a.bodyBig?'ta-big ':''}${a.bodyBold?'ta-bold':''}">${esc(stripP(a.article))}</textarea><small>「大」「太」で本文全体の大きさ・太さを切り替え（もう一度押すと戻る）</small></div>
+      <small>「大」「太」を押してから打つと、その文字だけ大きく／太字（もう一度押すと戻る）</small></div>
     <div class="ed-row">
       <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
       <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
@@ -1713,6 +1726,17 @@ function editArticle(id){
       <button class="ed-del" onclick="deleteArticle(${id})">削除</button>
       <button class="ed-save" onclick="saveArticle(${id})">保存する</button>
     </div>`);
+  // 本文リッチエディタを初期化
+  var _ce = document.getElementById('bodyCE');
+  if(_ce){
+    _ce.innerHTML = a.article || '';
+    beBig = false;
+    var _bs = 15; try { _bs = parseInt(localStorage.getItem('ft-be-fs')) || 15; } catch(e){}
+    document.getElementById('bodyEdit').style.setProperty('--be-fs', _bs + 'px');
+    _ce.addEventListener('keyup', syncBeButtons);
+    _ce.addEventListener('mouseup', syncBeButtons);
+    syncBeButtons();
+  }
   const inp = document.getElementById('edImgInput');
   const del = document.getElementById('edImgDel');
   inp.onchange = () => { const f = inp.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg = d; document.getElementById('edImgPrev').innerHTML = `<img src="${d}">`; del.style.display=''; }); };
@@ -1734,24 +1758,40 @@ function saveArticle(id){
   a.color    = document.getElementById('ef-color').value;
   a.monthly  = document.getElementById('ef-monthly').checked;
   a.new      = document.getElementById('ef-new').checked;
-  a.bodyBig  = efBodyBig;
-  a.bodyBold = efBodyBold;
-  a.article  = wrapP(val('ef-article'));
+  a.article  = sanitizeBody(document.getElementById('bodyCE'));
   a.imageSrc = efImg;
   a.imageSrc2 = efImg2;
   if(!saveContent()) return;
   edClose(); renderAll();
 }
-// 本文の「大きく」「太字」を全体トグル（記事ごと）
-function toggleBodyBig(){
-  efBodyBig = !efBodyBig;
-  var b = document.getElementById('ef-big-btn'); if(b) b.classList.toggle('on', efBodyBig);
-  var ta = document.getElementById('ef-article'); if(ta) ta.classList.toggle('ta-big', efBodyBig);
-}
-function toggleBodyBold(){
-  efBodyBold = !efBodyBold;
-  var b = document.getElementById('ef-bold-btn'); if(b) b.classList.toggle('on', efBodyBold);
-  var ta = document.getElementById('ef-article'); if(ta) ta.classList.toggle('ta-bold', efBodyBold);
+// 本文HTMLを許可タグ(<p><br><strong><span class="big">)だけに安全化
+function sanitizeBody(root){
+  if(!root) return '<p></p>';
+  function inline(node){
+    var out = '';
+    node.childNodes.forEach(function(n){
+      if(n.nodeType === 3){ out += esc(n.nodeValue); return; }
+      if(n.nodeType !== 1){ return; }
+      var tag = n.tagName.toLowerCase();
+      if(tag === 'br'){ out += '<br>'; return; }
+      var st = n.getAttribute && n.getAttribute('style') || '';
+      var bold = (tag==='strong'||tag==='b') || /font-weight\s*:\s*(bold|[6-9]\d\d)/.test(st);
+      var big  = (tag==='span' && n.classList && n.classList.contains('big')) || (tag==='font' && +n.getAttribute('size')>=4) || /font-size\s*:\s*(large|x-large|xx-large|larger)/.test(st);
+      var inner = inline(n);
+      if(bold) inner = '<strong>'+inner+'</strong>';
+      if(big)  inner = '<span class="big">'+inner+'</span>';
+      out += inner;
+    });
+    return out;
+  }
+  var blocks = [];
+  root.childNodes.forEach(function(n){
+    if(n.nodeType === 1 && (n.tagName==='P'||n.tagName==='DIV')){ blocks.push(inline(n)); }
+    else if(n.nodeType === 3){ if(n.nodeValue.trim()!=='') blocks.push(esc(n.nodeValue)); }
+    else { blocks.push(inline(n)); }
+  });
+  blocks = blocks.map(function(b){ return b.replace(/^(<br>)+|(<br>)+$/g,''); }).filter(function(b){ return b !== ''; });
+  return blocks.length ? blocks.map(function(b){ return '<p>'+b+'</p>'; }).join('') : '<p></p>';
 }
 function addArticle(){
   const id = Math.max(0, ...content.articles.map(a => a.id)) + 1;
