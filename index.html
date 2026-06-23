@@ -1646,21 +1646,49 @@ function renderEditChrome(){
 
 // 共通モーダル
 // 本文を全画面で編集（iPad向け）
-// 本文リッチエディタ：大/太は“打ち込みモード”のトグル（bold/italicで確実にオン↔オフ）
+// 本文リッチエディタ：大(<i>)/太(<strong>)を自前でオン/オフ（オフは確実に装飾の外へ出る）
+function ceRoot(){ return document.getElementById('bodyCE'); }
+function caretFormatEl(tagName){
+  var sel = window.getSelection(); if(!sel.rangeCount) return null;
+  var el = sel.getRangeAt(0).startContainer;
+  if(el.nodeType === 3) el = el.parentNode;
+  var root = ceRoot();
+  while(el && el !== root){ if(el.tagName === tagName) return el; el = el.parentNode; }
+  return null;
+}
 function bodyCmd(kind){
-  var ce = document.getElementById('bodyCE'); if(!ce) return;
+  var ce = ceRoot(); if(!ce) return;
   ce.focus();
-  try { document.execCommand('styleWithCSS', false, false); } catch(e){}
-  if(kind === 'bold'){ try { document.execCommand('bold'); } catch(e){} }
-  else if(kind === 'big'){ try { document.execCommand('italic'); } catch(e){} }  // <i>を“大きく”として使う（トグルが確実）
+  var TAG = (kind === 'bold') ? 'strong' : 'i';   // i = “大きく”として表示
+  var sel = window.getSelection(); if(!sel.rangeCount) return;
+  var range = sel.getRangeAt(0);
+  if(!range.collapsed){
+    // 選択あり：その部分を装飾（既になら付け直し＝ねじれ防止のため単純ラップ）
+    var el = document.createElement(TAG);
+    try { range.surroundContents(el); }
+    catch(e){ var f = range.extractContents(); el.appendChild(f); range.insertNode(el); }
+    sel.removeAllRanges();
+  } else {
+    var inside = caretFormatEl(TAG.toUpperCase());
+    if(inside){
+      // オフ：装飾要素の直後へカーソルを出す（以降は普通の文字）
+      var zw = document.createTextNode('​');
+      inside.parentNode.insertBefore(zw, inside.nextSibling);
+      var r = document.createRange(); r.setStart(zw, 1); r.collapse(true);
+      sel.removeAllRanges(); sel.addRange(r);
+    } else {
+      // オン：空の装飾要素を作りカーソルを中へ（以降の入力が装飾される）
+      var el2 = document.createElement(TAG); el2.appendChild(document.createTextNode('​'));
+      range.insertNode(el2);
+      var r2 = document.createRange(); r2.setStart(el2.firstChild, 1); r2.collapse(true);
+      sel.removeAllRanges(); sel.addRange(r2);
+    }
+  }
   syncBeButtons();
 }
 function syncBeButtons(){
-  var bold=false, big=false;
-  try { bold = document.queryCommandState('bold'); } catch(e){}
-  try { big  = document.queryCommandState('italic'); } catch(e){}
-  var bb = document.getElementById('be-bold'); if(bb) bb.classList.toggle('on', bold);
-  var bg = document.getElementById('be-big');  if(bg) bg.classList.toggle('on', big);
+  var bb = document.getElementById('be-bold'); if(bb) bb.classList.toggle('on', !!caretFormatEl('STRONG'));
+  var bg = document.getElementById('be-big');  if(bg) bg.classList.toggle('on', !!caretFormatEl('I'));
 }
 // 表示サイズ（見やすさ用。列はem基準なので1行の文字数は不変）
 function beFont(d){
@@ -1791,7 +1819,13 @@ function sanitizeBody(root){
     else { blocks.push(inline(n)); }
   });
   blocks = blocks.map(function(b){ return b.replace(/^(<br>)+|(<br>)+$/g,''); }).filter(function(b){ return b !== ''; });
-  return blocks.length ? blocks.map(function(b){ return '<p>'+b+'</p>'; }).join('') : '<p></p>';
+  var htmlOut = blocks.length ? blocks.map(function(b){ return '<p>'+b+'</p>'; }).join('') : '<p></p>';
+  // 制御用のゼロ幅スペースと空の装飾を除去
+  htmlOut = htmlOut.replace(/​/g,'')
+                   .replace(/<strong>\s*<\/strong>/g,'')
+                   .replace(/<span class="big">\s*<\/span>/g,'')
+                   .replace(/<p>\s*<\/p>/g,'');
+  return htmlOut || '<p></p>';
 }
 function addArticle(){
   const id = Math.max(0, ...content.articles.map(a => a.id)) + 1;
