@@ -1182,7 +1182,7 @@ function applyTheme(){
 }
 // 文字の大きさ・太さを反映
 function applyText(){
-  document.documentElement.style.setProperty('--font-scale', content.fontScale || 1);
+  document.documentElement.style.setProperty('--font-scale', String(content.fontScale || 1));
   const w = content.fontWeight || 'normal';
   document.body.classList.toggle('fw-thin',  w === 'thin');
   document.body.classList.toggle('fw-thick', w === 'thick');
