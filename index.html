@@ -489,8 +489,6 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-title{font-family:'Bebas Neue',cursive;font-size:clamp(22px,3.5vw,38px);line-height:1.0;letter-spacing:2px;margin-bottom:8px;}
 .modal-sub{font-size:11px;color:#a9c6da;line-height:1.7;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .modal-article{font-size:14px;line-height:2.0;color:#e9f3fd;flex:1;}
-.modal-article strong{font-weight:800;color:#ffffff;}
-.modal-article .big{font-size:1.4em;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
@@ -574,10 +572,6 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .ed-field textarea{resize:vertical;line-height:1.6;}
 .ed-field input:focus,.ed-field textarea:focus{border-color:var(--cyan);}
 .ed-field small{font-size:10px;color:#7f9bb0;}
-.ed-fmtbar{display:flex;gap:6px;margin-bottom:6px;}
-.ed-fmt{padding:6px 12px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;}
-.ed-fmt:active{border-color:var(--cyan);color:var(--cyan);}
-.ed-fmt .big{font-size:1.3em;}
 .ed-row{display:flex;gap:12px;}
 .ed-row .ed-field{flex:1;}
 .ed-imgprev{width:100%;height:160px;border:1px dashed var(--border);border-radius:8px;background:#04080f;display:flex;align-items:center;justify-content:center;overflow:hidden;}
@@ -1136,26 +1130,8 @@ let papers  = content.articles;   // 既存の関数はこの papers を参照�
 
 // ══ 小さなヘルパー ══
 function esc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function stripP(html){
-  return (html||'')
-    .replace(/<strong>(.*?)<\/strong>/gi,'**$1**')
-    .replace(/<span class="big">(.*?)<\/span>/gi,'++$1++')
-    .replace(/<\/p>\s*<p>/gi,'\n\n').replace(/<\/?p>/gi,'').replace(/<br\s*\/?>/gi,'\n').trim();
-}
-function inlineFmt(t){
-  return t.replace(/\*\*([^*\n]+?)\*\*/g,'<strong>$1</strong>')
-          .replace(/\+\+([^+\n]+?)\+\+/g,'<span class="big">$1</span>');
-}
-function wrapP(text){ return (text||'').split(/\n{2,}/).map(s=>`<p>${inlineFmt(esc(s).replace(/\n/g,'<br>'))}</p>`).join(''); }
-// 本文エディタ：選択した文字を記号で囲む（太字/大きく）
-function wrapSel(id, pre, post){
-  var ta = document.getElementById(id); if(!ta) return;
-  var s = ta.selectionStart || 0, e = ta.selectionEnd || 0;
-  var sel = ta.value.slice(s,e) || 'ここ';
-  ta.value = ta.value.slice(0,s) + pre + sel + post + ta.value.slice(e);
-  ta.focus();
-  ta.setSelectionRange(s + pre.length, s + pre.length + sel.length);
-}
+function stripP(html){ return (html||'').replace(/<\/p>\s*<p>/gi,'\n\n').replace(/<\/?p>/gi,'').replace(/<br\s*\/?>/gi,'\n').trim(); }
+function wrapP(text){ return (text||'').split(/\n{2,}/).map(s=>`<p>${esc(s).replace(/\n/g,'<br>')}</p>`).join(''); }
 function val(id){ return document.getElementById(id).value; }
 function setPath(obj, path, v){ const ks=path.split('.'); const last=ks.pop(); let o=obj; ks.forEach(k=>o=o[k]); o[last]=v; }
 // 画像を選んだら自動で縮小して軽くする（Instagram のように選ぶだけ）
@@ -1671,14 +1647,7 @@ function editArticle(id){
       <div class="ed-field"><label>号（issue）</label><input id="ef-issue" type="text" value="${esc(a.issue)}"></div>
     </div>
     <div class="ed-field"><label>署名</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
-    <div class="ed-field"><label>本文</label>
-      <div class="ed-fmtbar">
-        <button type="button" class="ed-fmt" onclick="wrapSel('ef-article','**','**')"><strong>太字</strong></button>
-        <button type="button" class="ed-fmt" onclick="wrapSel('ef-article','++','++')"><span class="big">大きく</span></button>
-      </div>
-      <textarea id="ef-article" rows="6">${esc(stripP(a.article))}</textarea>
-      <small>段落は空行で区切ります／文字を選んでボタンで装飾（太字・大きく）</small>
-    </div>
+    <div class="ed-field"><label>本文</label><textarea id="ef-article" rows="6">${esc(stripP(a.article))}</textarea><small>段落は空行で区切ります</small></div>
     <div class="ed-row">
       <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
       <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
