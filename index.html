@@ -578,12 +578,6 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .ed-fmt{padding:6px 12px;border:1px solid var(--border);background:#0d1622;color:var(--white);border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;}
 .ed-fmt:active{border-color:var(--cyan);color:var(--cyan);}
 .ed-fmt .big{font-size:1.3em;}
-.ed-prev-label{font-size:10px;color:#7f9bb0;margin:8px 0 4px;letter-spacing:1px;}
-.ed-preview{border:1px dashed var(--border);border-radius:8px;padding:10px 12px;background:#04080f;font-family:'Noto Sans JP',sans-serif;font-size:14px;line-height:1.9;color:#e9f3fd;max-height:170px;overflow:auto;}
-.ed-preview p{margin-bottom:8px;}
-.ed-preview strong{font-weight:800;color:#fff;}
-.ed-preview .big{font-size:1.4em;}
-.ed-prev-empty{color:#5b7488;}
 .ed-row{display:flex;gap:12px;}
 .ed-row .ed-field{flex:1;}
 .ed-imgprev{width:100%;height:160px;border:1px dashed var(--border);border-radius:8px;background:#04080f;display:flex;align-items:center;justify-content:center;overflow:hidden;}
@@ -1161,12 +1155,6 @@ function wrapSel(id, pre, post){
   ta.value = ta.value.slice(0,s) + pre + sel + post + ta.value.slice(e);
   ta.focus();
   ta.setSelectionRange(s + pre.length, s + pre.length + sel.length);
-  updateBodyPreview();
-}
-// 本文プレビュー（書きながら装飾を確認）
-function updateBodyPreview(){
-  var ta = document.getElementById('ef-article'), pv = document.getElementById('ef-article-prev');
-  if(ta && pv) pv.innerHTML = wrapP(ta.value) || '<span class="ed-prev-empty">ここに本文プレビューが出ます</span>';
 }
 function val(id){ return document.getElementById(id).value; }
 function setPath(obj, path, v){ const ks=path.split('.'); const last=ks.pop(); let o=obj; ks.forEach(k=>o=o[k]); o[last]=v; }
@@ -1688,10 +1676,8 @@ function editArticle(id){
         <button type="button" class="ed-fmt" onclick="wrapSel('ef-article','**','**')"><strong>太字</strong></button>
         <button type="button" class="ed-fmt" onclick="wrapSel('ef-article','++','++')"><span class="big">大きく</span></button>
       </div>
-      <textarea id="ef-article" rows="6" oninput="updateBodyPreview()">${esc(stripP(a.article))}</textarea>
+      <textarea id="ef-article" rows="6">${esc(stripP(a.article))}</textarea>
       <small>段落は空行で区切ります／文字を選んでボタンで装飾（太字・大きく）</small>
-      <div class="ed-prev-label">プレビュー</div>
-      <div class="ed-preview" id="ef-article-prev"></div>
     </div>
     <div class="ed-row">
       <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
@@ -1702,7 +1688,6 @@ function editArticle(id){
       <button class="ed-del" onclick="deleteArticle(${id})">削除</button>
       <button class="ed-save" onclick="saveArticle(${id})">保存する</button>
     </div>`);
-  updateBodyPreview();
   const inp = document.getElementById('edImgInput');
   const del = document.getElementById('edImgDel');
   inp.onchange = () => { const f = inp.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg = d; document.getElementById('edImgPrev').innerHTML = `<img src="${d}">`; del.style.display=''; }); };
