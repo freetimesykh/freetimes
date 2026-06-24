@@ -518,6 +518,28 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 /* 章がふわっと表示 */
 .modal-article .m-reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;}
 .modal-article .m-reveal.m-in{opacity:1;transform:none;}
+/* 証拠写真（本文内）：タップで拡大 */
+.modal-article .m-fig{margin:18px 0;}
+.modal-article .m-fig img{display:block;width:100%;height:auto;border:1px solid var(--border);background:var(--black);cursor:zoom-in;}
+.modal-article .m-fig figcaption{margin-top:6px;font-size:11px;color:#a9c6da;text-align:center;letter-spacing:.5px;}
+.modal-article .m-gallery{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px;}
+.modal-article .m-gallery .m-fig{margin:0;}
+/* ライトボックス（全画面拡大） */
+.lightbox{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0.94);padding:24px;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:94vw;max-height:84vh;object-fit:contain;border:1px solid rgba(255,255,255,0.15);}
+.lightbox .lb-cap{margin-top:14px;color:#e9f3fd;font-size:13px;text-align:center;max-width:90vw;line-height:1.6;}
+.lightbox .lb-x{position:absolute;top:16px;right:16px;width:40px;height:40px;border:1px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.5);color:#fff;font-size:16px;border-radius:50%;cursor:pointer;}
+/* エディタ：証拠写真リスト */
+.ed-photos-empty{font-size:12px;color:var(--dim);padding:6px 0;}
+.ed-photo{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
+.ed-photo img{width:72px;height:72px;object-fit:cover;border:1px solid var(--border);flex:none;background:var(--black);}
+.ed-photo-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.ed-photo-tag{font-size:11px;color:var(--cyan);letter-spacing:1px;}
+.ed-photo-meta input{width:100%;box-sizing:border-box;}
+.ed-photo-btns{display:flex;gap:6px;}
+.ed-photo-btns button{padding:4px 10px;font-size:12px;border:1px solid var(--border);background:none;color:var(--muted);border-radius:6px;cursor:pointer;}
+.ed-photo-btns .ed-photo-del{color:var(--pink);border-color:var(--pink);}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
 .modal.modal-noimg{grid-template-columns:1fr;}
 .modal.modal-noimg .modal-img{display:none;}
@@ -1072,6 +1094,11 @@ body.standalone #appReload{display:flex;}
     </div>
   </div>
 </div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-x" onclick="closeLightbox()">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
 
 <!-- ══ EDITOR UI ══ -->
 <div class="ed-wrap" id="edWrap">
@@ -1196,6 +1223,7 @@ function walkImages(c, fn){
   if(Array.isArray(c.articles)) c.articles.forEach(function(a){
     if(a.imageSrc !== undefined)  a.imageSrc  = fn(a.imageSrc);
     if(a.imageSrc2 !== undefined) a.imageSrc2 = fn(a.imageSrc2);
+    if(Array.isArray(a.photos)) a.photos.forEach(function(ph){ if(ph && ph.src !== undefined) ph.src = fn(ph.src); });
   });
 }
 // 起動時：localStorage内の idb:KEY 参照を実画像(dataURL)に戻す
@@ -1210,7 +1238,10 @@ function resolveImages(){
   }
   var c = content;
   if(c.hero && Array.isArray(c.hero.slides)) c.hero.slides.forEach(function(s,i){ resolve(function(){return c.hero.slides[i];}, function(d){ c.hero.slides[i]=d; }); });
-  if(Array.isArray(c.articles)) c.articles.forEach(function(a){ ['imageSrc','imageSrc2'].forEach(function(k){ resolve(function(){return a[k];}, function(d){ a[k]=d; }); }); });
+  if(Array.isArray(c.articles)) c.articles.forEach(function(a){
+    ['imageSrc','imageSrc2'].forEach(function(k){ resolve(function(){return a[k];}, function(d){ a[k]=d; }); });
+    if(Array.isArray(a.photos)) a.photos.forEach(function(ph){ if(ph) resolve(function(){return ph.src;}, function(d){ ph.src=d; }); });
+  });
   return Promise.all(jobs);
 }
 function saveContent(){
@@ -1531,8 +1562,16 @@ function filterSearch() {
 let currentId = null;
 // 月刊号だけ：打った文章をそのまま雑誌っぽいロングリードに自動整形する。
 //  ⸻＝区切り線 / 英字ラベル行＝見出しラベル / その直後の行＝章タイトル / ・＝箇条書き / ■★＝データ表示
-function monthlyFormat(html){
+// 証拠写真1枚分のHTML（タップで拡大）
+function mFig(ph){
+  if(!ph || !ph.src) return '';
+  var cap = ph.cap ? '<figcaption>'+esc(ph.cap)+'</figcaption>' : '';
+  return '<figure class="m-fig"><img src="'+ph.src+'" alt="" data-cap="'+esc(ph.cap||'')+'" onclick="openLightbox(this)">'+cap+'</figure>';
+}
+function monthlyFormat(html, photos){
   try{
+    photos = Array.isArray(photos) ? photos : [];
+    var used = {};
     var src = document.createElement('div'); src.innerHTML = html || '';
     var raw = [];
     src.querySelectorAll('p').forEach(function(p){
@@ -1547,10 +1586,16 @@ function monthlyFormat(html){
     var isKick = function(t){ return t.length > 0 && t.length <= 28 && /^[A-Z0-9][A-Z0-9 .,'&:\/\-]*$/.test(t); };
     var isData = function(t){ return t.length > 0 && t.length <= 24 && /^[■□●○★☆◆◇\s\d%／/]+$/.test(t) && /[■□●○★☆◆◇\d]/.test(t); };
     var isBul  = function(t){ return /^[・]/.test(t); };
-    var out = []; var prevKick = false;
+    var out = []; var prevKick = false; var photoSeq = 0;
     for(var i=0;i<lines.length;i++){
       var t = lines[i].text, h = lines[i].html;
       var nextT = (i+1 < lines.length) ? lines[i+1].text : '';
+      var mph = t.match(/^\[\s*写真\s*(\d*)\s*\]$/);   // [写真] / [写真2] を写真に置換
+      if(mph){
+        var pi = mph[1] ? (parseInt(mph[1],10)-1) : (photoSeq++);
+        if(photos[pi] && photos[pi].src){ used[pi] = true; out.push(mFig(photos[pi])); }
+        prevKick = false; continue;
+      }
       if(isDiv(t)){ out.push('<hr class="m-div">'); prevKick = false; continue; }
       if(isKick(t)){ out.push('<div class="m-kick">'+esc(t)+'</div>'); prevKick = true; continue; }
       if(prevKick && !isData(t) && !isBul(t)){ out.push('<h3 class="m-h">'+esc(t)+'</h3>'); prevKick = false; continue; }
@@ -1566,6 +1611,12 @@ function monthlyFormat(html){
       }
       out.push('<p>'+h+'</p>');
     }
+    // マーカーで置かれなかった写真は最後に「証拠写真」ギャラリーとして表示（写真が無駄にならない）
+    var rest = photos.filter(function(ph,i){ return ph && ph.src && !used[i]; });
+    if(rest.length){
+      out.push('<div class="m-kick">EVIDENCE</div><h3 class="m-h">証拠写真</h3>');
+      out.push('<div class="m-gallery">'+rest.map(mFig).join('')+'</div>');
+    }
     return out.join('') || '<p></p>';
   }catch(e){ return html; }
 }
@@ -1575,7 +1626,7 @@ function openModal(id) {
   document.getElementById('modal-issue').textContent   = p.issue;
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
-  document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article) : p.article;
+  document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article, p.photos) : p.article;
   document.getElementById('modal-by').textContent      = p.by;
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
@@ -1644,6 +1695,18 @@ function closeModal() {
   document.body.style.overflow = ''; currentId = null;
   if(_mRevealObs){ _mRevealObs.disconnect(); _mRevealObs = null; }
 }
+// 写真をタップ → 全画面で拡大表示（ライトボックス）
+function openLightbox(imgEl){
+  var lb = document.getElementById('lightbox'); if(!lb) return;
+  document.getElementById('lb-img').src = imgEl.src;
+  var cap = imgEl.getAttribute('data-cap') || '';
+  var capEl = document.getElementById('lb-cap'); capEl.textContent = cap; capEl.style.display = cap ? '' : 'none';
+  lb.classList.add('open'); document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  var lb = document.getElementById('lightbox'); if(!lb) return;
+  lb.classList.remove('open'); document.getElementById('lb-img').src = '';
+}
 function navModal(dir) {
   const list = papers.filter(p => p.imageSrc);
   const next = list[list.findIndex(x => x.id === currentId) + dir];
@@ -1658,7 +1721,9 @@ function openRandom() {
   openModal(pick.id);
 }
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape')     closeModal();
+  var lbOpen = document.getElementById('lightbox') && document.getElementById('lightbox').classList.contains('open');
+  if (e.key === 'Escape'){ if(lbOpen) closeLightbox(); else closeModal(); return; }
+  if (lbOpen) return;
   if (e.key === 'ArrowRight') navModal(1);
   if (e.key === 'ArrowLeft')  navModal(-1);
 });
@@ -1675,6 +1740,7 @@ let EDIT = false;
 const CAN_EDIT = new URLSearchParams(location.search).has('edit') || location.hash === '#edit';
 let efImg = '';   // 記事フォームで選択中の画像（1枚目／バナー用）
 let efImg2 = '';  // 月刊号の2枚目（記事内に表示）
+let efPhotos = []; // 月刊号の証拠写真 [{src,cap}]
 
 // 記事カード／月刊カードをクリックしたとき
 function cardClick(id){
@@ -1929,6 +1995,7 @@ function edClose(){ document.getElementById('edWrap').classList.remove('open'); 
 function editArticle(id){
   const a = content.articles.find(x => x.id === id); if(!a) return;
   efImg = a.imageSrc || ''; efImg2 = a.imageSrc2 || '';
+  efPhotos = Array.isArray(a.photos) ? a.photos.map(function(p){ return { src:p.src, cap:p.cap||'' }; }) : [];
   edOpen(`
     <div class="ed-head"><span>記事を編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
     <div class="ed-field">
@@ -1942,6 +2009,12 @@ function editArticle(id){
       <div class="ed-imgprev" id="edImg2Prev">${efImg2 ? `<img src="${efImg2}">` : '<span>画像なし</span>'}</div>
       <label class="ed-upload">画像を選ぶ<input type="file" accept="image/*" id="edImg2Input" hidden></label>
       <button class="ed-btn-mini" id="edImg2Del" style="${efImg2?'':'display:none'}">画像を削除</button>
+    </div>
+    <div class="ed-field">
+      <label>証拠写真（タップで拡大）</label>
+      <div id="edPhotos"></div>
+      <label class="ed-upload">写真を追加<input type="file" accept="image/*" id="edPhotoInput" hidden></label>
+      <small>本文に <b>［写真］</b> と書いた行に上から順に入ります（［写真2］で2番目を指定も可）。場所を指定しない写真は記事末尾に「証拠写真」としてまとめて表示。</small>
     </div>` : ''}
     <div class="ed-field"><label>タイトル</label><input id="ef-title" type="text" value="${esc(a.title)}"></div>
     <div class="ed-field"><label>サブ見出し</label><textarea id="ef-sub" rows="2">${esc(a.sub)}</textarea></div>
@@ -1996,6 +2069,9 @@ function editArticle(id){
     const del2 = document.getElementById('edImg2Del');
     if(inp2) inp2.onchange = () => { const f = inp2.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efImg2 = d; document.getElementById('edImg2Prev').innerHTML = `<img src="${d}">`; del2.style.display=''; }); };
     if(del2) del2.onclick  = () => { efImg2 = ''; document.getElementById('edImg2Prev').innerHTML = '<span>画像なし</span>'; del2.style.display='none'; };
+    renderEfPhotos();
+    const pinp = document.getElementById('edPhotoInput');
+    if(pinp) pinp.onchange = () => { const f = pinp.files[0]; if(!f) return; fileToDataURL(f, 1400, d => { efPhotos.push({ src:d, cap:'' }); renderEfPhotos(); }); pinp.value=''; };
   }
 }
 function saveArticle(id){
@@ -2011,9 +2087,30 @@ function saveArticle(id){
   a.article  = sanitizeBody(document.getElementById('bodyCE'));
   a.imageSrc = efImg;
   a.imageSrc2 = efImg2;
+  if(a.monthly){ a.photos = efPhotos.map(function(p){ return { src:p.src, cap:p.cap||'' }; }); }
+  else { delete a.photos; }
   if(!saveContent()) return;
   edClose(); renderAll();
 }
+// 証拠写真リスト（月刊号エディタ）
+function renderEfPhotos(){
+  var box = document.getElementById('edPhotos'); if(!box) return;
+  if(!efPhotos.length){ box.innerHTML = '<div class="ed-photos-empty">写真なし</div>'; return; }
+  box.innerHTML = efPhotos.map(function(p,i){
+    return '<div class="ed-photo">'
+      + '<img src="'+p.src+'">'
+      + '<div class="ed-photo-meta">'
+      + '<span class="ed-photo-tag">［写真'+(i+1)+'］</span>'
+      + '<input type="text" placeholder="キャプション（任意）" value="'+esc(p.cap||'')+'" oninput="efPhotos['+i+'].cap=this.value">'
+      + '<div class="ed-photo-btns">'
+      + '<button type="button" onclick="movePhoto('+i+',-1)">▲</button>'
+      + '<button type="button" onclick="movePhoto('+i+',1)">▼</button>'
+      + '<button type="button" class="ed-photo-del" onclick="delPhoto('+i+')">削除</button>'
+      + '</div></div></div>';
+  }).join('');
+}
+function movePhoto(i,d){ var j=i+d; if(j<0||j>=efPhotos.length) return; var t=efPhotos[i]; efPhotos[i]=efPhotos[j]; efPhotos[j]=t; renderEfPhotos(); }
+function delPhoto(i){ efPhotos.splice(i,1); renderEfPhotos(); }
 // 本文HTMLを許可タグ(<p><br><strong><span class="big">)だけに安全化
 function sanitizeBody(root){
   if(!root) return '<p></p>';
