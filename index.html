@@ -1612,12 +1612,11 @@ function monthlyFormat(html, photos){
       out.push(block);
       figs.forEach(function(f){ out.push(f); });
     }
-    // マーカーで置かれなかった写真は記事の「前」に「証拠写真」としてまとめて表示
+    // マーカーで置かれなかった写真は最後に「証拠写真」ギャラリーとして表示（写真が無駄にならない）
     var rest = photos.filter(function(ph,i){ return ph && ph.src && !used[i]; });
     if(rest.length){
-      var gallery = '<div class="m-kick">EVIDENCE</div><h3 class="m-h">証拠写真</h3>'
-                  + '<div class="m-gallery">'+rest.map(mFig).join('')+'</div>';
-      out.unshift(gallery);
+      out.push('<div class="m-kick">EVIDENCE</div><h3 class="m-h">証拠写真</h3>');
+      out.push('<div class="m-gallery">'+rest.map(mFig).join('')+'</div>');
     }
     return out.join('') || '<p></p>';
   }catch(e){ return html; }
