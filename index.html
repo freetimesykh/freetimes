@@ -1152,9 +1152,64 @@ function loadContent(){
   }catch(e){}
   return clone(DEFAULT_CONTENT);
 }
+
+// ══ 画像は IndexedDB（大容量）に保存し、localStorage には軽い参照(idb:KEY)だけ置く ══
+var IDB_NAME='freetimes-img', IDB_STORE='img';
+var imgKeyMap = (typeof Map!=='undefined') ? new Map() : null;   // dataURL -> key
+var imgSeq = 0;
+function idbOpen(){
+  return new Promise(function(res,rej){
+    if(!window.indexedDB){ rej('no-idb'); return; }
+    var r = indexedDB.open(IDB_NAME,1);
+    r.onupgradeneeded = function(){ r.result.createObjectStore(IDB_STORE); };
+    r.onsuccess = function(){ res(r.result); };
+    r.onerror = function(){ rej(r.error); };
+  });
+}
+function idbPut(key,val){ return idbOpen().then(function(db){ return new Promise(function(res,rej){ var tx=db.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).put(val,key); tx.oncomplete=function(){res();}; tx.onerror=function(){rej(tx.error);}; }); }); }
+function idbGet(key){ return idbOpen().then(function(db){ return new Promise(function(res,rej){ var tx=db.transaction(IDB_STORE,'readonly'); var rq=tx.objectStore(IDB_STORE).get(key); rq.onsuccess=function(){res(rq.result);}; rq.onerror=function(){rej(rq.error);}; }); }); }
+function walkImages(c, fn){
+  if(c.hero && Array.isArray(c.hero.slides)) c.hero.slides = c.hero.slides.map(fn);
+  if(Array.isArray(c.articles)) c.articles.forEach(function(a){
+    if(a.imageSrc !== undefined)  a.imageSrc  = fn(a.imageSrc);
+    if(a.imageSrc2 !== undefined) a.imageSrc2 = fn(a.imageSrc2);
+  });
+}
+// 起動時：localStorage内の idb:KEY 参照を実画像(dataURL)に戻す
+function resolveImages(){
+  var jobs = [];
+  function resolve(getv, setv){
+    var v = getv();
+    if(typeof v==='string' && v.indexOf('idb:')===0){
+      var key = v.slice(4);
+      jobs.push(idbGet(key).then(function(d){ if(d){ setv(d); if(imgKeyMap) imgKeyMap.set(d,key); } else setv(''); }).catch(function(){ setv(''); }));
+    }
+  }
+  var c = content;
+  if(c.hero && Array.isArray(c.hero.slides)) c.hero.slides.forEach(function(s,i){ resolve(function(){return c.hero.slides[i];}, function(d){ c.hero.slides[i]=d; }); });
+  if(Array.isArray(c.articles)) c.articles.forEach(function(a){ ['imageSrc','imageSrc2'].forEach(function(k){ resolve(function(){return a[k];}, function(d){ a[k]=d; }); }); });
+  return Promise.all(jobs);
+}
 function saveContent(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(content)); return true; }
-  catch(e){ alert('保存できませんでした。画像が大きすぎる可能性があります（合計で約5MBまで）。'); return false; }
+  try{
+    var store = JSON.parse(JSON.stringify(content));   // 保存用コピー
+    var puts = [];
+    walkImages(store, function(v){
+      if(typeof v==='string' && v.indexOf('data:')===0){
+        var key = imgKeyMap && imgKeyMap.get(v);
+        if(!key){ key = 'img'+Date.now()+'_'+(imgSeq++); if(imgKeyMap) imgKeyMap.set(v,key); puts.push([key,v]); }
+        return 'idb:'+key;
+      }
+      return v;   // ファイル名 / 既存の idb:参照 はそのまま
+    });
+    localStorage.setItem(LS_KEY, JSON.stringify(store));   // 参照のみ＝軽い
+    puts.forEach(function(p){ idbPut(p[0],p[1]).catch(function(){}); });
+    return true;
+  }catch(e){
+    // IndexedDB等が使えない場合のみ旧方式
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(content)); return true; }
+    catch(e2){ alert('保存できませんでした（画像が大きすぎる可能性があります）。'); return false; }
+  }
 }
 
 let content = loadContent();
@@ -2027,8 +2082,9 @@ document.querySelectorAll('[data-edit]').forEach(el => {
   el.addEventListener('blur', () => { if(!EDIT) return; setPath(content, el.dataset.edit, el.textContent.trim()); saveContent(); });
   el.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); el.blur(); } });
 });
-renderAll();
 renderEditChrome();
+// 画像(IndexedDB)を復元してから描画
+resolveImages().then(function(){ papers = content.articles; renderAll(); }, function(){ renderAll(); });
 
 // ══ 星のかけら水槽：タップで画面いっぱいに拡大（誰でも） ══
 (function(){
