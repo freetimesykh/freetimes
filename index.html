@@ -33,7 +33,6 @@
   --star:#a8ff00;
   --read-col:26em;   /* 本文＆全画面エディタ共通の1行幅（全角約26文字） */
   --font-main:'Noto Sans JP',sans-serif;  /* サイト全体のフォント（フォント切替で変更） */
-  --gold:#f4c95d;   /* 月刊号 特別号のアクセント */
 }
 /* フォント切替：選択時はサイト全部の文字に適用（SVGロゴ・星は除外） */
 body.fontskin *:not(svg):not(.ftlogo):not(.star-svg):not(.star-svg *){font-family:var(--font-main)!important;}
@@ -379,12 +378,6 @@ body.edit-mode .monthly-coming.monthly-live::after{content:'✏ 月刊号を編�
 .monthly-banner-badge{align-self:flex-start;font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--black);background:var(--cyan);padding:4px 12px;margin-bottom:10px;}
 .monthly-banner-title{font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,2.4vw,22px);font-weight:700;line-height:1.4;color:var(--white);margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,0.6);}
 .monthly-banner-hint{font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;}
-/* 月刊号 特別号：プレミアム・バナー */
-.monthly-banner.premium{border:2px solid var(--gold);box-shadow:inset 0 0 0 1px rgba(244,201,93,0.25), 0 8px 30px rgba(244,201,93,0.18);}
-.monthly-banner.premium .monthly-banner-hint{color:var(--gold);}
-.m-masthead{align-self:flex-start;font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:clamp(11px,1.9vw,16px);color:var(--gold);margin-bottom:8px;text-shadow:0 0 12px rgba(244,201,93,0.55);}
-.m-shimmer{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(115deg,transparent 32%,rgba(255,228,158,0.20) 48%,transparent 62%);transform:translateX(-100%);animation:mshimmer 5.5s ease-in-out infinite;}
-@keyframes mshimmer{0%,100%{transform:translateX(-100%);}55%{transform:translateX(100%);}}
 body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
 
 /* Monthly card (月刊号が来たら使う) */
@@ -509,18 +502,6 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal.modal-noimg .modal-img{display:none;}
 .modal-footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-by{font-size:8px;color:var(--white);}
-/* 月刊号 特別号：モーダルの特別装丁（ゴールド） */
-.modal.monthly{border:2px solid var(--gold);box-shadow:inset 0 0 0 1px rgba(244,201,93,0.3),0 22px 60px rgba(0,0,0,0.6);}
-.modal.monthly .modal-body::before{content:'月刊フリータイムズ ✦ 特別号';display:block;text-align:center;font-family:'Bebas Neue',cursive;letter-spacing:3px;font-size:13px;color:var(--gold);padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid rgba(244,201,93,0.4);text-shadow:0 0 10px rgba(244,201,93,0.4);}
-.modal.monthly .modal-issue{color:var(--gold);}
-.modal.monthly .modal-issue::before{background:var(--gold);}
-.modal.monthly .modal-article p:first-child::first-letter{color:var(--gold);}
-.modal.monthly .modal-by{color:var(--gold);}
-/* 月刊号：新聞っぽい本文（両端揃え＋ジャンル見出し）。画像なし＝全幅のときは段組み（新聞段組） */
-.modal.monthly .modal-article{text-align:justify;line-height:1.9;}
-.modal.monthly.modal-noimg .modal-article{max-width:none;column-width:18em;column-gap:30px;column-rule:1px solid rgba(244,201,93,0.22);}
-.modal.monthly .modal-article h3.genre{column-span:all;-webkit-column-span:all;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:13px;letter-spacing:4px;color:var(--gold);text-align:center;margin:22px 0 14px;padding:7px 0;border-top:1px solid rgba(244,201,93,0.4);border-bottom:1px solid rgba(244,201,93,0.4);text-shadow:0 0 8px rgba(244,201,93,0.35);}
-.modal.monthly .modal-article h3.genre:first-child{margin-top:0;}
 .modal-nav{display:flex;gap:6px;}
 .modal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
@@ -1382,11 +1363,10 @@ function initHome() {
   if (monthly) {
     if (monthly.imageSrc) {
       document.getElementById('monthly-area').innerHTML = `
-        <div class="monthly-banner premium" onclick="cardClick(${monthly.id})">
+        <div class="monthly-banner" onclick="cardClick(${monthly.id})">
           <img src="${monthly.imageSrc}" alt="">
-          <div class="m-shimmer"></div>
           <div class="monthly-banner-overlay">
-            <div class="m-masthead">月刊フリータイムズ ✦ MONTHLY SPECIAL</div>
+            <div class="monthly-banner-badge">Latest Issue</div>
             <div class="monthly-banner-title">${esc(monthly.title)}</div>
             <div class="monthly-banner-hint">タップして読む →</div>
           </div>
@@ -1526,29 +1506,13 @@ function filterSearch() {
 
 // ══ MODAL ══
 let currentId = null;
-// 月刊号：本文を新聞っぽく整形。1行だけ「大」にした段落を“ジャンル見出し”に変換する。
-function monthlyFormat(html){
-  try{
-    var tmp = document.createElement('div'); tmp.innerHTML = html || '';
-    tmp.querySelectorAll('p').forEach(function(p){
-      var kids = p.children;
-      if(kids.length === 1 && kids[0].classList && kids[0].classList.contains('big')
-         && p.textContent.trim() !== '' && p.textContent.trim() === kids[0].textContent.trim()){
-        var h = document.createElement('h3'); h.className = 'genre';
-        h.textContent = kids[0].textContent.trim();
-        p.replaceWith(h);
-      }
-    });
-    return tmp.innerHTML || '<p></p>';
-  }catch(e){ return html; }
-}
 function openModal(id) {
   const p = papers.find(x => x.id === id); if (!p) return;
   currentId = id;
   document.getElementById('modal-issue').textContent   = p.issue;
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
-  document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article) : p.article;
+  document.getElementById('modal-article').innerHTML = p.article;
   document.getElementById('modal-by').textContent      = p.by;
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
@@ -1566,7 +1530,6 @@ function openModal(id) {
       ? `<img src="${p.imageSrc}" alt="${p.title}">`
       : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
   }
-  if(_mbox) _mbox.classList.toggle('monthly', !!p.monthly);   // 月刊号は特別テンプレート
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   if(_mbox) _mbox.scrollTop = 0;   // 開くたびに先頭から表示
