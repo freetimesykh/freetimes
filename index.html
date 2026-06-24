@@ -497,6 +497,15 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .big{font-size:1.4em;}
 .modal-article p{margin-bottom:12px;}
 .modal-article p:first-child::first-letter{font-family:'Bebas Neue',cursive;font-size:44px;float:left;line-height:0.8;margin:6px 8px 0 0;color:var(--cyan);}
+/* 月刊号ロングリード：自動整形した要素（金枠なし・1カラム・スマホ重視） */
+.modal-article .m-div{border:0;border-top:1px solid var(--border);width:50px;margin:34px auto;opacity:.7;}
+.modal-article .m-kick{font-family:'Bebas Neue',cursive;letter-spacing:4px;font-size:12px;color:var(--cyan);text-align:center;margin:30px 0 6px;}
+.modal-article .m-h{font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:19px;line-height:1.45;text-align:center;color:#fff;margin:0 0 18px;}
+.modal-article .m-kick + .m-h{margin-top:0;}
+.modal-article .m-li{margin:3px 0;padding-left:1.1em;text-indent:-1.1em;color:#dce8f2;}
+.modal-article .m-dlabel{text-align:center;font-size:11px;letter-spacing:2px;color:#a9c6da;margin:14px 0 2px;}
+.modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
+.modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
 #modal-top-img img{display:block;width:100%;height:auto;margin:0 0 18px;border:1px solid var(--border);background:var(--black);}
 .modal.modal-noimg{grid-template-columns:1fr;}
 .modal.modal-noimg .modal-img{display:none;}
@@ -1506,13 +1515,47 @@ function filterSearch() {
 
 // ══ MODAL ══
 let currentId = null;
+// 月刊号だけ：打った文章をそのまま雑誌っぽいロングリードに自動整形する。
+//  ⸻＝区切り線 / 英字ラベル行＝見出しラベル / その直後の行＝章タイトル / ・＝箇条書き / ■★＝データ表示
+function monthlyFormat(html){
+  try{
+    var src = document.createElement('div'); src.innerHTML = html || '';
+    var raw = [];
+    src.querySelectorAll('p').forEach(function(p){
+      p.innerHTML.split(/<br\s*\/?>/i).forEach(function(seg){
+        var d = document.createElement('div'); d.innerHTML = seg;
+        var text = (d.textContent || '').replace(/​/g,'').trim();
+        raw.push({ html: seg, text: text });
+      });
+    });
+    var lines = raw.filter(function(l){ return l.text !== ''; });
+    var isDiv  = function(t){ return /^[⸻—―─━\-—―─]+$/.test(t) && (t.indexOf('⸻') >= 0 || t.replace(/[^—―─━\-—―─]/g,'').length >= 3); };
+    var isKick = function(t){ return t.length > 0 && t.length <= 28 && /^[A-Z0-9][A-Z0-9 .,'&:\/\-]*$/.test(t); };
+    var isData = function(t){ return t.length > 0 && t.length <= 24 && /^[■□●○★☆◆◇\s\d%／/]+$/.test(t) && /[■□●○★☆◆◇\d]/.test(t); };
+    var isBul  = function(t){ return /^[・]/.test(t); };
+    var out = []; var prevKick = false;
+    for(var i=0;i<lines.length;i++){
+      var t = lines[i].text, h = lines[i].html;
+      var nextT = (i+1 < lines.length) ? lines[i+1].text : '';
+      if(isDiv(t)){ out.push('<hr class="m-div">'); prevKick = false; continue; }
+      if(isKick(t)){ out.push('<div class="m-kick">'+esc(t)+'</div>'); prevKick = true; continue; }
+      if(prevKick && !isData(t) && !isBul(t)){ out.push('<h3 class="m-h">'+esc(t)+'</h3>'); prevKick = false; continue; }
+      prevKick = false;
+      if(isData(t)){ out.push('<div class="m-data">'+esc(t)+'</div>'); continue; }
+      if(t.length <= 8 && isData(nextT)){ out.push('<div class="m-dlabel">'+esc(t)+'</div>'); continue; }
+      if(isBul(t)){ out.push('<p class="m-li">'+h+'</p>'); continue; }
+      out.push('<p>'+h+'</p>');
+    }
+    return out.join('') || '<p></p>';
+  }catch(e){ return html; }
+}
 function openModal(id) {
   const p = papers.find(x => x.id === id); if (!p) return;
   currentId = id;
   document.getElementById('modal-issue').textContent   = p.issue;
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
-  document.getElementById('modal-article').innerHTML = p.article;
+  document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article) : p.article;
   document.getElementById('modal-by').textContent      = p.by;
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
