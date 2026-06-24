@@ -516,6 +516,11 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal.monthly .modal-issue::before{background:var(--gold);}
 .modal.monthly .modal-article p:first-child::first-letter{color:var(--gold);}
 .modal.monthly .modal-by{color:var(--gold);}
+/* 月刊号：新聞っぽい本文（両端揃え＋ジャンル見出し）。画像なし＝全幅のときは段組み（新聞段組） */
+.modal.monthly .modal-article{text-align:justify;line-height:1.9;}
+.modal.monthly.modal-noimg .modal-article{max-width:none;column-width:18em;column-gap:30px;column-rule:1px solid rgba(244,201,93,0.22);}
+.modal.monthly .modal-article h3.genre{column-span:all;-webkit-column-span:all;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:13px;letter-spacing:4px;color:var(--gold);text-align:center;margin:22px 0 14px;padding:7px 0;border-top:1px solid rgba(244,201,93,0.4);border-bottom:1px solid rgba(244,201,93,0.4);text-shadow:0 0 8px rgba(244,201,93,0.35);}
+.modal.monthly .modal-article h3.genre:first-child{margin-top:0;}
 .modal-nav{display:flex;gap:6px;}
 .modal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
@@ -1521,13 +1526,29 @@ function filterSearch() {
 
 // ══ MODAL ══
 let currentId = null;
+// 月刊号：本文を新聞っぽく整形。1行だけ「大」にした段落を“ジャンル見出し”に変換する。
+function monthlyFormat(html){
+  try{
+    var tmp = document.createElement('div'); tmp.innerHTML = html || '';
+    tmp.querySelectorAll('p').forEach(function(p){
+      var kids = p.children;
+      if(kids.length === 1 && kids[0].classList && kids[0].classList.contains('big')
+         && p.textContent.trim() !== '' && p.textContent.trim() === kids[0].textContent.trim()){
+        var h = document.createElement('h3'); h.className = 'genre';
+        h.textContent = kids[0].textContent.trim();
+        p.replaceWith(h);
+      }
+    });
+    return tmp.innerHTML || '<p></p>';
+  }catch(e){ return html; }
+}
 function openModal(id) {
   const p = papers.find(x => x.id === id); if (!p) return;
   currentId = id;
   document.getElementById('modal-issue').textContent   = p.issue;
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
-  document.getElementById('modal-article').innerHTML = p.article;
+  document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article) : p.article;
   document.getElementById('modal-by').textContent      = p.by;
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
