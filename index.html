@@ -506,18 +506,10 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .m-dlabel{text-align:center;font-size:11px;letter-spacing:2px;color:#a9c6da;margin:14px 0 2px;}
 .modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
 .modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
-.modal-article .m-quote{margin:20px 0;padding:4px 0 4px 16px;border-left:2px solid var(--cyan);font-size:17px;line-height:1.7;color:#fff;font-weight:600;}
-/* 進捗バー（月刊号のみ表示） */
-.m-progbar{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.08);z-index:11;opacity:0;transition:opacity .25s;}
-.modal.mlong .m-progbar{opacity:1;}
-.m-progbar i{display:block;height:100%;width:0;background:var(--cyan);transition:width .12s linear;}
 /* 「↑ 先頭へ」ボタン（月刊号のみ・スクロール後に出現） */
 .m-totop{position:absolute;bottom:16px;right:16px;z-index:12;display:none;padding:9px 14px;border:1px solid var(--border);background:rgba(4,8,15,0.92);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;border-radius:20px;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;}
 .modal.mlong .m-totop.show{display:block;opacity:1;transform:translateY(0);}
 .m-totop:hover{border-color:var(--cyan);}
-/* 章がふわっと表示 */
-.modal-article .m-reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;}
-.modal-article .m-reveal.m-in{opacity:1;transform:none;}
 /* 証拠写真（本文内）：タップで拡大 */
 .modal-article .m-fig{margin:18px 0;}
 .modal-article .m-fig img{display:block;width:100%;height:auto;border:1px solid var(--border);background:var(--black);cursor:zoom-in;}
@@ -1074,7 +1066,6 @@ body.standalone #appReload{display:flex;}
 <div class="modal-wrap" id="modal">
   <div class="modal-backdrop" onclick="closeModal()"></div>
   <div class="modal">
-    <div class="m-progbar"><i id="m-prog"></i></div>
     <button class="modal-close" onclick="closeModal()">閉じる</button>
     <button class="m-totop" id="m-totop" onclick="modalToTop()">↑ 先頭へ</button>
     <div class="modal-img" id="modal-img"></div>
@@ -1603,12 +1594,6 @@ function monthlyFormat(html, photos){
       if(isData(t)){ out.push('<div class="m-data">'+esc(t)+'</div>'); continue; }
       if(t.length <= 8 && isData(nextT)){ out.push('<div class="m-dlabel">'+esc(t)+'</div>'); continue; }
       if(isBul(t)){ out.push('<p class="m-li">'+h+'</p>'); continue; }
-      if(/^「/.test(t)){   // 「〜」の証言・名言はプルクオート（複数行も連結）
-        var qbuf = [h]; var closed = /」$/.test(t); var guard = 0;
-        while(!closed && i+1 < lines.length && guard < 6){ i++; guard++; qbuf.push(lines[i].html); closed = /」$/.test(lines[i].text); }
-        out.push('<blockquote class="m-quote">'+qbuf.join('<br>')+'</blockquote>');
-        continue;
-      }
       out.push('<p>'+h+'</p>');
     }
     // マーカーで置かれなかった写真は最後に「証拠写真」ギャラリーとして表示（写真が無駄にならない）
@@ -1653,47 +1638,21 @@ function openModal(id) {
     if(!_mbody._ftScroll){ _mbody.addEventListener('scroll', onModalScroll); _mbody._ftScroll = true; }
   }
   onModalScroll();
-  if(p.monthly){ setTimeout(setupMonthlyReveal, 30); }
-  else if(_mRevealObs){ _mRevealObs.disconnect(); _mRevealObs = null; }
 }
-// 読書進捗バー＋「↑先頭へ」ボタン（月刊号のみ反映）
+// 「↑先頭へ」ボタン（月刊号のみ・スクロールで出現）
 function onModalScroll(){
   var mb = document.querySelector('#modal .modal-body'); if(!mb) return;
   var mbox = document.querySelector('#modal .modal');
   var on  = !!(mbox && mbox.classList.contains('mlong'));
-  var max = mb.scrollHeight - mb.clientHeight;
-  var ratio = (on && max > 0) ? (mb.scrollTop / max) : 0;
-  var bar = document.getElementById('m-prog'); if(bar) bar.style.width = (ratio*100).toFixed(1)+'%';
   var top = document.getElementById('m-totop'); if(top) top.classList.toggle('show', on && mb.scrollTop > 240);
 }
 function modalToTop(){
   var mb = document.querySelector('#modal .modal-body'); if(!mb) return;
   try{ mb.scrollTo({top:0, behavior:'smooth'}); }catch(e){ mb.scrollTop = 0; }
 }
-// 章がスクロールで“ふわっと”表示（月刊号のみ）
-var _mRevealObs = null;
-function setupMonthlyReveal(){
-  if(_mRevealObs){ _mRevealObs.disconnect(); _mRevealObs = null; }
-  if(!('IntersectionObserver' in window)) return;
-  var mb = document.querySelector('#modal .modal-body');
-  var art = document.getElementById('modal-article');
-  if(!mb || !art) return;
-  var kids = Array.prototype.slice.call(art.children);
-  kids.forEach(function(el){ el.classList.add('m-reveal'); });
-  _mRevealObs = new IntersectionObserver(function(ents){
-    ents.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('m-in'); _mRevealObs.unobserve(e.target); } });
-  }, { root: mb, threshold: 0.08 });
-  kids.forEach(function(el){ _mRevealObs.observe(el); });
-  // 保険：1.6秒後に未表示が残っていたら強制的に出す
-  setTimeout(function(){
-    var rest = art.querySelectorAll('.m-reveal:not(.m-in)');
-    Array.prototype.forEach.call(rest, function(el){ el.classList.add('m-in'); });
-  }, 1600);
-}
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = ''; currentId = null;
-  if(_mRevealObs){ _mRevealObs.disconnect(); _mRevealObs = null; }
 }
 // 写真をタップ → 全画面で拡大表示（ライトボックス）
 function openLightbox(imgEl){
