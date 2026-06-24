@@ -1581,7 +1581,7 @@ function monthlyFormat(html, photos){
     for(var i=0;i<lines.length;i++){
       var t = lines[i].text, h = lines[i].html;
       var nextT = (i+1 < lines.length) ? lines[i+1].text : '';
-      var mph = t.match(/^\[\s*写真\s*(\d*)\s*\]$/);   // [写真] / [写真2] を写真に置換
+      var mph = t.match(/^[\[［]\s*写真\s*(\d*)\s*[\]］]$/);   // [写真]・［写真2］等を写真に置換（半角/全角どちらの括弧もOK）
       if(mph){
         var pi = mph[1] ? (parseInt(mph[1],10)-1) : (photoSeq++);
         if(photos[pi] && photos[pi].src){ used[pi] = true; out.push(mFig(photos[pi])); }
