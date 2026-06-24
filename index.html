@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FREE TIMES">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@700;800&family=Inter:wght@100;200;300&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&family=Yusei+Magic&family=Dela+Gothic+One&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -32,7 +32,10 @@
   --amber:#ffb700;
   --star:#a8ff00;
   --read-col:26em;   /* 本文＆全画面エディタ共通の1行幅（全角約26文字） */
+  --font-main:'Noto Sans JP',sans-serif;  /* サイト全体のフォント（フォント切替で変更） */
 }
+/* フォント切替：選択時はサイト全部の文字に適用（SVGロゴ・星は除外） */
+body.fontskin *:not(svg):not(.ftlogo):not(.star-svg):not(.star-svg *){font-family:var(--font-main)!important;}
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
 ::-webkit-scrollbar{width:2px;}
@@ -1062,6 +1065,7 @@ const DEFAULT_CONTENT = {
   theme:{ cyan:"#00e5ff", blue:"#2a8fd4", blue2:"#4ab8ff", pink:"#ff3cac", lime:"#c8ff45", amber:"#ffb700", black:"#04080f", white:"#e8f4ff", star:"#a8ff00" },
   starAuto:true,   // 星のかけらの色を2ヶ月ごとに自動で変える（編集機能でオフにして手動色も可）
   heroSlidesVer:2, // 公開側でスライドを正式更新したら +1（古い保存スライドを置き換える）
+  font:0,          // サイト全体のフォント（0=標準/元デザイン, 1-6=各フォント）
   hero:{
     logoFree:"FREE", logoTimes:"TIMES",
     sub:"Breaking News From The Unknown",
@@ -1130,6 +1134,7 @@ function mergeContent(base, over){
     }
   }
   base.heroSlidesVer = Math.max(base.heroSlidesVer || 0, over.heroSlidesVer || 0);
+  if(over.font !== undefined) base.font = over.font;
   if(over.ticker)   base.ticker = over.ticker;
   if(over.footer)   Object.assign(base.footer, over.footer);
   if(over.articles){
@@ -1188,11 +1193,33 @@ function autoStarColor(){ return STAR_AUTO_PALETTE[starPeriodIndex() % STAR_AUTO
 // 画面に出す星の色（自動ならその時期の色、手動なら theme.star）
 function activeStarColor(){ return content.starAuto ? autoStarColor() : content.theme.star; }
 
+// ══ フォント切替（サイト全体） ══
+const FONTS = [
+  { name:'標準（元デザイン）', css:null },
+  { name:'ゴシック',     css:"'Noto Sans JP',sans-serif" },
+  { name:'明朝',         css:"'Noto Serif JP',serif" },
+  { name:'丸ゴシック',   css:"'M PLUS Rounded 1c',sans-serif" },
+  { name:'まるもじ',     css:"'Zen Maru Gothic',sans-serif" },
+  { name:'手書き風',     css:"'Yusei Magic',sans-serif" },
+  { name:'極太ポップ',   css:"'Dela Gothic One',sans-serif" }
+];
+function applyFont(){
+  var i = content.font || 0; var f = FONTS[i] || FONTS[0];
+  if(f.css){ document.documentElement.style.setProperty('--font-main', f.css); document.body.classList.add('fontskin'); }
+  else { document.body.classList.remove('fontskin'); }
+}
+function cycleFont(){
+  content.font = ((content.font || 0) + 1) % FONTS.length;
+  applyFont(); saveContent();
+  var b = document.getElementById('ef-font-btn'); if(b) b.textContent = '🔤 フォント：' + FONTS[content.font].name;
+}
+
 // ══ 内容を画面に反映 ══
 function applyTheme(){
   const r = document.documentElement.style;
   for(const k in content.theme) r.setProperty('--'+k, content.theme[k]);
   if(content.starAuto) r.setProperty('--star', autoStarColor());   // 自動のとき星だけ上書き
+  applyFont();
 }
 // 自動のとき、2ヶ月の期間をまたいだら色を更新（1時間ごとに確認）
 let _starPeriod = starPeriodIndex();
@@ -1940,6 +1967,8 @@ function editTheme(){
   const starVal = auto ? autoStarColor() : (t.star || '#a8ff00');
   edOpen(`
     <div class="ed-head"><span>色・デザイン</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-field"><label>フォント（サイト全体の文字。押すと切替）</label>
+      <button type="button" class="ed-fmt" id="ef-font-btn" onclick="cycleFont()" style="text-align:left;">🔤 フォント：${FONTS[content.font||0].name}</button></div>
     ${fields.map(([k,label]) => `<div class="ed-field"><label>${label}</label><input type="color" id="th-${k}" value="${t[k]}" oninput="liveTheme('${k}',this.value)"></div>`).join('')}
     <div class="ed-field" style="flex-direction:column;align-items:stretch;gap:8px;">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
