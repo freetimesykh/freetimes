@@ -507,7 +507,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
 .modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
 /* 「↑ 先頭へ」ボタン（月刊号のみ・スクロール後に出現） */
-.m-totop{position:absolute;bottom:16px;right:16px;z-index:12;display:none;padding:9px 14px;border:1px solid var(--border);background:rgba(4,8,15,0.92);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;border-radius:20px;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;}
+.m-totop{position:fixed;bottom:18px;right:18px;z-index:520;display:none;padding:10px 16px;border:1px solid var(--cyan);background:rgba(4,8,15,0.95);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border-radius:20px;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;box-shadow:0 4px 14px rgba(0,0,0,0.5);}
 .modal.mlong .m-totop.show{display:block;opacity:1;transform:translateY(0);}
 .m-totop:hover{border-color:var(--cyan);}
 /* 証拠写真（本文内）：タップで拡大 */
@@ -1653,18 +1653,25 @@ function openModal(id) {
     _mbody.scrollTop = 0;
     if(!_mbody._ftScroll){ _mbody.addEventListener('scroll', onModalScroll); _mbody._ftScroll = true; }
   }
+  // スマホでは .modal 自体がスクロールするので、そちらにもリスナーを付ける
+  if(_mbox && !_mbox._ftScroll){ _mbox.addEventListener('scroll', onModalScroll); _mbox._ftScroll = true; }
   onModalScroll();
 }
-// 「↑先頭へ」ボタン（月刊号のみ・スクロールで出現）
+// 「↑先頭へ」ボタン（月刊号のみ・スクロールで出現）。PC=.modal-body / スマホ=.modal がスクロール
+function modalScrollTop(){
+  var mb = document.querySelector('#modal .modal-body');
+  var mbox = document.querySelector('#modal .modal');
+  return Math.max(mb ? mb.scrollTop : 0, mbox ? mbox.scrollTop : 0);
+}
 function onModalScroll(){
-  var mb = document.querySelector('#modal .modal-body'); if(!mb) return;
   var mbox = document.querySelector('#modal .modal');
   var on  = !!(mbox && mbox.classList.contains('mlong'));
-  var top = document.getElementById('m-totop'); if(top) top.classList.toggle('show', on && mb.scrollTop > 240);
+  var top = document.getElementById('m-totop'); if(top) top.classList.toggle('show', on && modalScrollTop() > 240);
 }
 function modalToTop(){
-  var mb = document.querySelector('#modal .modal-body'); if(!mb) return;
-  try{ mb.scrollTo({top:0, behavior:'smooth'}); }catch(e){ mb.scrollTop = 0; }
+  var mb = document.querySelector('#modal .modal-body');
+  var mbox = document.querySelector('#modal .modal');
+  [mb, mbox].forEach(function(el){ if(!el) return; try{ el.scrollTo({top:0, behavior:'smooth'}); }catch(e){ el.scrollTop = 0; } });
 }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
