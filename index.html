@@ -583,6 +583,11 @@ body.mlong-open #m-totop{display:flex;}
 .ed-grid button{background:#0d1622;color:var(--white);border:1px solid var(--border);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;}
 .ed-grid button:hover{border-color:var(--cyan);color:var(--cyan);}
 .ed-grid .ed-reset{color:var(--pink);}
+.ed-publish-row{display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-top:8px;}
+.ed-publish{background:#0a3; background:linear-gradient(135deg,#0bbf6a,#089e7a);color:#04130d;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:800;font-family:inherit;letter-spacing:1px;}
+.ed-publish:disabled{opacity:.6;cursor:default;}
+.ed-publish-cfg{background:#0d1622;color:var(--white);border:1px solid var(--border);padding:12px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;}
+.ed-publish-cfg:hover{border-color:var(--cyan);color:var(--cyan);}
 body.edit-mode [data-edit]{outline:1px dashed rgba(0,229,255,.7);outline-offset:3px;cursor:text;border-radius:2px;}
 body.edit-mode [data-edit]:hover{background:rgba(0,229,255,.12);}
 body.edit-mode .a-card,body.edit-mode .arch-card,body.edit-mode .monthly-right,body.edit-mode .monthly-left{cursor:pointer;}
@@ -1879,6 +1884,11 @@ function renderEditChrome(){
         <button onclick="importJSONDialog()">⤴ 読み込み</button>
         <button class="ed-reset" onclick="resetContent()">♻ 初期化</button>
       </div>
+      <div class="ed-publish-row">
+        <button id="pubBtn" class="ed-publish" onclick="publishSite()">🚀 公開する</button>
+        <button class="ed-publish-cfg" onclick="openPublishSettings()">🔑 公開の設定</button>
+      </div>
+      <div class="ed-tip">「公開する」を押すと、いまの内容が全員のホームページに反映されます（約1分）。初回は「公開の設定」でトークン登録が必要です。</div>
     </div>`;
 }
 
@@ -2275,8 +2285,98 @@ document.querySelectorAll('[data-edit]').forEach(el => {
   el.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); el.blur(); } });
 });
 renderEditChrome();
-// 画像(IndexedDB)を復元してから描画
-resolveImages().then(function(){ papers = content.articles; renderAll(); }, function(){ renderAll(); });
+// ═══════════════════════════════════════════════
+//  公開する（GitHubへ反映）— 自分で全員に反映できる仕組み
+// ═══════════════════════════════════════════════
+var GH_OWNER='hodakaman5', GH_REPO='freetimes', GH_BRANCH='claude/external-homepage-editing-xvvk8i';
+var GH_TOKEN_KEY='freetimes_gh_token';
+function ghToken(){ try{ return localStorage.getItem(GH_TOKEN_KEY)||''; }catch(e){ return ''; } }
+function ghHeaders(){ return { 'Authorization':'Bearer '+ghToken(), 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' }; }
+function b64encodeUtf8(str){ return btoa(unescape(encodeURIComponent(str))); }
+function dataUrlParts(du){ var m=/^data:([^;]+);base64,([\s\S]*)$/.exec(du); return m?{mime:m[1],b64:m[2]}:null; }
+function quickHash(s){ var h=5381,i=s.length; while(i){ h=(h*33)^s.charCodeAt(--i); } return (h>>>0).toString(16); }
+function extOf(mime){ return mime.indexOf('png')>=0?'png':(mime.indexOf('webp')>=0?'webp':(mime.indexOf('gif')>=0?'gif':'jpg')); }
+function ghApi(path){ return 'https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+path; }
+function ghGetSha(path){
+  if(typeof fetch==='undefined') return Promise.resolve(null);
+  return fetch(ghApi(path)+'?ref='+GH_BRANCH, {headers:ghHeaders(), cache:'no-store'})
+    .then(function(r){ return r.ok ? r.json().then(function(j){return j.sha;}) : null; }).catch(function(){ return null; });
+}
+function ghPut(path, b64content, message){
+  return ghGetSha(path).then(function(sha){
+    var body={ message:message, content:b64content, branch:GH_BRANCH };
+    if(sha) body.sha=sha;
+    return fetch(ghApi(path), {method:'PUT', headers:ghHeaders(), body:JSON.stringify(body)})
+      .then(function(r){ if(!r.ok){ return r.json().then(function(j){ throw new Error((j&&j.message)||('HTTP '+r.status)); }, function(){ throw new Error('HTTP '+r.status); }); } return r.json(); });
+  });
+}
+function ghUploadImage(dataUrl){
+  var p = dataUrlParts(dataUrl); if(!p) return Promise.resolve(dataUrl);
+  var path = 'img/u'+quickHash(p.b64)+'.'+extOf(p.mime);
+  return ghGetSha(path).then(function(sha){ return sha ? path : ghPut(path, p.b64, 'publish image '+path).then(function(){ return path; }); });
+}
+function setPublishStatus(msg){ var b=document.getElementById('pubBtn'); if(b){ b.textContent = msg || '🚀 公開する'; b.disabled = !!msg; } }
+function openPublishSettings(){
+  var has = !!ghToken();
+  edOpen(`
+    <div class="ed-head"><span>🔑 公開の設定</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-field">
+      <label>GitHub トークン${has?'（登録済み）':''}</label>
+      <input id="gh-token" type="password" placeholder="${has?'••••••（変更する時だけ入力）':'github_pat_... を貼り付け'}" value="">
+      <small>GitHubで「Settings → Developer settings → Fine-grained tokens」から、このリポジトリ(freetimes)の <b>Contents: Read and write</b> 権限・期限付きで作成し、ここに貼り付けて保存してください。トークンはこの端末にだけ保存され、公開サイトには出ません。</small>
+    </div>
+    <div class="ed-actions">
+      ${has?'<button class="ed-del" onclick="clearGhToken()">削除</button>':''}
+      <button class="ed-save" onclick="saveGhToken()">保存する</button>
+    </div>`);
+}
+function saveGhToken(){
+  var el=document.getElementById('gh-token'); var v=(el&&el.value||'').trim();
+  if(v){ try{ localStorage.setItem(GH_TOKEN_KEY, v); alert('トークンを保存しました。'); }catch(e){ alert('保存できませんでした。'); } }
+  edClose();
+}
+function clearGhToken(){ try{ localStorage.removeItem(GH_TOKEN_KEY); }catch(e){} alert('トークンを削除しました。'); edClose(); }
+function publishSite(){
+  if(!CAN_EDIT) return;
+  if(!ghToken()){ alert('先に「🔑 公開の設定」でGitHubトークンを登録してください。'); openPublishSettings(); return; }
+  if(!confirm('いまの内容を公開して、全員が見られるようにします。よろしいですか？')) return;
+  setPublishStatus('画像を準備中…');
+  // 画像(dataURL)を集める
+  var urls=[]; walkImages(JSON.parse(JSON.stringify(content)), function(v){ if(typeof v==='string'&&v.indexOf('data:')===0&&urls.indexOf(v)<0) urls.push(v); return v; });
+  var map={};
+  var chain = Promise.resolve();
+  urls.forEach(function(u,i){ chain = chain.then(function(){ setPublishStatus('画像を送信中…('+(i+1)+'/'+urls.length+')'); return ghUploadImage(u).then(function(path){ map[u]=path; }); }); });
+  chain.then(function(){
+    setPublishStatus('記事を反映中…');
+    var pub = JSON.parse(JSON.stringify(content));
+    walkImages(pub, function(v){ if(typeof v==='string'){ if(map[v]) return map[v]; if(v.indexOf('data:')===0) return ''; if(v.indexOf('idb:')===0) return ''; } return v; });
+    pub.publishedAt = new Date().toISOString();
+    return ghPut('content.json', b64encodeUtf8(JSON.stringify(pub)), 'publish content.json');
+  }).then(function(){
+    setPublishStatus('');
+    alert('公開しました！ 約1分でみんなのホームページに反映されます。');
+  }).catch(function(e){
+    setPublishStatus('');
+    alert('公開に失敗しました：'+((e&&e.message)||e)+'\n（トークンの権限・期限、ネット接続をご確認ください）');
+  });
+}
+// 公開済み content.json を取得（無ければ null → 今まで通りDEFAULT表示）
+function fetchPublished(){
+  if(typeof fetch==='undefined') return Promise.resolve(null);
+  return fetch('content.json?t='+Date.now(), {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+}
+// 画像(IndexedDB)を復元してから描画。さらに公開済みデータがあれば土台に採用。
+fetchPublished().then(function(pub){
+  if(pub){
+    try{
+      var base = mergeContent(clone(DEFAULT_CONTENT), pub);
+      var s = localStorage.getItem(LS_KEY); var localRaw = s ? JSON.parse(s) : null;
+      content = localRaw ? mergeContent(base, localRaw) : base;
+      papers = content.articles;
+    }catch(e){}
+  }
+  return resolveImages();
+}).then(function(){ papers = content.articles; renderAll(); }, function(){ renderAll(); });
 
 // ══ 星のかけら水槽：タップで画面いっぱいに拡大（誰でも） ══
 (function(){
