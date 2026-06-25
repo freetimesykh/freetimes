@@ -81,8 +81,14 @@
 - 公開サイト（repo）なら画像は数百記事規模でも問題なし。
 - 編集モード(localStorage)は少量・その端末のみ＝長期アーカイブ不向き。
 
-### 解析
-- アクセス解析（GoatCounter）はコメントアウトで保留中。
+### 解析（閲覧がわかる機能）
+- **本人決定（2026-06-25）：「完成・公開する時につける。今は保留」。** それまで触らない。
+- 方式は **GoatCounter（無料・Cookieなし・プライバシー配慮）** で確定。`index.html` 末尾にコメントアウト済み（`data-goatcounter="https://freetimes.goatcounter.com/count"` の2行）。
+- **有効化手順（その時が来たら）**：
+  1. 本人が goatcounter.com で無料登録（**コード名＝`freetimes`** にする → ダッシュボードは `freetimes.goatcounter.com`／メール・パスワードを設定）。
+  2. `index.html` 末尾のGoatCounter 2行の **コメント（`<!-- -->`）を外す** → 公開（🚀 or push）。
+  3. 以後 `freetimes.goatcounter.com` で「閲覧回数・日時・ページ・おおよその参照元/国」が見られる（**誰が見たかは取得しない＝匿名**）。
+- 代替案：ページ上に閲覧数を出す方式（👁 表示）もあるが、無料カウンターが不安定なため非推奨。本人にもA(GoatCounter)を推奨済み。
 
 ---
 
