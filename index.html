@@ -507,9 +507,9 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
 .modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
 /* 「↑ 先頭へ」ボタン（月刊号のみ・スクロール後に出現） */
-.m-totop{position:fixed;bottom:18px;right:18px;z-index:520;display:none;padding:10px 16px;border:1px solid var(--cyan);background:rgba(4,8,15,0.95);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border-radius:20px;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;box-shadow:0 4px 14px rgba(0,0,0,0.5);}
-.modal.mlong .m-totop.show{display:block;opacity:1;transform:translateY(0);}
-.m-totop:hover{border-color:var(--cyan);}
+.m-totop{position:absolute;bottom:18px;right:18px;z-index:520;display:none;padding:10px 16px;border:1px solid var(--cyan);background:rgba(4,8,15,0.95);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border-radius:20px;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;box-shadow:0 4px 14px rgba(0,0,0,0.5);}
+.m-totop.show{display:block;opacity:1;transform:translateY(0);}
+.m-totop:hover{background:rgba(0,229,255,0.12);}
 /* 証拠写真（本文内）：タップで拡大 */
 .modal-article .m-fig{margin:18px 0;}
 .modal-article .m-fig img{display:block;width:100%;height:auto;border:1px solid var(--border);background:var(--black);cursor:zoom-in;}
@@ -1067,7 +1067,6 @@ body.standalone #appReload{display:flex;}
   <div class="modal-backdrop" onclick="closeModal()"></div>
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">閉じる</button>
-    <button class="m-totop" id="m-totop" onclick="modalToTop()">↑ 先頭へ</button>
     <div class="modal-img" id="modal-img"></div>
     <div class="modal-body">
       <div class="modal-issue"   id="modal-issue"></div>
@@ -1084,6 +1083,7 @@ body.standalone #appReload{display:flex;}
       <button class="modal-close-bottom" onclick="closeModal()">閉じる</button>
     </div>
   </div>
+  <button class="m-totop" id="m-totop" onclick="modalToTop()">↑ 先頭へ</button>
 </div>
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lb-x" onclick="closeLightbox()">✕</button>
