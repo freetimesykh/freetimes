@@ -18,13 +18,12 @@
 ---
 
 ## ★ これから付ける機能（保留中・本人指示）
-1. **「公開する」ボタン（最優先・公開直前に実装）**
-   - 本人決定：「公開直前まではこのまま。公開する時にこの機能を付ける」（2026-06）。
-   - 内容：編集モード（?edit）で iPad/携帯から編集 → そのまま**全員に反映**。
-   - 方式候補（おすすめ順）：
-     1. 編集モードに「公開する」ボタンを追加し、GitHub トークン（本人が一度登録）で repo に直接コミット → 自動公開。
-     2. Decap CMS などの git ベース CMS を導入。
-   - **本人から「公開する時が来た」と言われたら着手。**
+1. **「公開する」ボタン（✅ 実装済み 2026-06-25）**
+   - 編集モードのパネルに **🚀公開する** ＋ **🔑公開の設定** を追加。本人が iPad/携帯から編集 → ボタンで**全員に反映**できる。
+   - 仕組み：「公開する」で今の `content` を **`content.json`** として GitHub（公開元ブランチ）へコミット（画像の dataURL は `img/u<hash>.<ext>` として自動アップロード→パス参照に置換）。サイトは起動時に `content.json` を fetch して土台に採用（無ければ DEFAULT_CONTENT に自動フォールバック）。デザイン/機能＝`index.html`（こちらが編集）と分離。
+   - 認証：**GitHub トークン**を「🔑公開の設定」で1回登録（localStorage キー `freetimes_gh_token`。公開コードには出ない）。classic PAT（repo / 90日）で運用中。`Authorization: Bearer` 方式。fine-grained 作成は iPad Safari で確認画面が反応せず断念→classic を採用。
+   - 定数：`GH_OWNER=hodakaman5 / GH_REPO=freetimes / GH_BRANCH=claude/external-homepage-editing-xvvk8i`。
+   - 安全：公開前に confirm、前版は Git 履歴で復元可、パスコードはそのままなので公開ボタン有無と一般公開は別。トークン流出時は GitHub 側で Delete→作り直し。
 2. **Twitter/X 連携**：公式Xアカウントのリンクを全ページ**フッター**に置く（URL未提供で保留）。
 3. **Instagram 連携**：後回し。
 4. **ダイレクトメール（問い合わせ）機能**：最終目標。仕様は実装時に確認。
