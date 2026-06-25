@@ -507,9 +507,9 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
 .modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
 /* 「↑ 先頭へ」ボタン（月刊号のみ・スクロール後に出現） */
-.m-totop{position:absolute;bottom:18px;right:18px;z-index:520;display:none;padding:10px 16px;border:1px solid var(--cyan);background:rgba(4,8,15,0.95);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;border-radius:20px;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;box-shadow:0 4px 14px rgba(0,0,0,0.5);}
-.m-totop.show{display:block;opacity:1;transform:translateY(0);}
-.m-totop:hover{background:rgba(0,229,255,0.12);}
+.m-totop{display:none;}
+.modal.mlong .m-totop{display:block;width:100%;margin:18px 0 4px;padding:13px;border:1px solid var(--cyan);background:rgba(0,229,255,0.06);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:10px;cursor:pointer;}
+.modal.mlong .m-totop:hover{background:rgba(0,229,255,0.14);}
 /* 証拠写真（本文内）：タップで拡大 */
 .modal-article .m-fig{margin:18px 0;}
 .modal-article .m-fig img{display:block;width:100%;height:auto;border:1px solid var(--border);background:var(--black);cursor:zoom-in;}
@@ -1073,6 +1073,7 @@ body.standalone #appReload{display:flex;}
       <div class="modal-title"   id="modal-title"></div>
       <div class="modal-sub"     id="modal-sub"></div>
       <div class="modal-article" id="modal-article"></div>
+      <button class="m-totop" id="m-totop" onclick="modalToTop()">↑ 先頭へ戻る</button>
       <div class="modal-footer">
         <div class="modal-by" id="modal-by"></div>
         <div class="modal-nav">
@@ -1083,7 +1084,6 @@ body.standalone #appReload{display:flex;}
       <button class="modal-close-bottom" onclick="closeModal()">閉じる</button>
     </div>
   </div>
-  <button class="m-totop" id="m-totop" onclick="modalToTop()">↑ 先頭へ</button>
 </div>
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lb-x" onclick="closeLightbox()">✕</button>
@@ -1649,25 +1649,9 @@ function openModal(id) {
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   if(_mbox) _mbox.scrollTop = 0;   // 開くたびに先頭から表示
-  if(_mbody){
-    _mbody.scrollTop = 0;
-    if(!_mbody._ftScroll){ _mbody.addEventListener('scroll', onModalScroll); _mbody._ftScroll = true; }
-  }
-  // スマホでは .modal 自体がスクロールするので、そちらにもリスナーを付ける
-  if(_mbox && !_mbox._ftScroll){ _mbox.addEventListener('scroll', onModalScroll); _mbox._ftScroll = true; }
-  onModalScroll();
+  if(_mbody) _mbody.scrollTop = 0;
 }
-// 「↑先頭へ」ボタン（月刊号のみ・スクロールで出現）。PC=.modal-body / スマホ=.modal がスクロール
-function modalScrollTop(){
-  var mb = document.querySelector('#modal .modal-body');
-  var mbox = document.querySelector('#modal .modal');
-  return Math.max(mb ? mb.scrollTop : 0, mbox ? mbox.scrollTop : 0);
-}
-function onModalScroll(){
-  var mbox = document.querySelector('#modal .modal');
-  var on  = !!(mbox && mbox.classList.contains('mlong'));
-  var top = document.getElementById('m-totop'); if(top) top.classList.toggle('show', on && modalScrollTop() > 240);
-}
+// 「↑先頭へ」：記事末尾のボタン。PC=.modal-body / スマホ=.modal の両方を先頭へ戻す
 function modalToTop(){
   var mb = document.querySelector('#modal .modal-body');
   var mbox = document.querySelector('#modal .modal');
