@@ -507,9 +507,9 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
 .modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
 /* 「↑ 先頭へ」ボタン（月刊号のみ・スクロール後に出現） */
-.m-totop{display:none;}
-.modal.mlong .m-totop{display:block;width:100%;margin:18px 0 4px;padding:13px;border:1px solid var(--cyan);background:rgba(0,229,255,0.06);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:10px;cursor:pointer;}
-.modal.mlong .m-totop:hover{background:rgba(0,229,255,0.14);}
+#m-totop{display:none;position:fixed;bottom:16px;right:16px;z-index:520;width:46px;height:46px;border-radius:50%;border:1px solid var(--cyan);background:rgba(4,8,15,0.92);color:var(--cyan);font-size:20px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.5);align-items:center;justify-content:center;}
+body.mlong-open #m-totop{display:flex;}
+#m-totop:hover{background:rgba(0,229,255,0.14);}
 /* 証拠写真（本文内）：タップで拡大 */
 .modal-article .m-fig{margin:18px 0;}
 .modal-article .m-fig img{display:block;width:100%;height:auto;border:1px solid var(--border);background:var(--black);cursor:zoom-in;}
@@ -1073,7 +1073,6 @@ body.standalone #appReload{display:flex;}
       <div class="modal-title"   id="modal-title"></div>
       <div class="modal-sub"     id="modal-sub"></div>
       <div class="modal-article" id="modal-article"></div>
-      <button class="m-totop" id="m-totop" onclick="modalToTop()">↑ 先頭へ戻る</button>
       <div class="modal-footer">
         <div class="modal-by" id="modal-by"></div>
         <div class="modal-nav">
@@ -1090,6 +1089,7 @@ body.standalone #appReload{display:flex;}
   <img id="lb-img" src="" alt="">
   <div class="lb-cap" id="lb-cap"></div>
 </div>
+<button id="m-totop" onclick="modalToTop()" aria-label="先頭へ">↑</button>
 
 <!-- ══ EDITOR UI ══ -->
 <div class="ed-wrap" id="edWrap">
@@ -1646,6 +1646,7 @@ function openModal(id) {
       : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
   }
   if(_mbox) _mbox.classList.toggle('mlong', !!p.monthly);   // 月刊号＝ロングリード演出ON
+  document.body.classList.toggle('mlong-open', !!p.monthly); // 月刊号のとき右下「↑」を表示
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   if(_mbox) _mbox.scrollTop = 0;   // 開くたびに先頭から表示
@@ -1660,6 +1661,7 @@ function modalToTop(){
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = ''; currentId = null;
+  document.body.classList.remove('mlong-open');   // 右下「↑」を隠す
 }
 // 写真をタップ → 全画面で拡大表示（ライトボックス）
 function openLightbox(imgEl){
