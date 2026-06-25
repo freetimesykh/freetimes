@@ -1455,12 +1455,13 @@ function initHome() {
     c.dataset.id = p.id;
     c.onclick = () => cardClick(p.id);
     if (p.imageSrc) {
+      const tc = tagColorOf(p);
       c.innerHTML = `
         <img src="${p.imageSrc}" alt="" loading="lazy" draggable="false">
         <div class="a-card-drag" aria-hidden="true">⠿</div>
         ${p.new ? '<div class="card-new">NEW</div>' : ''}
         <div class="a-card-strip">
-          <div class="a-card-tag">${esc(p.category || '号外')}</div>
+          <div class="a-card-tag" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}">${esc(p.category || '号外')}</div>
           <div class="a-card-title">${esc(p.title)}</div>
           <div class="a-card-sub">${esc((p.sub||'').substring(0,38))}${(p.sub||'').length>38?'…':''}</div>
           <div class="a-card-read">記事を読む</div>
@@ -1484,11 +1485,12 @@ function initArchive() {
   real.forEach(p => {
     const c = document.createElement('div');
     c.className = 'arch-card'; c.onclick = () => cardClick(p.id);
+    const tc = tagColorOf(p);
     c.innerHTML = `
       <img src="${p.imageSrc}" alt="" loading="lazy">
       ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
+        <span class="arch-card-tag" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}">${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${esc(p.issue)}</div>
         <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
@@ -1519,11 +1521,12 @@ function initSearch() {
     c.dataset.text  = [p.title, p.sub, p.issue, p.category, stripP(p.article)].join(' ').toLowerCase();
     c.dataset.cat   = p.category;
     c.onclick = () => cardClick(p.id);
+    const tc = tagColorOf(p);
     c.innerHTML = `
       <img src="${p.imageSrc}" alt="" loading="lazy">
       ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(p.color)},0.2);color:${p.color}">${esc(p.category||'other')}</span>
+        <span class="arch-card-tag" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}">${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${esc(p.issue)}</div>
         <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
@@ -1705,6 +1708,12 @@ document.addEventListener('keydown', e => {
 
 function hexRgb(h) {
   return `${parseInt(h.slice(1,3),16)},${parseInt(h.slice(3,5),16)},${parseInt(h.slice(5,7),16)}`;
+}
+// カテゴリータグの色：記事に個別色があればそれ、無ければ共通色（テーマの--blue）
+function tagColorOf(p){
+  if(p && /^#[0-9a-fA-F]{6}$/.test(p.color||'')) return p.color;
+  var v = getComputedStyle(document.documentElement).getPropertyValue('--blue').trim();
+  return /^#[0-9a-fA-F]{6}$/.test(v) ? v : '#2a8fd4';
 }
 
 // ══════════════════════════════════════════════
@@ -2012,10 +2021,13 @@ function editArticle(id){
         <div class="be-area" id="bodyCE" contenteditable="true"></div>
       </div>
       <small>「大」「太」を押してから打つと、その文字だけ大きく／太字（もう一度押すと戻る）</small></div>
-    <div class="ed-row">
-      <div class="ed-field"><label>テーマ色</label><input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}"></div>
-      <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
-    </div>
+    ${!a.monthly ? `<div class="ed-field">
+      <label>カテゴリータグの色（このカードだけ）</label>
+      <label class="ed-inline-check"><input id="ef-color-common" type="checkbox" ${!/^#[0-9a-fA-F]{6}$/.test(a.color||'')?'checked':''} onchange="document.getElementById('ef-color').style.opacity=this.checked?'0.35':'1'"> 共通の色を使う（全カード共通）</label>
+      <input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#2a8fd4'}" style="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?'':'opacity:0.35'}">
+      <small>チェックを外すと、このカードのタグだけ好きな色にできます。アーカイブ・サーチにも反映されます。</small>
+    </div>` : ''}
+    <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
     <div class="ed-field"><label><input id="ef-new" type="checkbox" ${a.new?'checked':''}> 🆕 NEWバッジを付ける</label></div>
     <div class="ed-actions">
       <button class="ed-del" onclick="deleteArticle(${id})">削除</button>
@@ -2056,7 +2068,10 @@ function saveArticle(id){
   a.category = val('ef-category').trim();
   a.issue    = val('ef-issue');
   a.by       = val('ef-by');
-  a.color    = document.getElementById('ef-color').value;
+  // カテゴリータグの色（非月刊のみ操作）。「共通の色を使う」なら個別色を消して共通色に従う
+  var _colEl = document.getElementById('ef-color');
+  var _colCommon = document.getElementById('ef-color-common');
+  if(_colEl){ a.color = (_colCommon && _colCommon.checked) ? '' : _colEl.value; }
   a.monthly  = document.getElementById('ef-monthly').checked;
   a.new      = document.getElementById('ef-new').checked;
   a.article  = sanitizeBody(document.getElementById('bodyCE'));
