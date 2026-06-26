@@ -82,7 +82,9 @@
 - 編集モード(localStorage)は少量・その端末のみ＝長期アーカイブ不向き。
 
 ### 解析（閲覧がわかる機能）
-- **本人決定（2026-06-25）：「完成・公開する時につける。今は保留」。** それまで触らない。
+- **✅ 有効化済み（2026-06-25）**：GoatCounter（無料・Cookieなし・広告なし）。`index.html` 末尾の2行をコメント解除して稼働中。
+- 管理ページ：**`https://freetimes.goatcounter.com`**（本人アカウント freetimes.ykh5@gmail.com、code=`freetimes`）。閲覧数・日時・ページ・参照元・端末・国（匿名）が見られる。動作確認OK（自分のアクセスが1件記録）。
+- いまはパスコード付きで非公開のため計上は主に本人。一般公開後に実訪問者が積み上がる。
 - 方式は **GoatCounter（無料・Cookieなし・プライバシー配慮）** で確定。`index.html` 末尾にコメントアウト済み（`data-goatcounter="https://freetimes.goatcounter.com/count"` の2行）。
 - **有効化手順（その時が来たら）**：
   1. 本人が goatcounter.com で無料登録（**コード名＝`freetimes`** にする → ダッシュボードは `freetimes.goatcounter.com`／メール・パスワードを設定）。
