@@ -493,8 +493,9 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-article .m-data{text-align:center;letter-spacing:3px;font-size:18px;line-height:1.5;color:var(--cyan);margin:2px 0;}
 .modal-article .m-h:first-child,.modal-article .m-kick:first-child,.modal-article .m-div:first-child{margin-top:0;}
 /* 「↑ 先頭へ」ボタン（月刊号のみ・スクロール後に出現） */
-#m-totop{display:none;position:fixed;bottom:16px;right:16px;z-index:520;width:46px;height:46px;border-radius:50%;border:1px solid var(--cyan);background:rgba(4,8,15,0.92);color:var(--cyan);font-size:20px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.5);align-items:center;justify-content:center;}
-body.mlong-open #m-totop{display:flex;}
+#m-totop{display:none;}
+.modal.mlong #m-totop{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:10px 0 2px;padding:12px;border:1px solid var(--cyan);background:rgba(0,229,255,0.06);color:var(--cyan);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:10px;cursor:pointer;}
+.modal.mlong #m-totop:hover{background:rgba(0,229,255,0.14);}
 #m-totop:hover{background:rgba(0,229,255,0.14);}
 /* 証拠写真（本文内）：タップで拡大 */
 .modal-article .m-fig{margin:18px 0;}
@@ -1074,6 +1075,7 @@ body.standalone #appReload{display:flex;}
       <div class="modal-title"   id="modal-title"></div>
       <div class="modal-sub"     id="modal-sub"></div>
       <div class="modal-article" id="modal-article"></div>
+      <button id="m-totop" onclick="modalToTop()" aria-label="先頭へ戻る">↑ 先頭へ戻る</button>
       <div class="modal-footer">
         <div class="modal-by" id="modal-by"></div>
         <div class="modal-nav">
@@ -1090,8 +1092,6 @@ body.standalone #appReload{display:flex;}
   <img id="lb-img" src="" alt="">
   <div class="lb-cap" id="lb-cap"></div>
 </div>
-<button id="m-totop" onclick="modalToTop()" aria-label="先頭へ">↑</button>
-
 <!-- ══ EDITOR UI ══ -->
 <div class="ed-wrap" id="edWrap">
   <div class="ed-backdrop" onclick="edClose()"></div>
