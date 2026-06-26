@@ -9,7 +9,7 @@
 - （この環境では git タグの push が 403 で不可のため、タグではなくブランチで固定している。）
 
 ## このサイトの基本
-- 公開サイト: https://hodakaman5.github.io/freetimes/
+- 公開サイト: https://freetimesykh.github.io/freetimes/
 - **GitHub Pages の公開元ブランチ = `claude/external-homepage-editing-xvvk8i`**（このブランチ）。
   ここに push すると自動でビルド・公開される。`main` は別系統なので注意。
 - 単一の `index.html`（静的サイト・サーバー/DBなし）。
@@ -22,7 +22,7 @@
    - 編集モードのパネルに **🚀公開する** ＋ **🔑公開の設定** を追加。本人が iPad/携帯から編集 → ボタンで**全員に反映**できる。
    - 仕組み：「公開する」で今の `content` を **`content.json`** として GitHub（公開元ブランチ）へコミット（画像の dataURL は `img/u<hash>.<ext>` として自動アップロード→パス参照に置換）。サイトは起動時に `content.json` を fetch して土台に採用（無ければ DEFAULT_CONTENT に自動フォールバック）。デザイン/機能＝`index.html`（こちらが編集）と分離。
    - 認証：**GitHub トークン**を「🔑公開の設定」で1回登録（localStorage キー `freetimes_gh_token`。公開コードには出ない）。classic PAT（repo / 90日）で運用中。`Authorization: Bearer` 方式。fine-grained 作成は iPad Safari で確認画面が反応せず断念→classic を採用。
-   - 定数：`GH_OWNER=hodakaman5 / GH_REPO=freetimes / GH_BRANCH=claude/external-homepage-editing-xvvk8i`。
+   - 定数：`GH_OWNER=freetimesykh / GH_REPO=freetimes / GH_BRANCH=claude/external-homepage-editing-xvvk8i`。
    - 安全：公開前に confirm、前版は Git 履歴で復元可、パスコードはそのままなので公開ボタン有無と一般公開は別。トークン流出時は GitHub 側で Delete→作り直し。
 2. **Twitter/X 連携**：公式Xアカウントのリンクを全ページ**フッター**に置く（URL未提供で保留）。
 3. **Instagram 連携**：後回し。

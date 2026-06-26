@@ -2280,7 +2280,7 @@ renderEditChrome();
 // ═══════════════════════════════════════════════
 //  公開する（GitHubへ反映）— 自分で全員に反映できる仕組み
 // ═══════════════════════════════════════════════
-var GH_OWNER='hodakaman5', GH_REPO='freetimes', GH_BRANCH='claude/external-homepage-editing-xvvk8i';
+var GH_OWNER='freetimesykh', GH_REPO='freetimes', GH_BRANCH='claude/external-homepage-editing-xvvk8i';
 var GH_TOKEN_KEY='freetimes_gh_token';
 function ghToken(){ try{ return localStorage.getItem(GH_TOKEN_KEY)||''; }catch(e){ return ''; } }
 function ghHeaders(){ return { 'Authorization':'Bearer '+ghToken(), 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' }; }
