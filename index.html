@@ -719,6 +719,9 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 /* ══ アプリ内「更新」ボタン（ホーム画面アプリで開いた時だけ表示） ══ */
 #appReload{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:560;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:rgba(4,8,15,0.72);color:var(--cyan);font-size:16px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:transform 0.4s;}
 body.standalone #appReload{display:flex;}
+#backBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:10px;z-index:560;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:rgba(4,8,15,0.82);color:var(--cyan);font-size:20px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s;padding:0;}
+#backBtn.show{display:flex;}
+#backBtn:hover{border-color:var(--cyan);background:rgba(0,229,255,0.14);}
 #appReload:active{transform:rotate(360deg);}
 
 /* ══ NEW バッジ（新着記事の目印） ══ */
@@ -803,6 +806,7 @@ body.standalone #appReload{display:flex;}
 <button id="toTop" aria-label="トップへ戻る" title="トップへ戻る">↑</button>
 <!-- アプリ内の更新ボタン（ホーム画面アプリで開いた時だけ表示） -->
 <button id="appReload" aria-label="最新に更新" title="最新に更新">🔄</button>
+<button id="backBtn" onclick="backNav()" aria-label="戻る" title="戻る">←</button>
 
 <!-- 星のかけら水槽：タップで拡大表示 -->
 <div id="starZoom" aria-hidden="true"><button id="sndToggle" class="snd-toggle" aria-label="音のオン/オフ">🔊</button><div class="zoom-hint" id="zoomHint">星にタッチ＝逃げる ／ 外をタッチ＝閉じる</div><div class="star-reward" id="starReward"></div></div>
@@ -1392,6 +1396,7 @@ function tick() {
 setInterval(tick, 1000); tick();
 
 // ══ PAGE SWITCH ══
+let currentPage = 'home';
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
@@ -1401,6 +1406,19 @@ function showPage(name) {
   window.scrollTo(0, 0);
   if (name === 'archive') initArchive();
   if (name === 'search')  initSearch();
+  currentPage = name;
+  updateBackBtn();
+}
+// ◀ 戻るボタン：記事を開いていれば閉じる、そうでなければトップ（一覧）へ戻る
+function backNav(){
+  var modal = document.getElementById('modal');
+  if(modal && modal.classList.contains('open')){ closeModal(); return; }
+  if(currentPage !== 'home') showPage('home');
+}
+function updateBackBtn(){
+  var b = document.getElementById('backBtn'); if(!b) return;
+  var modalOpen = (function(){ var m=document.getElementById('modal'); return m && m.classList.contains('open'); })();
+  b.classList.toggle('show', modalOpen || currentPage !== 'home');
 }
 
 // ══ HOME ══
@@ -1658,6 +1676,7 @@ function openModal(id) {
   document.body.style.overflow = 'hidden';
   if(_mbox) _mbox.scrollTop = 0;   // 開くたびに先頭から表示
   if(_mbody) _mbody.scrollTop = 0;
+  updateBackBtn();
 }
 // 「↑先頭へ」：記事末尾のボタン。PC=.modal-body / スマホ=.modal の両方を先頭へ戻す
 function modalToTop(){
@@ -1669,6 +1688,7 @@ function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = ''; currentId = null;
   document.body.classList.remove('mlong-open');   // 右下「↑」を隠す
+  updateBackBtn();
 }
 // 写真をタップ → 全画面で拡大表示（ライトボックス）
 function openLightbox(imgEl){
