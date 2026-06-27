@@ -371,8 +371,6 @@ body.edit-mode .monthly-coming.monthly-live::after{content:'✏ 月刊号を編�
 .m-shine{position:absolute;inset:0;z-index:1;pointer-events:none;}
 .m-shine::after{content:'';position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.25) 50%,transparent 65%);transform:translateX(-180%);animation:mShine 6s ease-in-out infinite;}
 @keyframes mShine{0%,100%{transform:translateX(-180%);}55%{transform:translateX(360%);}}
-.m-ribbon{position:absolute;top:13px;right:-34px;z-index:3;transform:rotate(45deg);background:var(--m-accent,var(--cyan));color:#04080f;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:10px;letter-spacing:2px;padding:4px 40px;box-shadow:0 2px 8px rgba(0,0,0,.4);}
-.m-masthead{align-self:flex-start;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:2px;font-size:clamp(9px,1.8vw,12px);color:var(--m-accent,var(--cyan));margin-bottom:7px;text-shadow:0 0 10px rgba(0,0,0,.7);}
 .premium-lite{border:1.5px solid var(--m-accent,var(--cyan))!important;box-shadow:0 0 16px -4px var(--m-accent,var(--cyan));}
 @media(prefers-reduced-motion:reduce){.monthly-banner.premium{animation:none;}.m-shine::after{animation:none;display:none;}}
 body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:absolute;top:8px;left:8px;background:rgba(0,229,255,.92);color:#04080f;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;z-index:5;font-family:'Noto Sans JP',sans-serif;pointer-events:none;}
@@ -1447,9 +1445,7 @@ function initHome() {
         <div class="monthly-banner premium" onclick="cardClick(${monthly.id})" style="--m-accent:${macc}">
           <img src="${monthly.imageSrc}" alt="">
           <div class="m-shine"></div>
-          <div class="m-ribbon">特別号</div>
           <div class="monthly-banner-overlay">
-            <div class="m-masthead">月刊フリータイムズ ✦ MONTHLY</div>
             <div class="monthly-banner-badge"${mbStyle}>Latest Issue</div>
             <div class="monthly-banner-title">${esc(monthly.title)}</div>
             <div class="monthly-banner-hint">タップして読む →</div>
@@ -1459,7 +1455,6 @@ function initHome() {
       document.getElementById('monthly-area').innerHTML = `
         <div class="monthly-coming monthly-live premium-lite" onclick="cardClick(${monthly.id})" style="--m-accent:${macc}">
           <div class="coming-inner">
-            <div class="m-masthead">月刊フリータイムズ ✦ MONTHLY</div>
             <div class="coming-badge"${mbStyle}>Latest Issue</div>
             <div class="ml-title">${esc(monthly.title)}</div>
             <div class="ml-hint">タップして読む →</div>
