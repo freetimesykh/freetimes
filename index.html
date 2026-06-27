@@ -1428,12 +1428,14 @@ function initHome() {
 
   // Monthly
   if (monthly) {
+    const mtc = /^#[0-9a-fA-F]{6}$/.test(monthly.color||'') ? monthly.color : '';
+    const mbStyle = mtc ? ` style="background:${mtc}"` : '';
     if (monthly.imageSrc) {
       document.getElementById('monthly-area').innerHTML = `
         <div class="monthly-banner" onclick="cardClick(${monthly.id})">
           <img src="${monthly.imageSrc}" alt="">
           <div class="monthly-banner-overlay">
-            <div class="monthly-banner-badge">Latest Issue</div>
+            <div class="monthly-banner-badge"${mbStyle}>Latest Issue</div>
             <div class="monthly-banner-title">${esc(monthly.title)}</div>
             <div class="monthly-banner-hint">タップして読む →</div>
           </div>
@@ -1442,7 +1444,7 @@ function initHome() {
       document.getElementById('monthly-area').innerHTML = `
         <div class="monthly-coming monthly-live" onclick="cardClick(${monthly.id})">
           <div class="coming-inner">
-            <div class="coming-badge">Latest Issue</div>
+            <div class="coming-badge"${mbStyle}>Latest Issue</div>
             <div class="ml-title">${esc(monthly.title)}</div>
             <div class="ml-hint">タップして読む →</div>
           </div>
@@ -2054,9 +2056,9 @@ function editArticle(id){
       <small>チェックを外すと、このカードのタグだけ好きな色にできます。アーカイブ・サーチにも反映されます。</small>
     </div>` : ''}
     ${a.monthly ? `<div class="ed-field">
-      <label>号（issue）タグの色</label>
+      <label>月刊号タグの色</label>
       <input id="ef-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(a.color||'')?a.color:'#00e5ff'}">
-      <small>記事を開いたとき、上に出る「${esc(a.issue||'月刊号')}」の文字色になります。</small>
+      <small>トップの月刊号バナーの「Latest Issue」タグと、記事を開いたとき上に出る「${esc(a.issue||'月刊号')}」の色になります。</small>
     </div>` : ''}
     <div class="ed-field"><label><input id="ef-monthly" type="checkbox" ${a.monthly?'checked':''}> 月刊号にする</label></div>
     <div class="ed-field"><label><input id="ef-new" type="checkbox" ${a.new?'checked':''}> 🆕 NEWバッジを付ける</label></div>
