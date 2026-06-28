@@ -28,6 +28,11 @@
 3. **Instagram 連携**：後回し。
 4. **ダイレクトメール（問い合わせ）機能**：最終目標。仕様は実装時に確認。
 5. **アーカイブのページ分け／「もっと見る」**：記事が数百件規模になったら追加（軽さ維持）。
+6. **共有用メタ情報（OGタグ）＝公開時に追加（保留・本人指示 2026-06-27）**：
+   - 現状 `index.html` の `<head>` に OG/Twitter カードが**未設定**。
+   - 一般公開する時に、X/LINE等にURLを貼ると**タイトル・説明・サムネ画像**がきれいに出るよう次を追加：
+     `<meta property="og:title">` / `og:description` / `og:image`（横長サムネ。例：hero1.jpg かロゴ画像を1枚用意）/ `og:url` / `og:type=website` と、`<meta name="twitter:card" content="summary_large_image">` / `twitter:title` / `twitter:description` / `twitter:image`、`<meta name="description">`。
+   - **noindex を外して一般公開するタイミングで一緒に実装**（非公開のうちは不要）。本人から「公開する」と言われたら着手。
 
 ---
 
