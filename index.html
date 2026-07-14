@@ -1382,7 +1382,12 @@ function mergeContent(base, over){
     const extras = base.articles.filter(a => !ids.has(a.id));
     base.articles = over.articles.concat(extras);
   }
-  if(over.characters){ base.characters = over.characters; }   // 登場キャラは保存/公開データを採用
+  if(over.characters){
+    // 保存データのキャラを優先しつつ、公開側で追加したキャラ(保存データに無いid)は必ず足す
+    const ids = new Set(over.characters.map(c => c.id));
+    const extras = base.characters.filter(c => !ids.has(c.id));
+    base.characters = over.characters.concat(extras);
+  }
   return base;
 }
 function loadContent(){
