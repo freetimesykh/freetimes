@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>404 — FREE TIMES</title>
+<style>
+  :root{--cyan:#00e5ff;--muted:#4a7a9b;--white:#e8f4ff;--black:#04080f;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{background:radial-gradient(120% 120% at 50% 0%,#0a1826 0%,#04080f 60%);color:var(--white);
+    font-family:'Hiragino Sans','Noto Sans JP',sans-serif;min-height:100%;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;overflow:hidden;}
+  .wrap{max-width:520px;position:relative;z-index:1;}
+  .brand{font-family:'Bebas Neue','Space Mono',monospace;letter-spacing:6px;font-size:14px;color:var(--cyan);
+    text-shadow:0 0 14px rgba(0,229,255,.6);margin-bottom:26px;}
+  .code{font-family:'Bebas Neue','Arial Black',sans-serif;font-weight:900;font-size:clamp(72px,22vw,150px);
+    line-height:.9;letter-spacing:4px;color:#fff;text-shadow:0 0 40px rgba(0,229,255,.35);}
+  .jp{font-size:clamp(15px,4.5vw,20px);font-weight:700;margin-top:14px;line-height:1.6;}
+  .en{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);
+    text-transform:uppercase;margin-top:10px;}
+  .desc{font-size:12px;color:#a9c6da;line-height:1.9;margin-top:18px;}
+  .btn{display:inline-block;margin-top:26px;padding:13px 30px;border:1px solid var(--cyan);border-radius:26px;
+    color:var(--cyan);text-decoration:none;font-size:12px;font-weight:700;letter-spacing:2px;
+    background:rgba(0,229,255,.06);transition:background .2s;}
+  .btn:hover{background:rgba(0,229,255,.18);}
+  .star{position:fixed;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.5;
+    box-shadow:0 0 6px #fff;animation:tw 3s ease-in-out infinite;}
+  @keyframes tw{0%,100%{opacity:.2;}50%{opacity:.8;}}
+</style>
+</head>
+<body>
+  <span class="star" style="top:14%;left:18%"></span>
+  <span class="star" style="top:26%;left:78%;animation-delay:.6s"></span>
+  <span class="star" style="top:70%;left:12%;animation-delay:1.2s"></span>
+  <span class="star" style="top:80%;left:82%;animation-delay:.9s"></span>
+  <span class="star" style="top:44%;left:50%;animation-delay:1.6s"></span>
+  <div class="wrap">
+    <div class="brand">FREE TIMES</div>
+    <div class="code">404</div>
+    <div class="jp">この号は、別の次元に消えました。</div>
+    <div class="en">Page Lost In Another Dimension</div>
+    <div class="desc">お探しのページは見つかりませんでした。<br>時空のねじれか、まだ存在しない未来の記事かもしれません。</div>
+    <a class="btn" href="/freetimes/">← トップへ戻る</a>
+  </div>
+</body>
+</html>
