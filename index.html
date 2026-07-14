@@ -503,6 +503,16 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .char-more{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--c,var(--cyan));padding:8px 12px 12px;}
 .char-add{flex:0 0 120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:28px;color:var(--cyan);border-style:dashed;}
 .char-add span{font-size:10px;letter-spacing:1px;}
+/* 携帯：キャラカードを記事カードより小さく */
+@media(max-width:600px){
+  .chars-row{gap:9px;}
+  .char-card{flex:0 0 116px;}
+  .char-card .char-name{font-size:11px;padding:7px 9px 0;}
+  .char-desc{font-size:9px;padding:4px 9px 0;min-height:24px;}
+  .char-more{font-size:8px;padding:6px 9px 10px;}
+  .char-noimg{font-size:34px;}
+  .char-add{flex:0 0 92px;font-size:24px;}
+}
 /* キャラクター・プロフィール画面 */
 .charm-wrap{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
 .charm-wrap.open{display:flex;}
