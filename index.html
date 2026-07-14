@@ -484,6 +484,10 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .rep-role{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--cyan);margin:4px 0 6px;}
 .rep-bio{font-size:11px;color:#c8d8e6;line-height:1.6;}
 @media(max-width:640px){.reporters{grid-template-columns:1fr;}.about-inner{padding:20px 16px 60px;}}
+.about-chars-link{margin-top:20px;padding:16px 18px;border:1px solid var(--border);border-radius:10px;background:var(--panel);}
+.about-chars-link p{font-size:12px;color:#a9c6da;line-height:1.7;margin-bottom:8px;}
+.about-chars-link a{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--cyan);text-decoration:none;}
+.about-chars-link a:hover{text-decoration:underline;}
 /* 登場キャラクター（トップ） */
 .chars-section{margin-top:40px;}
 .chars-row{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;}
@@ -1181,17 +1185,9 @@ body.standalone #appReload{display:flex;}
       </div>
     </div>
 
-    <div class="sec-hd" style="margin:34px 0 18px">
-      <span class="sec-hd-en">Reporters</span>
-      <span class="sec-hd-jp">記者紹介</span>
-      <div class="sec-hd-line"></div>
-    </div>
-    <div class="reporters">
-      <div class="rep-card"><div class="rep-avatar" style="--rc:#c8ff45">🐕</div><div class="rep-info"><div class="rep-name">ルナ特派員 <span>Luna</span></div><div class="rep-role">宇宙・スクープ担当</div><div class="rep-bio">5言語であらゆる現場に駆けつける犬記者。「宇宙はいつもすぐそこにあるワン！」</div></div></div>
-      <div class="rep-card"><div class="rep-avatar" style="--rc:#00e5ff">📷</div><div class="rep-info"><div class="rep-name">緑マキオ <span>Midori Makio</span></div><div class="rep-role">横浜・現場担当</div><div class="rep-bio">足で稼ぐ現場主義。どんな怪現象も自分の目で確かめる。「現場は嘘をつかない。」</div></div></div>
-      <div class="rep-card"><div class="rep-avatar" style="--rc:#ffb700">🍜</div><div class="rep-info"><div class="rep-name">たごさくエイジ <span>Tagosaku Eiji</span></div><div class="rep-role">グルメ・号外担当</div><div class="rep-bio">宇宙の旨いものは見逃さない。銀河ポン酢を世に広めた食の伝道師。</div></div></div>
-      <div class="rep-card"><div class="rep-avatar" style="--rc:#4ab8ff">🔬</div><div class="rep-info"><div class="rep-name">イーサン・ボウル博士 <span>Dr. Ethan Bowl</span></div><div class="rep-role">科学検証担当</div><div class="rep-bio">未確認現象を冷静に分析するUAP研究者。「既知のデータには一致しません。」</div></div></div>
-      <div class="rep-card"><div class="rep-avatar" style="--rc:#ff3cac">🕵️</div><div class="rep-info"><div class="rep-name">三角鼻のアヤン <span>Ayan</span></div><div class="rep-role">都市伝説・裏取材担当</div><div class="rep-bio">10年以上、消えた船と謎の電波塔を追う。「これは昔話じゃない、真実の曲がり片だ。」</div></div></div>
+    <div class="about-chars-link">
+      <p>登場キャラクターの紹介は、トップページの「登場キャラクター」からご覧いただけます。</p>
+      <a href="#" onclick="showPage('home');setTimeout(function(){var s=document.getElementById('chars-section');if(s)s.scrollIntoView({behavior:'smooth'});},60);return false;">→ 登場キャラクターを見る</a>
     </div>
   </div>
   <footer class="site-footer">
