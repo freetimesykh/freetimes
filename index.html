@@ -540,6 +540,15 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-nav{display:flex;gap:6px;}
 .modal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.modal-related{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);}
+.modal-related-h{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.rel-item{display:flex;gap:10px;align-items:center;padding:7px 0;cursor:pointer;border-radius:6px;transition:background .15s;}
+.rel-item:hover{background:rgba(0,229,255,0.06);}
+.rel-thumb{width:52px;height:52px;flex:none;overflow:hidden;border:1px solid var(--border);background:var(--black);}
+.rel-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.rel-meta{min-width:0;}
+.rel-tag{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.rel-title{font-size:12px;font-weight:700;color:var(--white);line-height:1.35;}
 .modal-close-bottom{display:none;width:100%;margin-top:16px;padding:13px;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;border-radius:8px;cursor:pointer;}
 .modal-close-bottom:hover{border-color:var(--cyan);color:var(--cyan);}
 @media(max-width:640px){
@@ -1096,6 +1105,7 @@ body.standalone #appReload{display:flex;}
           <button class="modal-nav-btn" onclick="navModal(1)">→</button>
         </div>
       </div>
+      <div class="modal-related" id="modal-related" style="display:none"></div>
       <button class="modal-close-bottom" onclick="closeModal()">閉じる</button>
     </div>
   </div>
@@ -1721,6 +1731,21 @@ function openModal(id) {
     document.getElementById('modal-img').innerHTML = p.imageSrc
       ? `<img src="${p.imageSrc}" alt="${p.title}">`
       : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--panel)"><span style="font-size:8px;letter-spacing:3px;color:var(--dim)">NO IMAGE</span></div>`;
+  }
+  // ⑤ 関連記事「こちらもおすすめ」（同じカテゴリ・画像あり・自分以外を最大3件）
+  var relEl = document.getElementById('modal-related');
+  if(relEl){
+    var rel = p.category ? arrangeArticles(papers.filter(function(x){ return x.id!==p.id && x.imageSrc && x.category===p.category; })).slice(0,3) : [];
+    if(rel.length){
+      relEl.style.display = '';
+      relEl.innerHTML = '<div class="modal-related-h">こちらもおすすめ</div>' + rel.map(function(r){
+        var rc = tagColorOf(r);
+        return '<div class="rel-item" onclick="openModal('+r.id+')">'
+          + '<div class="rel-thumb"><img src="'+r.imageSrc+'" alt=""></div>'
+          + '<div class="rel-meta"><div class="rel-tag" style="color:'+rc+'">'+esc(r.category||'')+(fmtDate(r.date)?' · '+fmtDate(r.date):'')+'</div><div class="rel-title">'+esc(r.title)+'</div></div>'
+          + '</div>';
+      }).join('');
+    } else { relEl.style.display = 'none'; relEl.innerHTML = ''; }
   }
   if(_mbox) _mbox.classList.toggle('mlong', !!p.monthly);   // 月刊号＝ロングリード演出ON
   document.body.classList.toggle('mlong-open', !!p.monthly); // 月刊号のとき右下「↑」を表示
