@@ -484,6 +484,48 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .rep-role{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--cyan);margin:4px 0 6px;}
 .rep-bio{font-size:11px;color:#c8d8e6;line-height:1.6;}
 @media(max-width:640px){.reporters{grid-template-columns:1fr;}.about-inner{padding:20px 16px 60px;}}
+/* 登場キャラクター（トップ） */
+.chars-section{margin-top:40px;}
+.chars-row{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;}
+.chars-row::-webkit-scrollbar{height:6px;}
+.chars-row::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.char-card{flex:0 0 160px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s;}
+.char-card:hover{border-color:var(--c,var(--cyan));transform:translateY(-3px);}
+.char-portrait{width:100%;aspect-ratio:3/4;overflow:hidden;background:var(--black);}
+.char-portrait img{width:100%;height:100%;object-fit:cover;display:block;}
+.char-noimg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:46px;color:var(--c,var(--cyan));background:linear-gradient(160deg,color-mix(in srgb,var(--c,#00e5ff) 22%,#04080f),#04080f);}
+.char-card .char-name{font-size:13px;font-weight:700;color:#fff;padding:10px 12px 0;}
+.char-desc{font-size:10px;color:#a9c6da;line-height:1.5;padding:5px 12px 0;min-height:30px;}
+.char-more{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--c,var(--cyan));padding:8px 12px 12px;}
+.char-add{flex:0 0 120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:28px;color:var(--cyan);border-style:dashed;}
+.char-add span{font-size:10px;letter-spacing:1px;}
+/* キャラクター・プロフィール画面 */
+.charm-wrap{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+.charm-wrap.open{display:flex;}
+.charm-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);}
+.charm{position:relative;z-index:1;background:var(--panel);border:1px solid var(--c,var(--cyan));border-radius:14px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;box-shadow:0 0 34px -8px var(--c,var(--cyan));animation:min 0.3s ease;}
+.charm-close{position:absolute;top:12px;right:12px;z-index:5;height:32px;padding:0 14px;border:1px solid var(--border);background:rgba(4,8,15,.92);color:#fff;font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;}
+.charm-edit{position:absolute;top:12px;left:12px;z-index:5;height:32px;padding:0 12px;border:1px solid var(--cyan);background:rgba(4,8,15,.92);color:var(--cyan);font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;}
+.charm-head{font-family:'Bebas Neue','Space Mono',monospace;letter-spacing:4px;font-size:12px;color:var(--c,var(--cyan));text-align:center;padding:16px;border-bottom:1px solid var(--border);}
+.charm-body{display:flex;gap:18px;padding:20px;flex-wrap:wrap;}
+.charm-portrait{flex:0 0 180px;max-width:180px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--black);border:1px solid var(--border);}
+.charm-portrait img{width:100%;height:100%;object-fit:cover;display:block;}
+.charm-portrait .char-noimg{font-size:64px;}
+.charm-main{flex:1;min-width:220px;}
+.charm-name{font-size:26px;font-weight:800;color:#fff;line-height:1.1;}
+.charm-kana{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px;}
+.charm-role{display:inline-block;margin-top:10px;font-size:10px;font-weight:700;letter-spacing:1px;color:#04080f;background:var(--c,var(--cyan));padding:4px 10px;border-radius:4px;}
+.charm-fields{margin-top:16px;}
+.charm-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.charm-k{flex:0 0 90px;font-size:11px;font-weight:700;color:var(--c,var(--cyan));letter-spacing:1px;}
+.charm-v{flex:1;font-size:12px;color:#e9f3fd;line-height:1.6;}
+@media(max-width:520px){.charm-portrait{flex:0 0 140px;max-width:140px;margin:0 auto;}.charm-name{font-size:22px;}}
+/* エディタ：キャラ項目行 */
+.ed-cf-row{display:flex;gap:6px;margin-bottom:6px;}
+.ed-cf-row input{min-width:0;box-sizing:border-box;}
+.ed-cf-row input:first-of-type{flex:0 0 34%;}
+.ed-cf-row input:last-of-type{flex:1;}
+.ed-cf-row button{flex:none;width:34px;border:1px solid var(--border);background:none;color:var(--pink);border-radius:6px;cursor:pointer;}
 .search-bar{display:flex;gap:8px;margin-bottom:20px;}
 .search-input{flex:1;background:var(--panel);border:1px solid var(--border);color:var(--white);font-family:'Space Mono',monospace;font-size:11px;padding:12px 16px;outline:none;transition:border-color 0.2s;}
 .search-input::placeholder{color:var(--dim);}
@@ -1041,6 +1083,15 @@ body.standalone #appReload{display:flex;}
         <div class="articles-grid" id="articles-grid"></div>
       </section>
 
+      <section class="chars-section" id="chars-section" style="display:none">
+        <div class="sec-hd">
+          <span class="sec-hd-en">Characters</span>
+          <span class="sec-hd-jp">登場キャラクター</span>
+          <div class="sec-hd-line"></div>
+        </div>
+        <div class="chars-row" id="characters-area"></div>
+      </section>
+
     </div>
   </div>
 
@@ -1179,6 +1230,24 @@ body.standalone #appReload{display:flex;}
   <img id="lb-img" src="" alt="">
   <div class="lb-cap" id="lb-cap"></div>
 </div>
+<!-- ══ CHARACTER PROFILE ══ -->
+<div class="charm-wrap" id="char-modal">
+  <div class="charm-backdrop" onclick="closeCharacter()"></div>
+  <div class="charm" id="charm-box">
+    <button class="charm-close" onclick="closeCharacter()">閉じる</button>
+    <button class="charm-edit" id="charm-edit" onclick="editCharacter(currentChar)" style="display:none">✏ 編集</button>
+    <div class="charm-head">CHARACTER FILE</div>
+    <div class="charm-body">
+      <div class="charm-portrait" id="charm-portrait"></div>
+      <div class="charm-main">
+        <div class="charm-name" id="charm-name"></div>
+        <div class="charm-kana" id="charm-kana"></div>
+        <div class="charm-role" id="charm-role"></div>
+        <div class="charm-fields" id="charm-fields"></div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- ══ EDITOR UI ══ -->
 <div class="ed-wrap" id="edWrap">
   <div class="ed-backdrop" onclick="edClose()"></div>
@@ -1242,6 +1311,18 @@ const DEFAULT_CONTENT = {
     article:`<p>FREE TIMES MONTHLY</p><p>月刊フリータイムズ</p><p>2026年5月号</p><p>みなとみらい UFO 特集</p><p>⸻</p><p>COVER STORY</p><p>みなとみらいに来たのは、何者か</p><p>2026年5月2日、深夜0時すぎ。横浜・みなとみらいの夜空に、見慣れない光が浮かんだ。</p><p>複数の市民が「3分間、ぴたりと止まっていた」と証言する未確認飛行物体。今月、FREE TIMES編集部はその3分間の謎を追跡調査した。</p><p>調べるほどに、奇妙な符合が浮かび上がってきた——。</p><p>⸻</p><p>CONTENTS</p><p>01　編集長より</p><p>02　出現の夜</p><p>03　目撃者の証言</p><p>04　現場に残された痕跡</p><p>05　過去の墜落事例</p><p>06　編集部考察</p><p>07　ルナ特派員レポート</p><p>08　来月号予告</p><p>⸻</p><p>EDITOR'S NOTE</p><p>編集長より</p><p>皆さんこんにちは。FREE TIMES編集長のポール陽太です。</p><p>今月号は、横浜の空に現れた「3分間のUFO」を特集します。</p><p>最初は、よくある見間違いだろうと思っていました。しかし、寄せられた目撃情報の数と、その内容の一致に、編集部は背筋が寒くなりました。</p><p>真実はまだ霧の中です。それでも、私たちは記録を残します。どうぞ最後までお付き合いください。</p><p>Love & Peace.</p><p>⸻</p><p>CHAPTER 01</p><p>出現の夜</p><p>その光が確認されたのは、5月2日の午前0時14分ごろ。</p><p>みなとみらいの観覧車の上空、高度およそ300メートルの位置に、淡い緑色の光が静止していた。</p><p>付近を歩いていた会社員の男性は「最初はドローンかと思った。でも、音がまったくしなかった」と話す。</p><p>光は3分間ほどその場にとどまり、やがて音もなく横浜港の方角へ消えていったという。</p><p>⸻</p><p>CHAPTER 02</p><p>目撃者の証言</p><p>編集部には、ひと晩で40件を超える目撃情報が寄せられた。証言の一部を紹介する。</p><p>会社員・30代女性「急にあたりが静かになって、北の空が緑に光っていた。鳥も鳴きやんでいた」</p><p>観光客・20代男性「あの光は、今まで見たことのない動き方をしていた。スッと止まって、スッと消えた」</p><p>学生・10代男性「3分くらい、本当に微動だにしなかった。あんなドローンは無い」</p><p>証言の多くが「無音」「緑色」「静止」という三点で一致している。</p><p>⸻</p><p>CHAPTER 03</p><p>現場に残された痕跡</p><p>翌朝、編集部は光が静止していた真下の埠頭を調査した。確認された異変は次のとおり。</p><p>・アスファルトの一部が円形に焦げていた</p><p>・方位磁針が一時的に異常を示した</p><p>・周囲の気温に変化は無かった</p><p>・微弱な電磁波を観測した</p><p>いずれも、自然現象では説明がつきにくいものだった。</p><p>⸻</p><p>ARCHIVE PHOTO</p><p>過去の墜落事例</p><p>これは数十年前、別の宙域で撮影されたとされる「墜落した円盤」の記録写真である。[写真1]</p><p>真偽は確認できていない。しかしドーム状の形状は、今回の目撃証言と不気味なほど一致している。</p><p>もし両者が同じものだとしたら——その意味は、計り知れない。</p><p>⸻</p><p>CASE STATUS</p><p>事件進行度</p><p>■■■■■■■□□□</p><p>70%</p><p>信頼度</p><p>★★★★☆</p><p>危険度</p><p>★★★☆☆</p><p>出現率</p><p>★★☆☆☆</p><p>調査継続中</p><p>⸻</p><p>EDITOR'S VIEW</p><p>編集部考察</p><p>もしこれが未知の知性によるものなら、彼らはなぜ「みなとみらい」を選んだのか。</p><p>夜景の美しさか、人の多さか。それとも——港から海へと続く、あの一直線の航路か。</p><p>偶然と片づけるには、痕跡が多すぎる。編集部は引き続き、この件を追う。</p><p>⸻</p><p>LUNA REPORT</p><p>ルナ特派員レポート</p><p>ワン！</p><p>ルナは現場で、すこしだけ宇宙のにおいを感じたワン！</p><p>あれは絶対、円盤だったワン！</p><p>宇宙はいつも、すぐそこにあるワン。もっと空を見上げるワン！</p><p>⸻</p><p>NEXT ISSUE</p><p>来月号予告</p><p>横浜港トライアングル</p><p>消えた船と、謎の電波塔。10年以上追い続けてきた三角鼻のアヤンが、ついに沈黙を破る。</p><p>⸻</p><p>FREE TIMES編集部</p><p>Reality Is Stranger Than News.</p>` },
   { id:5, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
   { id:6, monthly:false, issue:"号外", category:"", title:"次の記事 準備中", sub:"", by:"FREE TIMES", imageSrc:"", color:"#1e3a52", article:`<p>準備中です。</p>` },
+  ],
+  characters: [
+    { id:1, name:"シアン", kana:"Cyan", role:"情報星の少女", color:"#00e5ff", image:"", desc:"情報星からやってきた少女。地下宇宙港に詳しい。",
+      fields:[{k:"職業",v:"情報アナリスト"},{k:"性格",v:"冷静・好奇心旺盛"},{k:"好きなもの",v:"古い記録・星図"},{k:"ひとこと",v:"データは、嘘をつかない。"}] },
+    { id:2, name:"レオン", kana:"Leon", role:"元・港湾局エンジニア", color:"#4ab8ff", image:"", desc:"元・港湾局のエンジニア。秘密を追い求める。",
+      fields:[{k:"職業",v:"フリーエンジニア"},{k:"性格",v:"寡黙・一途"},{k:"好きなもの",v:"機械・夜の海"},{k:"ひとこと",v:"答えは、必ず現場にある。"}] },
+    { id:3, name:"ミア", kana:"Mia", role:"自由気ままな旅人", color:"#ff3cac", image:"", desc:"自由気ままな旅人。写真と歌が大好き。",
+      fields:[{k:"職業",v:"旅する歌い手"},{k:"性格",v:"明るい・気まぐれ"},{k:"好きなもの",v:"写真・歌・寄り道"},{k:"ひとこと",v:"世界は、シャッターチャンスだらけ！"}] },
+    { id:4, name:"グレイ", kana:"Grey", role:"謎多き男", color:"#c8ff45", image:"", desc:"すべてを知っている…？ 謎多き男。",
+      fields:[{k:"職業",v:"不明"},{k:"性格",v:"底知れない"},{k:"ひとこと",v:"知りたいか？ その代償を払えるなら。"}] },
+    { id:5, name:"ユニ", kana:"Uni", role:"人工知能ドローン", color:"#a8ff00", image:"", desc:"人工知能ドローン。みんなのサポート役。",
+      fields:[{k:"職業",v:"サポートAI"},{k:"性格",v:"従順・ちょっと天然"},{k:"好きなもの",v:"充電・お手伝い"},{k:"ひとこと",v:"ピピッ！ お手伝いします！"}] }
   ]
 };
 
@@ -1311,6 +1392,7 @@ function walkImages(c, fn){
     if(a.imageSrc2 !== undefined) a.imageSrc2 = fn(a.imageSrc2);
     if(Array.isArray(a.photos)) a.photos.forEach(function(ph){ if(ph && ph.src !== undefined) ph.src = fn(ph.src); });
   });
+  if(Array.isArray(c.characters)) c.characters.forEach(function(ch){ if(ch && ch.image !== undefined) ch.image = fn(ch.image); });
 }
 // 起動時：localStorage内の idb:KEY 参照を実画像(dataURL)に戻す
 function resolveImages(){
@@ -1328,6 +1410,7 @@ function resolveImages(){
     ['imageSrc','imageSrc2'].forEach(function(k){ resolve(function(){return a[k];}, function(d){ a[k]=d; }); });
     if(Array.isArray(a.photos)) a.photos.forEach(function(ph){ if(ph) resolve(function(){return ph.src;}, function(d){ ph.src=d; }); });
   });
+  if(Array.isArray(c.characters)) c.characters.forEach(function(ch){ if(ch) resolve(function(){return ch.image;}, function(d){ ch.image=d; }); });
   return Promise.all(jobs);
 }
 function saveContent(){
@@ -1595,6 +1678,60 @@ function initHome() {
     grid.appendChild(c);
   });
   if (EDIT) enableCardReorder(grid);
+  renderCharacters();
+}
+
+// ══ CHARACTERS（登場キャラクター） ══
+let currentChar = null;
+function charImgHtml(ch){
+  if(ch.image) return '<img src="'+ch.image+'" alt="">';
+  var c = /^#[0-9a-fA-F]{6}$/.test(ch.color||'') ? ch.color : '#00e5ff';
+  return '<div class="char-noimg" style="--c:'+c+'">'+esc((ch.name||'?').slice(0,1))+'</div>';
+}
+function renderCharacters(){
+  var sec = document.getElementById('chars-section');
+  var row = document.getElementById('characters-area');
+  if(!sec || !row) return;
+  var list = Array.isArray(content.characters) ? content.characters : [];
+  if(!list.length && !EDIT){ sec.style.display = 'none'; return; }
+  sec.style.display = '';
+  row.innerHTML = list.map(function(ch){
+    var c = /^#[0-9a-fA-F]{6}$/.test(ch.color||'') ? ch.color : '#00e5ff';
+    return '<div class="char-card" style="--c:'+c+'" onclick="charClick('+ch.id+')">'
+      + '<div class="char-portrait">'+charImgHtml(ch)+'</div>'
+      + '<div class="char-name">'+esc(ch.name||'')+'</div>'
+      + '<div class="char-desc">'+esc(ch.desc||'')+'</div>'
+      + '<div class="char-more">プロフィール →</div>'
+      + '</div>';
+  }).join('') + (EDIT ? '<div class="char-card char-add" onclick="addCharacter()">＋<span>キャラ追加</span></div>' : '');
+}
+function charClick(id){
+  if(window.__ftDragged) return;
+  if(EDIT){ editCharacter(id); return; }
+  openCharacter(id);
+}
+function openCharacter(id){
+  var ch = (content.characters||[]).find(function(x){ return x.id===id; });
+  if(!ch) return;
+  currentChar = id;
+  var c = /^#[0-9a-fA-F]{6}$/.test(ch.color||'') ? ch.color : '#00e5ff';
+  var box = document.getElementById('charm-box'); if(box) box.style.setProperty('--c', c);
+  document.getElementById('charm-portrait').innerHTML = charImgHtml(ch);
+  document.getElementById('charm-name').textContent = ch.name||'';
+  document.getElementById('charm-kana').textContent = ch.kana||'';
+  document.getElementById('charm-role').textContent = ch.role||'';
+  var fields = Array.isArray(ch.fields) ? ch.fields : [];
+  document.getElementById('charm-fields').innerHTML = fields.filter(function(f){ return f && (f.k||f.v); }).map(function(f){
+    return '<div class="charm-row"><div class="charm-k">'+esc(f.k||'')+'</div><div class="charm-v">'+esc(f.v||'').replace(/\n/g,'<br>')+'</div></div>';
+  }).join('');
+  var eb = document.getElementById('charm-edit'); if(eb) eb.style.display = EDIT ? '' : 'none';
+  document.getElementById('char-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  var b = document.getElementById('charm-box'); if(b) b.scrollTop = 0;
+}
+function closeCharacter(){
+  document.getElementById('char-modal').classList.remove('open');
+  document.body.style.overflow = ''; currentChar = null;
 }
 
 // ══ ARCHIVE ══
@@ -1871,7 +2008,9 @@ function openRandom() {
 }
 document.addEventListener('keydown', e => {
   var lbOpen = document.getElementById('lightbox') && document.getElementById('lightbox').classList.contains('open');
-  if (e.key === 'Escape'){ if(lbOpen) closeLightbox(); else closeModal(); return; }
+  var chOpen = document.getElementById('char-modal') && document.getElementById('char-modal').classList.contains('open');
+  if (e.key === 'Escape'){ if(lbOpen) closeLightbox(); else if(chOpen) closeCharacter(); else closeModal(); return; }
+  if (chOpen) return;
   if (lbOpen) return;
   if (e.key === 'ArrowRight') navModal(1);
   if (e.key === 'ArrowLeft')  navModal(-1);
@@ -2345,6 +2484,79 @@ function editMonthly(){
 function deleteArticle(id){
   if(!confirm('この記事を削除しますか？')) return;
   content.articles = content.articles.filter(x => x.id !== id);
+  saveContent(); edClose(); renderAll();
+}
+
+// ── 登場キャラクターの編集 ──
+let efCharImg = '', efCharFields = [];
+function addCharacter(){
+  if(!EDIT) return;
+  content.characters = content.characters || [];
+  var id = Math.max(0, ...content.characters.map(function(c){return c.id;})) + 1;
+  content.characters.push({ id, name:'新キャラクター', kana:'', role:'', color:'#00e5ff', image:'', desc:'', fields:[{k:'職業',v:''}] });
+  saveContent(); editCharacter(id);
+}
+function renderCharFields(){
+  var box = document.getElementById('ef-char-fields'); if(!box) return;
+  box.innerHTML = efCharFields.length ? efCharFields.map(function(f,i){
+    return '<div class="ed-cf-row">'
+      + '<input type="text" placeholder="見出し" value="'+esc(f.k||'')+'" oninput="efCharFields['+i+'].k=this.value">'
+      + '<input type="text" placeholder="内容" value="'+esc(f.v||'')+'" oninput="efCharFields['+i+'].v=this.value">'
+      + '<button type="button" onclick="delCharField('+i+')">✕</button></div>';
+  }).join('') : '<div class="ed-photos-empty">項目なし</div>';
+}
+function addCharField(){ efCharFields.push({k:'',v:''}); renderCharFields(); }
+function delCharField(i){ efCharFields.splice(i,1); renderCharFields(); }
+function editCharacter(id){
+  if(!EDIT) return;
+  var ch = (content.characters||[]).find(function(x){ return x.id===id; }); if(!ch) return;
+  closeCharacter();
+  efCharImg = ch.image||'';
+  efCharFields = (Array.isArray(ch.fields)?ch.fields:[]).map(function(f){ return {k:f.k||'',v:f.v||''}; });
+  edOpen(`
+    <div class="ed-head"><span>キャラクターを編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
+    <div class="ed-field">
+      <label>キャラ画像</label>
+      <div class="ed-imgprev" id="edCharPrev">${efCharImg?`<img src="${efCharImg}">`:'<span>画像なし</span>'}</div>
+      <label class="ed-upload">画像を選ぶ<input type="file" accept="image/*" id="edCharInput" hidden></label>
+      <button class="ed-btn-mini" id="edCharDel" style="${efCharImg?'':'display:none'}">画像を削除</button>
+    </div>
+    <div class="ed-row">
+      <div class="ed-field"><label>名前</label><input id="ef-char-name" type="text" value="${esc(ch.name||'')}"></div>
+      <div class="ed-field"><label>読み/英字（小さく表示）</label><input id="ef-char-kana" type="text" value="${esc(ch.kana||'')}"></div>
+    </div>
+    <div class="ed-field"><label>肩書き（役割）</label><input id="ef-char-role" type="text" value="${esc(ch.role||'')}"></div>
+    <div class="ed-field"><label>紹介文（トップのカード用・短め）</label><textarea id="ef-char-desc" rows="2">${esc(ch.desc||'')}</textarea></div>
+    <div class="ed-field"><label>アクセント色</label><input id="ef-char-color" type="color" value="${/^#[0-9a-fA-F]{6}$/.test(ch.color||'')?ch.color:'#00e5ff'}"></div>
+    <div class="ed-field">
+      <label>プロフィール項目（左＝見出し／右＝内容）</label>
+      <div id="ef-char-fields"></div>
+      <button type="button" class="ed-btn-mini" onclick="addCharField()">＋ 項目を追加</button>
+    </div>
+    <div class="ed-actions">
+      <button class="ed-del" onclick="deleteCharacter(${id})">削除</button>
+      <button class="ed-save" onclick="saveCharacter(${id})">保存する</button>
+    </div>`);
+  renderCharFields();
+  var inp = document.getElementById('edCharInput'), del = document.getElementById('edCharDel');
+  if(inp) inp.onchange = function(){ var f=inp.files[0]; if(!f) return; fileToDataURL(f, 900, function(d){ efCharImg=d; document.getElementById('edCharPrev').innerHTML='<img src="'+d+'">'; if(del) del.style.display=''; }); };
+  if(del) del.onclick = function(){ efCharImg=''; document.getElementById('edCharPrev').innerHTML='<span>画像なし</span>'; del.style.display='none'; };
+}
+function saveCharacter(id){
+  var ch = (content.characters||[]).find(function(x){ return x.id===id; }); if(!ch) return;
+  ch.name = val('ef-char-name');
+  ch.kana = val('ef-char-kana');
+  ch.role = val('ef-char-role');
+  ch.desc = val('ef-char-desc');
+  ch.color = document.getElementById('ef-char-color').value;
+  ch.image = efCharImg;
+  ch.fields = efCharFields.map(function(f){ return {k:(f.k||'').trim(), v:f.v||''}; }).filter(function(f){ return f.k||f.v; });
+  if(!saveContent()) return;
+  edClose(); renderAll();
+}
+function deleteCharacter(id){
+  if(!confirm('このキャラクターを削除しますか？')) return;
+  content.characters = (content.characters||[]).filter(function(x){ return x.id!==id; });
   saveContent(); edClose(); renderAll();
 }
 
