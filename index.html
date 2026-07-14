@@ -535,11 +535,6 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .charm-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
 .charm-k{flex:0 0 90px;font-size:11px;font-weight:700;color:var(--c,var(--cyan));letter-spacing:1px;}
 .charm-v{flex:1;font-size:12px;color:#e9f3fd;line-height:1.6;}
-.charm-poster{display:none;}
-.charm-poster img{display:block;width:100%;height:auto;border-radius:14px;}
-.charm.poster-mode{border:none;box-shadow:none;background:transparent;padding:0;overflow:hidden;}
-.charm.poster-mode .charm-struct{display:none;}
-.charm.poster-mode .charm-poster{display:block;}
 @media(max-width:520px){.charm-portrait{flex:0 0 140px;max-width:140px;margin:0 auto;}.charm-name{font-size:22px;}}
 /* エディタ：キャラ項目行 */
 .ed-cf-row{display:flex;gap:6px;margin-bottom:6px;}
@@ -1249,17 +1244,14 @@ body.standalone #appReload{display:flex;}
   <div class="charm" id="charm-box">
     <button class="charm-close" onclick="closeCharacter()">閉じる</button>
     <button class="charm-edit" id="charm-edit" onclick="editCharacter(currentChar)" style="display:none">✏ 編集</button>
-    <div class="charm-poster" id="charm-poster"></div>
-    <div class="charm-struct" id="charm-struct">
-      <div class="charm-head">CHARACTER FILE</div>
-      <div class="charm-body">
-        <div class="charm-portrait" id="charm-portrait"></div>
-        <div class="charm-main">
-          <div class="charm-name" id="charm-name"></div>
-          <div class="charm-kana" id="charm-kana"></div>
-          <div class="charm-role" id="charm-role"></div>
-          <div class="charm-fields" id="charm-fields"></div>
-        </div>
+    <div class="charm-head">CHARACTER FILE</div>
+    <div class="charm-body">
+      <div class="charm-portrait" id="charm-portrait"></div>
+      <div class="charm-main">
+        <div class="charm-name" id="charm-name"></div>
+        <div class="charm-kana" id="charm-kana"></div>
+        <div class="charm-role" id="charm-role"></div>
+        <div class="charm-fields" id="charm-fields"></div>
       </div>
     </div>
   </div>
@@ -1409,7 +1401,7 @@ function walkImages(c, fn){
     if(a.imageSrc2 !== undefined) a.imageSrc2 = fn(a.imageSrc2);
     if(Array.isArray(a.photos)) a.photos.forEach(function(ph){ if(ph && ph.src !== undefined) ph.src = fn(ph.src); });
   });
-  if(Array.isArray(c.characters)) c.characters.forEach(function(ch){ if(ch && ch.image !== undefined) ch.image = fn(ch.image); if(ch && ch.poster !== undefined) ch.poster = fn(ch.poster); });
+  if(Array.isArray(c.characters)) c.characters.forEach(function(ch){ if(ch && ch.image !== undefined) ch.image = fn(ch.image); });
 }
 // 起動時：localStorage内の idb:KEY 参照を実画像(dataURL)に戻す
 function resolveImages(){
@@ -1427,7 +1419,7 @@ function resolveImages(){
     ['imageSrc','imageSrc2'].forEach(function(k){ resolve(function(){return a[k];}, function(d){ a[k]=d; }); });
     if(Array.isArray(a.photos)) a.photos.forEach(function(ph){ if(ph) resolve(function(){return ph.src;}, function(d){ ph.src=d; }); });
   });
-  if(Array.isArray(c.characters)) c.characters.forEach(function(ch){ if(ch){ resolve(function(){return ch.image;}, function(d){ ch.image=d; }); resolve(function(){return ch.poster;}, function(d){ ch.poster=d; }); } });
+  if(Array.isArray(c.characters)) c.characters.forEach(function(ch){ if(ch) resolve(function(){return ch.image;}, function(d){ ch.image=d; }); });
   return Promise.all(jobs);
 }
 function saveContent(){
@@ -1733,18 +1725,6 @@ function openCharacter(id){
   currentChar = id;
   var c = /^#[0-9a-fA-F]{6}$/.test(ch.color||'') ? ch.color : '#00e5ff';
   var box = document.getElementById('charm-box'); if(box) box.style.setProperty('--c', c);
-  var poster = document.getElementById('charm-poster');
-  if(ch.poster){
-    if(box) box.classList.add('poster-mode');
-    if(poster) poster.innerHTML = '<img src="'+ch.poster+'" alt="'+esc(ch.name||'')+'">';
-    var eb0 = document.getElementById('charm-edit'); if(eb0) eb0.style.display = EDIT ? '' : 'none';
-    document.getElementById('char-modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    if(box) box.scrollTop = 0;
-    return;
-  }
-  if(box) box.classList.remove('poster-mode');
-  if(poster) poster.innerHTML = '';
   document.getElementById('charm-portrait').innerHTML = charImgHtml(ch);
   document.getElementById('charm-name').textContent = ch.name||'';
   document.getElementById('charm-kana').textContent = ch.kana||'';
@@ -2517,12 +2497,12 @@ function deleteArticle(id){
 }
 
 // ── 登場キャラクターの編集 ──
-let efCharImg = '', efCharPoster = '', efCharFields = [];
+let efCharImg = '', efCharFields = [];
 function addCharacter(){
   if(!EDIT) return;
   content.characters = content.characters || [];
   var id = Math.max(0, ...content.characters.map(function(c){return c.id;})) + 1;
-  content.characters.push({ id, name:'新キャラクター', kana:'', role:'', color:'#00e5ff', image:'', poster:'', desc:'', fields:[{k:'職業',v:''}] });
+  content.characters.push({ id, name:'新キャラクター', kana:'', role:'', color:'#00e5ff', image:'', desc:'', fields:[{k:'職業',v:''}] });
   saveContent(); editCharacter(id);
 }
 function renderCharFields(){
@@ -2541,7 +2521,6 @@ function editCharacter(id){
   var ch = (content.characters||[]).find(function(x){ return x.id===id; }); if(!ch) return;
   closeCharacter();
   efCharImg = ch.image||'';
-  efCharPoster = ch.poster||'';
   efCharFields = (Array.isArray(ch.fields)?ch.fields:[]).map(function(f){ return {k:f.k||'',v:f.v||''}; });
   edOpen(`
     <div class="ed-head"><span>キャラクターを編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
@@ -2563,13 +2542,6 @@ function editCharacter(id){
       <div id="ef-char-fields"></div>
       <button type="button" class="ed-btn-mini" onclick="addCharField()">＋ 項目を追加</button>
     </div>
-    <div class="ed-field">
-      <label>プロフィール1枚絵（貼り付け用・任意）</label>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.5;">設定すると、タップで開いた時にこの画像を1枚まるごと表示します（上の項目より優先）。空にすると通常のプロフィールに戻ります。</div>
-      <div class="ed-imgprev" id="edCharPosterPrev">${efCharPoster?`<img src="${efCharPoster}">`:'<span>画像なし</span>'}</div>
-      <label class="ed-upload">画像を選ぶ<input type="file" accept="image/*" id="edCharPosterInput" hidden></label>
-      <button class="ed-btn-mini" id="edCharPosterDel" style="${efCharPoster?'':'display:none'}">画像を削除</button>
-    </div>
     <div class="ed-actions">
       <button class="ed-del" onclick="deleteCharacter(${id})">削除</button>
       <button class="ed-save" onclick="saveCharacter(${id})">保存する</button>
@@ -2578,9 +2550,6 @@ function editCharacter(id){
   var inp = document.getElementById('edCharInput'), del = document.getElementById('edCharDel');
   if(inp) inp.onchange = function(){ var f=inp.files[0]; if(!f) return; fileToDataURL(f, 900, function(d){ efCharImg=d; document.getElementById('edCharPrev').innerHTML='<img src="'+d+'">'; if(del) del.style.display=''; }); };
   if(del) del.onclick = function(){ efCharImg=''; document.getElementById('edCharPrev').innerHTML='<span>画像なし</span>'; del.style.display='none'; };
-  var pinp = document.getElementById('edCharPosterInput'), pdel = document.getElementById('edCharPosterDel');
-  if(pinp) pinp.onchange = function(){ var f=pinp.files[0]; if(!f) return; fileToDataURL(f, 1400, function(d){ efCharPoster=d; document.getElementById('edCharPosterPrev').innerHTML='<img src="'+d+'">'; if(pdel) pdel.style.display=''; }); };
-  if(pdel) pdel.onclick = function(){ efCharPoster=''; document.getElementById('edCharPosterPrev').innerHTML='<span>画像なし</span>'; pdel.style.display='none'; };
 }
 function saveCharacter(id){
   var ch = (content.characters||[]).find(function(x){ return x.id===id; }); if(!ch) return;
@@ -2590,7 +2559,6 @@ function saveCharacter(id){
   ch.desc = val('ef-char-desc');
   ch.color = document.getElementById('ef-char-color').value;
   ch.image = efCharImg;
-  ch.poster = efCharPoster;
   ch.fields = efCharFields.map(function(f){ return {k:(f.k||'').trim(), v:f.v||''}; }).filter(function(f){ return f.k||f.v; });
   if(!saveContent()) return;
   edClose(); renderAll();
