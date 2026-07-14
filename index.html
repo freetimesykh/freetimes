@@ -514,7 +514,12 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
   .char-noimg{font-size:30px;}
   .char-add{flex:0 0 78px;font-size:22px;}
 }
-/* iPad/PC：上の記事カードに揃えて 3列グリッド＋名前オーバーレイ（見栄え統一） */
+/* iPad/PC：横スクロールをやめて折り返しグリッド（右端が中途半端に切れない・増えたら下に並ぶ） */
+@media(min-width:701px){
+  .chars-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;overflow:visible;padding:4px 0 10px;scroll-snap-type:none;}
+  .char-card{flex:none;scroll-snap-align:none;}
+  .char-add{flex:none;}
+}
 /* キャラクター・プロフィール画面 */
 .charm-wrap{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
 .charm-wrap.open{display:flex;}
