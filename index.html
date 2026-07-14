@@ -436,6 +436,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .cat-link{cursor:pointer;transition:filter .15s,transform .1s;}
 .cat-link:hover{filter:brightness(1.25);}
 .cat-link:active{transform:scale(0.94);}
+/* 携帯：小さいカード内のカテゴリータグは誤タップ防止のためタップ無効（表示のみ）。カードのどこでも記事が開く */
+@media(max-width:600px){.a-card-tag.cat-link,.arch-card-tag.cat-link{pointer-events:none;}}
 .a-card-sub{font-size:9px;color:rgba(232,244,255,0.45);line-height:1.5;margin-bottom:10px;}
 .a-card-read{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:5px;border:1px solid rgba(0,229,255,0.4);padding:5px 10px;width:fit-content;transition:all 0.2s;}
 .a-card-read::after{content:'→';}
