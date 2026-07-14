@@ -540,6 +540,8 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .modal-nav{display:flex;gap:6px;}
 .modal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.arch-more{display:block;margin:22px auto 6px;padding:12px 28px;border:1px solid var(--cyan);background:rgba(0,229,255,0.06);color:var(--cyan);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;border-radius:24px;cursor:pointer;transition:background .2s;}
+.arch-more:hover{background:rgba(0,229,255,0.16);}
 .modal-related{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);}
 .modal-related-h{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .rel-item{display:flex;gap:10px;align-items:center;padding:7px 0;cursor:pointer;border-radius:6px;transition:background .15s;}
@@ -1047,6 +1049,7 @@ body.standalone #appReload{display:flex;}
     <div class="arch-grid" id="arch-grid">
       <div class="no-results" id="no-results-arch">記事がありません</div>
     </div>
+    <button class="arch-more" id="arch-more" onclick="archMore()" style="display:none">もっと見る</button>
   </div>
   <footer class="site-footer">
     <div class="footer-inner">
@@ -1555,7 +1558,20 @@ function initArchive() {
       </div>`;
     grid.insertBefore(c, document.getElementById('no-results-arch'));
   });
+  archLimit = ARCH_PAGE;
+  applyArchLimit();
 }
+// ⑥ アーカイブの「もっと見る」ページ送り
+var ARCH_PAGE = 12, archLimit = 12;
+function applyArchLimit(){
+  var cards = [].slice.call(document.querySelectorAll('#arch-grid .arch-card'));
+  cards.forEach(function(c,i){ c.classList.toggle('hidden', i >= archLimit); });
+  var btn = document.getElementById('arch-more'); if(!btn) return;
+  var remain = cards.length - archLimit;
+  if(remain > 0){ btn.style.display = ''; btn.textContent = 'もっと見る（残り ' + remain + ' 件）'; }
+  else { btn.style.display = 'none'; }
+}
+function archMore(){ archLimit += ARCH_PAGE; applyArchLimit(); }
 
 // ══ SEARCH ══
 let searchInited = false, currentCat = 'all';
