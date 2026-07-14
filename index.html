@@ -1732,9 +1732,10 @@ function initHome() {
 
 // ══ CHARACTERS（登場キャラクター） ══
 let currentChar = null;
-// 画角調整：写真を少しズームして、上下左右どちらにも動かせるようにする
-var CROP_ZOOM = 1.4;                 // 表示ズーム倍率
-var CROP_RANGE = (CROP_ZOOM-1)/2*100; // 端まで動かせる範囲(%)＝はみ出し量
+// 画角調整：ズーム倍率(ピンチ)＋位置(ドラッグ)をキャラごとに保存
+var CROP_ZOOM = 1.4;        // 既定のズーム倍率
+var CROP_ZOOM_MIN = 1.0, CROP_ZOOM_MAX = 3.0;
+function cropRange(zoom){ return (zoom-1)/2*100; }   // そのズームで端まで動かせる範囲(%)
 function parseCropPos(pos){
   // 保存形式は translate の "x% y%"（中央=0 0）。旧 object-position "50% 50%" は中央として扱う
   if(!pos) return {x:0,y:0};
@@ -1744,12 +1745,13 @@ function parseCropPos(pos){
   if(x===50 && y===50) return {x:0,y:0};   // 旧データ（中央）
   return {x:x, y:y};
 }
-function charImgStyle(pos){
-  var t = parseCropPos(pos);
-  return 'transform:translate('+t.x+'%,'+t.y+'%) scale('+CROP_ZOOM+');';
+function cropZoomOf(z){ return (typeof z==='number' && z>0) ? Math.max(CROP_ZOOM_MIN, Math.min(CROP_ZOOM_MAX, z)) : CROP_ZOOM; }
+function charImgStyle(pos, zoom){
+  var t = parseCropPos(pos), z = cropZoomOf(zoom);
+  return 'transform:translate('+t.x+'%,'+t.y+'%) scale('+z+');';
 }
 function charImgHtml(ch){
-  if(ch.image) return '<img src="'+ch.image+'" style="'+charImgStyle(ch.imgpos)+'" alt="">';
+  if(ch.image) return '<img src="'+ch.image+'" style="'+charImgStyle(ch.imgpos, ch.imgzoom)+'" alt="">';
   var c = /^#[0-9a-fA-F]{6}$/.test(ch.color||'') ? ch.color : '#00e5ff';
   return '<div class="char-noimg" style="--c:'+c+'">'+esc((ch.name||'?').slice(0,1))+'</div>';
 }
@@ -2583,12 +2585,12 @@ function deleteArticle(id){
 }
 
 // ── 登場キャラクターの編集 ──
-let efCharImg = '', efCharPos = '50% 50%', efCharFields = [];
+let efCharImg = '', efCharPos = '0% 0%', efCharZoom = CROP_ZOOM, efCharFields = [];
 function addCharacter(){
   if(!EDIT) return;
   content.characters = content.characters || [];
   var id = Math.max(0, ...content.characters.map(function(c){return c.id;})) + 1;
-  content.characters.push({ id, name:'新キャラクター', kana:'', role:'', color:'#00e5ff', image:'', imgpos:'0% 0%', desc:'', fields:[{k:'職業',v:''}] });
+  content.characters.push({ id, name:'新キャラクター', kana:'', role:'', color:'#00e5ff', image:'', imgpos:'0% 0%', imgzoom:CROP_ZOOM, desc:'', fields:[{k:'職業',v:''}] });
   saveContent(); editCharacter(id);
 }
 function renderCharFields(){
@@ -2607,7 +2609,8 @@ function editCharacter(id){
   var ch = (content.characters||[]).find(function(x){ return x.id===id; }); if(!ch) return;
   closeCharacter();
   efCharImg = ch.image||'';
-  efCharPos = ch.imgpos||'50% 50%';
+  efCharPos = ch.imgpos||'0% 0%';
+  efCharZoom = cropZoomOf(ch.imgzoom);
   efCharFields = (Array.isArray(ch.fields)?ch.fields:[]).map(function(f){ return {k:f.k||'',v:f.v||''}; });
   edOpen(`
     <div class="ed-head"><span>キャラクターを編集</span><button class="ed-x" onclick="edClose()">✕</button></div>
@@ -2636,15 +2639,15 @@ function editCharacter(id){
   renderCharFields();
   renderCharCrop();
   var inp = document.getElementById('edCharInput'), del = document.getElementById('edCharDel');
-  if(inp) inp.onchange = function(){ var f=inp.files[0]; if(!f) return; fileToDataURL(f, 900, function(d){ efCharImg=d; efCharPos='50% 50%'; renderCharCrop(); if(del) del.style.display=''; }); };
+  if(inp) inp.onchange = function(){ var f=inp.files[0]; if(!f) return; fileToDataURL(f, 900, function(d){ efCharImg=d; efCharPos='0% 0%'; efCharZoom=CROP_ZOOM; renderCharCrop(); if(del) del.style.display=''; }); };
   if(del) del.onclick = function(){ efCharImg=''; renderCharCrop(); del.style.display='none'; };
 }
 // 画角調整プレビュー：ドラッグで object-position を上下左右に動かす
 function renderCharCrop(){
   var wrap = document.getElementById('edCharCropWrap'); if(!wrap) return;
   if(efCharImg){
-    wrap.innerHTML = '<div class="ed-crop" id="edCharCrop"><img src="'+efCharImg+'" style="'+charImgStyle(efCharPos)+'"></div>'
-      + '<div class="ed-crop-hint">↕↔ 指でドラッグして画角を調整</div>';
+    wrap.innerHTML = '<div class="ed-crop" id="edCharCrop"><img src="'+efCharImg+'" style="'+charImgStyle(efCharPos, efCharZoom)+'"></div>'
+      + '<div class="ed-crop-hint">1本指でドラッグ＝移動／2本指でつまむ＝拡大・縮小</div>';
     attachCropDrag(document.getElementById('edCharCrop'));
   } else {
     wrap.innerHTML = '<div class="ed-crop"><div class="ed-crop-empty">画像なし</div></div>';
@@ -2653,26 +2656,46 @@ function renderCharCrop(){
 function attachCropDrag(box){
   if(!box) return;
   var img = box.querySelector('img'); if(!img) return;
-  var dragging=false, sx=0, sy=0, px=0, py=0;
+  var pts = {};            // pointerId -> {x,y}
+  var mode = null;         // 'pan' | 'pinch'
+  var panStart = null;     // {sx,sy,px,py}
+  var pinchStart = null;   // {dist,zoom}
+  function ids(){ return Object.keys(pts); }
+  function twoDist(){ var k=ids(); if(k.length<2) return 0; var a=pts[k[0]], b=pts[k[1]]; return Math.hypot(a.x-b.x, a.y-b.y); }
+  function apply(){ var p=parseCropPos(efCharPos); img.style.transform='translate('+p.x+'%,'+p.y+'%) scale('+efCharZoom+')'; }
+  function clampPan(){ var r=cropRange(efCharZoom), p=parseCropPos(efCharPos);
+    efCharPos = Math.max(-r,Math.min(r,p.x)) + '% ' + Math.max(-r,Math.min(r,p.y)) + '%'; }
+  function beginPanWith(id){ var p=parseCropPos(efCharPos); panStart={sx:pts[id].x, sy:pts[id].y, px:p.x, py:p.y}; }
   box.addEventListener('pointerdown', function(e){
-    dragging=true; sx=e.clientX; sy=e.clientY;
-    var p=parseCropPos(efCharPos); px=p.x; py=p.y;
+    pts[e.pointerId] = {x:e.clientX, y:e.clientY};
     try{ box.setPointerCapture(e.pointerId); }catch(_){}
+    if(ids().length===2){ mode='pinch'; pinchStart={dist:twoDist()||1, zoom:efCharZoom}; }
+    else if(ids().length===1){ mode='pan'; beginPanWith(e.pointerId); }
     if(e.cancelable) e.preventDefault();
   });
   box.addEventListener('pointermove', function(e){
-    if(!dragging) return;
-    var w=box.clientWidth||1, h=box.clientHeight||1;
-    // 指の動きに写真がついてくる（右へドラッグ→写真が右へ動く）
-    var nx=Math.max(-CROP_RANGE,Math.min(CROP_RANGE, px + (e.clientX-sx)*(100/w)));
-    var ny=Math.max(-CROP_RANGE,Math.min(CROP_RANGE, py + (e.clientY-sy)*(100/h)));
-    efCharPos = Math.round(nx)+'% '+Math.round(ny)+'%';
-    img.style.transform = 'translate('+Math.round(nx)+'%,'+Math.round(ny)+'%) scale('+CROP_ZOOM+')';
+    if(!pts[e.pointerId]) return;
+    pts[e.pointerId] = {x:e.clientX, y:e.clientY};
+    if(mode==='pinch' && ids().length>=2){
+      efCharZoom = cropZoomOf(pinchStart.zoom * (twoDist()/pinchStart.dist));
+      clampPan(); apply();
+    } else if(mode==='pan' && ids().length===1 && panStart){
+      var w=box.clientWidth||1, h=box.clientHeight||1, r=cropRange(efCharZoom);
+      var nx=Math.max(-r,Math.min(r, panStart.px + (e.clientX-panStart.sx)*(100/w)));
+      var ny=Math.max(-r,Math.min(r, panStart.py + (e.clientY-panStart.sy)*(100/h)));
+      efCharPos = Math.round(nx)+'% '+Math.round(ny)+'%';
+      apply();
+    }
     if(e.cancelable) e.preventDefault();
   });
-  function end(e){ dragging=false; try{ box.releasePointerCapture(e.pointerId); }catch(_){} }
-  box.addEventListener('pointerup', end);
-  box.addEventListener('pointercancel', end);
+  function up(e){
+    delete pts[e.pointerId];
+    try{ box.releasePointerCapture(e.pointerId); }catch(_){}
+    if(ids().length===1){ mode='pan'; beginPanWith(ids()[0]); }
+    else if(ids().length===0){ mode=null; }
+  }
+  box.addEventListener('pointerup', up);
+  box.addEventListener('pointercancel', up);
 }
 function saveCharacter(id){
   var ch = (content.characters||[]).find(function(x){ return x.id===id; }); if(!ch) return;
@@ -2683,6 +2706,7 @@ function saveCharacter(id){
   ch.color = document.getElementById('ef-char-color').value;
   ch.image = efCharImg;
   ch.imgpos = efCharPos;
+  ch.imgzoom = efCharZoom;
   ch.fields = efCharFields.map(function(f){ return {k:(f.k||'').trim(), v:f.v||''}; }).filter(function(f){ return f.k||f.v; });
   if(!saveContent()) return;
   edClose(); renderAll();
