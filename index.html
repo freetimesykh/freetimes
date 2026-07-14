@@ -510,11 +510,11 @@ body.edit-mode .char-drag:active{cursor:grabbing;}
 .char-more{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--c,var(--cyan));padding:8px 12px 12px;}
 .char-add{flex:0 0 120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:28px;color:var(--cyan);border-style:dashed;}
 .char-add span{font-size:10px;letter-spacing:1px;}
-/* 携帯：キャラカードを記事カードよりはっきり小さく（正方形サムネ＋名前のみ） */
+/* 携帯：キャラカードを記事カードよりはっきり小さく（iPadと同じ縦長3:4＋名前のみ） */
 @media(max-width:600px){
   .chars-row{gap:8px;}
   .char-card{flex:0 0 calc((100% - 24px)/4);}
-  .char-portrait{aspect-ratio:1/1;}
+  .char-portrait{aspect-ratio:3/4;}
   .char-card .char-name{font-size:10px;padding:6px 8px 8px;line-height:1.3;}
   .char-desc{display:none;}
   .char-more{display:none;}
