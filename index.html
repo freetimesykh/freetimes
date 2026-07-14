@@ -433,6 +433,9 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .a-card-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;margin-bottom:6px;background:var(--blue);color:white;}
 .a-card-title{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;line-height:1.3;color:var(--white);margin-bottom:4px;}
 .a-card-date{font-size:8px;letter-spacing:1px;color:var(--muted);margin-bottom:6px;font-family:'Space Mono',monospace;}
+.cat-link{cursor:pointer;transition:filter .15s,transform .1s;}
+.cat-link:hover{filter:brightness(1.25);}
+.cat-link:active{transform:scale(0.94);}
 .a-card-sub{font-size:9px;color:rgba(232,244,255,0.45);line-height:1.5;margin-bottom:10px;}
 .a-card-read{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:5px;border:1px solid rgba(0,229,255,0.4);padding:5px 10px;width:fit-content;transition:all 0.2s;}
 .a-card-read::after{content:'→';}
@@ -1505,7 +1508,7 @@ function initHome() {
         <div class="a-card-drag" aria-hidden="true">⠿</div>
         ${p.new ? '<div class="card-new">NEW</div>' : ''}
         <div class="a-card-strip">
-          <div class="a-card-tag" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}">${esc(p.category || '号外')}</div>
+          <div class="a-card-tag${p.category?' cat-link':''}" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}"${p.category?` onclick="gotoCategory('${p.category}',event)"`:''}>${esc(p.category || '号外')}</div>
           ${(p.pinned||p.date)?`<div class="a-card-date">${p.pinned?'📌 ':''}${fmtDate(p.date)}</div>`:''}
           <div class="a-card-title">${esc(p.title)}</div>
           <div class="a-card-sub">${esc((p.sub||'').substring(0,38))}${(p.sub||'').length>38?'…':''}</div>
@@ -1535,7 +1538,7 @@ function initArchive() {
       <img src="${p.imageSrc}" alt="" loading="lazy">
       ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}">${esc(p.category||'other')}</span>
+        <span class="arch-card-tag${p.category?' cat-link':''}" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}"${p.category?` onclick="gotoCategory('${p.category}',event)"`:''}>${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${p.pinned?'📌 ':''}${esc(p.issue)}${p.date?' · '+fmtDate(p.date):''}</div>
         <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
@@ -1571,7 +1574,7 @@ function initSearch() {
       <img src="${p.imageSrc}" alt="" loading="lazy">
       ${p.new ? '<div class="card-new">NEW</div>' : ''}
       <div class="arch-card-strip">
-        <span class="arch-card-tag" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}">${esc(p.category||'other')}</span>
+        <span class="arch-card-tag${p.category?' cat-link':''}" style="background:rgba(${hexRgb(tc)},0.2);color:${tc}"${p.category?` onclick="gotoCategory('${p.category}',event)"`:''}>${esc(p.category||'other')}</span>
         <div class="arch-card-issue">${p.pinned?'📌 ':''}${esc(p.issue)}${p.date?' · '+fmtDate(p.date):''}</div>
         <div class="arch-card-title">${esc(p.title)}</div>
         <div class="arch-card-read">記事を読む</div>
@@ -1590,6 +1593,21 @@ function setCat(cat, btn) {
 }
 
 function doSearch() { filterSearch(); }
+
+// ④ カテゴリタグをタップ → 検索ページでそのジャンルだけ表示
+function gotoCategory(cat, ev){
+  if(typeof EDIT !== 'undefined' && EDIT) return;   // 編集中はタグでジャンプしない（カード編集を優先）
+  if(ev && ev.stopPropagation) ev.stopPropagation();
+  showPage('search');                                // 未生成ならここで initSearch が走る
+  var btns = [].slice.call(document.querySelectorAll('#cat-wrap .cat-btn'));
+  var target = null;
+  btns.forEach(function(b){ if((b.textContent||'').toLowerCase() === String(cat||'').toLowerCase()) target = b; });
+  currentCat = target ? cat : 'all';
+  btns.forEach(function(b){ b.classList.remove('active'); });
+  (target || btns[0]).classList.add('active');
+  var si = document.getElementById('search-input'); if(si) si.value = '';
+  filterSearch();
+}
 
 function filterSearch() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
