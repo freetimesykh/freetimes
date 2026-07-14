@@ -673,7 +673,10 @@ body.standalone .hero-x{right:58px;}   /* アプリ表示時は🔄ボタンと�
 .ed-enter{background:var(--cyan);color:#04080f;border:none;font-weight:700;font-size:13px;padding:12px 18px;border-radius:30px;cursor:pointer;box-shadow:0 6px 24px rgba(0,229,255,.4);letter-spacing:1px;}
 .ed-enter:hover{filter:brightness(1.1);}
 .ed-fab.open{right:0;bottom:0;left:0;}
-.ed-panel{background:rgba(7,13,22,.98);border-top:1px solid var(--cyan);padding:12px 14px;box-shadow:0 -8px 30px rgba(0,0,0,.6);}
+.ed-panel{background:rgba(7,13,22,.98);border-top:1px solid var(--cyan);padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 12px);box-shadow:0 -8px 30px rgba(0,0,0,.6);max-height:72vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.ed-min{background:none;border:1px solid var(--border);color:var(--cyan);width:30px;height:28px;border-radius:8px;cursor:pointer;font-size:13px;line-height:1;margin-left:auto;margin-right:8px;}
+.ed-panel.min{max-height:none;}
+.ed-panel.min .ed-tip,.ed-panel.min .ed-grid,.ed-panel.min .ed-publish-row{display:none;}
 @media(min-width:760px){.ed-fab.open{left:auto;}.ed-panel{max-width:360px;border:1px solid var(--cyan);border-radius:12px;margin:0 14px 14px auto;}}
 .ed-panel-h{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-weight:700;font-size:13px;margin-bottom:6px;}
 .ed-done{background:var(--cyan);color:#04080f;border:none;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-size:12px;}
@@ -2175,6 +2178,15 @@ function toggleEdit(){
 }
 
 // 画面右下のボタン／パネル
+var edPanelMin = false;
+function toggleEdPanel(){
+  edPanelMin = !edPanelMin;
+  var p = document.getElementById('edPanel');
+  if(p){
+    p.classList.toggle('min', edPanelMin);
+    var b = p.querySelector('.ed-min'); if(b) b.textContent = edPanelMin ? '▲' : '▾';
+  }
+}
 function renderEditChrome(){
   const fab = document.getElementById('edFab');
   if(!EDIT){
@@ -2185,8 +2197,10 @@ function renderEditChrome(){
   }
   fab.className = 'ed-fab open';
   fab.innerHTML = `
-    <div class="ed-panel">
-      <div class="ed-panel-h">編集モード <button class="ed-done" onclick="toggleEdit()">✓ 完了</button></div>
+    <div class="ed-panel${edPanelMin?' min':''}" id="edPanel">
+      <div class="ed-panel-h">編集モード
+        <button class="ed-min" onclick="toggleEdPanel()" title="パネルを開閉">${edPanelMin?'▲':'▾'}</button>
+        <button class="ed-done" onclick="toggleEdit()">✓ 完了</button></div>
       <div class="ed-tip">下線の文字は直接クリックで書き換え。記事カードはタップで編集／<b>長押し＋ドラッグで並べ替え</b>できます。</div>
       <div class="ed-grid">
         <button onclick="addArticle()">＋ 記事を追加</button>
