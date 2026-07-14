@@ -1356,6 +1356,7 @@ function mergeContent(base, over){
     const extras = base.articles.filter(a => !ids.has(a.id));
     base.articles = over.articles.concat(extras);
   }
+  if(over.characters){ base.characters = over.characters; }   // 登場キャラは保存/公開データを採用
   return base;
 }
 function loadContent(){
