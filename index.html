@@ -529,11 +529,11 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .charm-close{position:absolute;top:12px;right:12px;z-index:5;height:32px;padding:0 14px;border:1px solid var(--border);background:rgba(4,8,15,.92);color:#fff;font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;}
 .charm-edit{position:absolute;top:12px;left:12px;z-index:5;height:32px;padding:0 12px;border:1px solid var(--cyan);background:rgba(4,8,15,.92);color:var(--cyan);font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;}
 .charm-head{font-family:'Bebas Neue','Space Mono',monospace;letter-spacing:4px;font-size:12px;color:var(--c,var(--cyan));text-align:center;padding:16px;border-bottom:1px solid var(--border);}
-.charm-body{display:flex;gap:18px;padding:20px;flex-wrap:wrap;}
-.charm-portrait{flex:0 0 180px;max-width:180px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--black);border:1px solid var(--border);}
+.charm-body{display:flex;gap:0;padding:0;flex-wrap:nowrap;align-items:stretch;}
+.charm-portrait{flex:0 0 46%;max-width:46%;aspect-ratio:auto;min-height:100%;border-radius:0;overflow:hidden;background:var(--black);border:none;border-right:1px solid var(--border);}
 .charm-portrait img{width:100%;height:100%;object-fit:cover;display:block;}
-.charm-portrait .char-noimg{font-size:64px;}
-.charm-main{flex:1;min-width:220px;}
+.charm-portrait .char-noimg{display:flex;align-items:center;justify-content:center;height:100%;font-size:64px;}
+.charm-main{flex:1;min-width:0;padding:20px;}
 .charm-name{font-size:26px;font-weight:800;color:#fff;line-height:1.1;}
 .charm-kana{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px;}
 .charm-role{display:inline-block;margin-top:10px;font-size:10px;font-weight:700;letter-spacing:1px;color:#04080f;background:var(--c,var(--cyan));padding:4px 10px;border-radius:4px;}
@@ -541,7 +541,7 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 .charm-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
 .charm-k{flex:0 0 90px;font-size:11px;font-weight:700;color:var(--c,var(--cyan));letter-spacing:1px;}
 .charm-v{flex:1;font-size:12px;color:#e9f3fd;line-height:1.6;}
-@media(max-width:520px){.charm-portrait{flex:0 0 140px;max-width:140px;margin:0 auto;}.charm-name{font-size:22px;}}
+@media(max-width:520px){.charm-portrait{flex:0 0 42%;max-width:42%;}.charm-name{font-size:19px;}.charm-main{padding:14px;}.charm-k{flex:0 0 66px;font-size:10px;}}
 /* エディタ：キャラ項目行 */
 .ed-cf-row{display:flex;gap:6px;margin-bottom:6px;}
 .ed-cf-row input{min-width:0;box-sizing:border-box;}
