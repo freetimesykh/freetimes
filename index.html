@@ -534,8 +534,8 @@ body.edit-mode .char-drag:active{cursor:grabbing;}
 .charm-close{position:absolute;top:12px;right:12px;z-index:5;height:32px;padding:0 14px;border:1px solid var(--border);background:rgba(4,8,15,.92);color:#fff;font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;}
 .charm-edit{position:absolute;top:12px;left:12px;z-index:5;height:32px;padding:0 12px;border:1px solid var(--cyan);background:rgba(4,8,15,.92);color:var(--cyan);font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;}
 .charm-head{font-family:'Bebas Neue','Space Mono',monospace;letter-spacing:4px;font-size:12px;color:var(--c,var(--cyan));text-align:center;padding:16px;border-bottom:1px solid var(--border);}
-.charm-body{display:flex;gap:0;padding:0;flex-wrap:nowrap;align-items:stretch;}
-.charm-portrait{position:relative;flex:0 0 46%;max-width:46%;aspect-ratio:auto;min-height:100%;border-radius:0;overflow:hidden;background:var(--black);border:none;border-right:1px solid var(--border);}
+.charm-body{display:flex;gap:0;padding:0;flex-wrap:nowrap;align-items:flex-start;}
+.charm-portrait{position:relative;flex:0 0 46%;max-width:46%;aspect-ratio:3/4;border-radius:0;overflow:hidden;background:var(--black);border:none;border-right:1px solid var(--border);}
 .charm-portrait img{width:100%;height:100%;object-fit:cover;display:block;}
 .charm-portrait .char-noimg{display:flex;align-items:center;justify-content:center;height:100%;font-size:64px;}
 .charm-main{flex:1;min-width:0;padding:20px;}
@@ -548,8 +548,8 @@ body.edit-mode .char-drag:active{cursor:grabbing;}
 .charm-v{flex:1;font-size:12px;color:#e9f3fd;line-height:1.6;}
 @media(max-width:520px){
   .charm-body{flex-wrap:wrap;}
-  .charm-portrait{flex:0 0 100%;max-width:100%;aspect-ratio:1/1;min-height:0;border-right:none;border-bottom:1px solid var(--border);}
-  .charm-main{flex:0 0 100%;max-width:100%;padding:16px;}
+  .charm-portrait{flex:0 0 auto;width:62%;max-width:210px;margin:14px auto 4px;aspect-ratio:3/4;border-right:none;border-radius:10px;}
+  .charm-main{flex:0 0 100%;max-width:100%;padding:8px 16px 16px;}
   .charm-name{font-size:22px;}
 }
 /* エディタ：キャラ項目行 */
