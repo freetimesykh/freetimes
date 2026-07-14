@@ -506,13 +506,13 @@ body.edit-mode .monthly-banner::after{content:'✏ 月刊号を編集';position:
 /* 携帯：キャラカードを記事カードよりはっきり小さく（正方形サムネ＋名前のみ） */
 @media(max-width:600px){
   .chars-row{gap:8px;}
-  .char-card{flex:0 0 98px;}
+  .char-card{flex:0 0 calc((100% - 16px)/3);}
   .char-portrait{aspect-ratio:1/1;}
   .char-card .char-name{font-size:10px;padding:6px 8px 8px;line-height:1.3;}
   .char-desc{display:none;}
   .char-more{display:none;}
   .char-noimg{font-size:30px;}
-  .char-add{flex:0 0 78px;font-size:22px;}
+  .char-add{flex:0 0 calc((100% - 16px)/3);font-size:22px;}
 }
 /* iPad/PC：横スクロールのまま、ちょうど6枚が収まる幅にして右端がはみ出さないようにする */
 @media(min-width:701px){
