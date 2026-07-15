@@ -648,6 +648,8 @@ body.edit-mode .char-drag:active{cursor:grabbing;}
 .modal.modal-noimg .modal-img{display:none;}
 .modal-footer{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-by{font-size:8px;color:var(--white);}
+.modal-by .by-rep{font-size:11px;color:var(--cyan);cursor:pointer;font-weight:700;}
+.modal-by .by-rep:hover{text-decoration:underline;}
 .modal-nav{display:flex;gap:6px;}
 .modal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .modal-nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
@@ -2032,14 +2034,13 @@ function openModal(id) {
   document.getElementById('modal-title').textContent   = p.title;
   document.getElementById('modal-sub').textContent     = p.sub;
   document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article, p.photos) : p.article;
-  document.getElementById('modal-by').textContent      = p.by;
-  // 取材した記者（キャラ）へのリンク
+  // 署名：記者（キャラ）を選んでいればそれを署名にする（タップでプロフィールへ）。無ければ自由テキストの署名
+  var _byEl = document.getElementById('modal-by');
+  var _rc = p.charId ? (content.characters||[]).find(function(c){ return String(c.id)===String(p.charId); }) : null;
+  if(_rc){ _byEl.innerHTML = 'By <b class="by-rep" onclick="openCharFromArticle('+_rc.id+')">'+esc(_rc.name||'')+'</b>'; }
+  else { _byEl.textContent = p.by || ''; }
   var _rep = document.getElementById('modal-reporter');
-  if(_rep){
-    var _rc = p.charId ? (content.characters||[]).find(function(c){ return String(c.id)===String(p.charId); }) : null;
-    if(_rc){ _rep.style.display=''; _rep.innerHTML = '取材：<b onclick="openCharFromArticle('+_rc.id+')">'+esc(_rc.name||'')+'</b>'; }
-    else { _rep.style.display='none'; _rep.innerHTML=''; }
-  }
+  if(_rep){ _rep.style.display='none'; _rep.innerHTML=''; }
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
   let _topImg = document.getElementById('modal-top-img');
@@ -2464,8 +2465,8 @@ function editArticle(id){
       <div class="ed-field"><label><input id="ef-pin" type="checkbox" ${a.pinned?'checked':''}> 📌 トップに固定</label>
         <small>基本は公開日の新しい順。固定した記事は上に来て、⠿ドラッグで並べ替えできます。</small></div>
     </div>
-    <div class="ed-field"><label>署名</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
-    <div class="ed-field"><label>記者（キャラクター）— 選ぶとそのキャラのプロフィールに記事が並びます</label>
+    <div class="ed-field"><label>署名（記者キャラを選ぶと、そちらが署名になります）</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
+    <div class="ed-field"><label>記者（キャラクター）— 選ぶと署名になり、そのキャラのプロフィールに記事が並びます</label>
       <select id="ef-char">
         <option value="">（なし）</option>
         ${(content.characters||[]).map(function(c){ return '<option value="'+c.id+'"'+(String(a.charId)===String(c.id)?' selected':'')+'>'+esc(c.name||'名無し')+'</option>'; }).join('')}
