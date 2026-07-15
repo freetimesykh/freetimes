@@ -546,6 +546,18 @@ body.edit-mode .char-drag:active{cursor:grabbing;}
 .charm-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
 .charm-k{flex:0 0 90px;font-size:11px;font-weight:700;color:var(--c,var(--cyan));letter-spacing:1px;}
 .charm-v{flex:1;font-size:12px;color:#e9f3fd;line-height:1.6;}
+/* プロフィール内「この記者の記事」 */
+.charm-articles{margin-top:18px;}
+.charm-articles-h{font-family:'Bebas Neue','Space Mono',monospace;letter-spacing:2px;font-size:11px;color:var(--c,var(--cyan));margin-bottom:8px;}
+.charm-art{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border);cursor:pointer;}
+.charm-art:hover .charm-art-t{color:var(--c,var(--cyan));}
+.charm-art-th{flex:0 0 42px;width:42px;height:42px;border-radius:6px;overflow:hidden;background:var(--black);border:1px solid var(--border);}
+.charm-art-th img{width:100%;height:100%;object-fit:cover;display:block;}
+.charm-art-t{flex:1;min-width:0;font-size:12px;font-weight:700;color:#e9f3fd;line-height:1.4;}
+/* 記事モーダル：取材した記者（キャラ）へのリンク */
+.modal-reporter{margin-top:6px;font-size:11px;color:var(--muted);}
+.modal-reporter b{color:var(--cyan);cursor:pointer;font-weight:700;}
+.modal-reporter b:hover{text-decoration:underline;}
 @media(max-width:520px){
   .charm-body{flex-wrap:wrap;}
   .charm-portrait{flex:0 0 auto;width:62%;max-width:210px;margin:14px auto 4px;aspect-ratio:3/4;border-right:none;border-radius:10px;}
@@ -755,7 +767,7 @@ body.edit-mode .monthly-coming::after{content:'✏ ここに月刊号を作る';
 .ed-x:hover{border-color:var(--pink);color:var(--pink);}
 .ed-field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
 .ed-field>label{font-size:12px;color:#bcd6e8;font-weight:700;}
-.ed-field input,.ed-field textarea{background:#0a1018;border:1px solid var(--border);color:#eef6ff;padding:9px 11px;border-radius:7px;font-size:13px;font-family:inherit;outline:none;width:100%;}
+.ed-field input,.ed-field textarea,.ed-field select{background:#0a1018;border:1px solid var(--border);color:#eef6ff;padding:9px 11px;border-radius:7px;font-size:13px;font-family:inherit;outline:none;width:100%;}
 .ed-field input::placeholder,.ed-field textarea::placeholder{color:#6c8aa0;}
 .ed-field input[type=color]{height:42px;padding:4px;cursor:pointer;}
 .ed-field input[type=checkbox]{width:auto;}
@@ -1257,7 +1269,10 @@ body.standalone #appReload{display:flex;}
       <div class="modal-article" id="modal-article"></div>
       <button id="m-totop" onclick="modalToTop()" aria-label="先頭へ戻る" title="先頭へ戻る">↑</button>
       <div class="modal-footer">
-        <div class="modal-by" id="modal-by"></div>
+        <div>
+          <div class="modal-by" id="modal-by"></div>
+          <div class="modal-reporter" id="modal-reporter" style="display:none"></div>
+        </div>
         <div class="modal-nav">
           <button class="modal-nav-btn" onclick="navModal(-1)">←</button>
           <button class="modal-nav-btn" onclick="navModal(1)">→</button>
@@ -1287,6 +1302,7 @@ body.standalone #appReload{display:flex;}
         <div class="charm-kana" id="charm-kana"></div>
         <div class="charm-role" id="charm-role"></div>
         <div class="charm-fields" id="charm-fields"></div>
+        <div class="charm-articles" id="charm-articles"></div>
       </div>
     </div>
   </div>
@@ -1793,6 +1809,20 @@ function openCharacter(id){
   document.getElementById('charm-fields').innerHTML = fields.filter(function(f){ return f && (f.k||f.v); }).map(function(f){
     return '<div class="charm-row"><div class="charm-k">'+esc(f.k||'')+'</div><div class="charm-v">'+esc(f.v||'').replace(/\n/g,'<br>')+'</div></div>';
   }).join('');
+  // この記者（キャラ）が取材した記事一覧
+  var artBox = document.getElementById('charm-articles');
+  if(artBox){
+    var mine = (content.articles||[]).filter(function(a){ return a.imageSrc && String(a.charId)===String(id); });
+    if(mine.length){
+      artBox.style.display='';
+      artBox.innerHTML = '<div class="charm-articles-h">📰 この記者の記事</div>'
+        + mine.map(function(a){
+            return '<div class="charm-art" onclick="openArticleFromChar('+a.id+')">'
+              + '<div class="charm-art-th"><img src="'+esc(a.imageSrc)+'" alt=""></div>'
+              + '<div class="charm-art-t">'+esc(a.title||'')+'</div></div>';
+          }).join('');
+    } else { artBox.style.display='none'; artBox.innerHTML=''; }
+  }
   var eb = document.getElementById('charm-edit'); if(eb) eb.style.display = EDIT ? '' : 'none';
   document.getElementById('char-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1802,6 +1832,10 @@ function closeCharacter(){
   document.getElementById('char-modal').classList.remove('open');
   document.body.style.overflow = ''; currentChar = null;
 }
+// 記事モーダル → 記者プロフィールへ
+function openCharFromArticle(charId){ closeModal(); openCharacter(charId); }
+// プロフィール → その記者の記事へ
+function openArticleFromChar(artId){ closeCharacter(); openModal(artId); }
 
 // ══ ARCHIVE ══
 let archInited = false;
@@ -1999,6 +2033,13 @@ function openModal(id) {
   document.getElementById('modal-sub').textContent     = p.sub;
   document.getElementById('modal-article').innerHTML = p.monthly ? monthlyFormat(p.article, p.photos) : p.article;
   document.getElementById('modal-by').textContent      = p.by;
+  // 取材した記者（キャラ）へのリンク
+  var _rep = document.getElementById('modal-reporter');
+  if(_rep){
+    var _rc = p.charId ? (content.characters||[]).find(function(c){ return String(c.id)===String(p.charId); }) : null;
+    if(_rc){ _rep.style.display=''; _rep.innerHTML = '取材：<b onclick="openCharFromArticle('+_rc.id+')">'+esc(_rc.name||'')+'</b>'; }
+    else { _rep.style.display='none'; _rep.innerHTML=''; }
+  }
   const _mbody = document.querySelector('#modal .modal-body');
   const _mbox  = document.querySelector('#modal .modal');
   let _topImg = document.getElementById('modal-top-img');
@@ -2424,6 +2465,12 @@ function editArticle(id){
         <small>基本は公開日の新しい順。固定した記事は上に来て、⠿ドラッグで並べ替えできます。</small></div>
     </div>
     <div class="ed-field"><label>署名</label><input id="ef-by" type="text" value="${esc(a.by)}"></div>
+    <div class="ed-field"><label>記者（キャラクター）— 選ぶとそのキャラのプロフィールに記事が並びます</label>
+      <select id="ef-char">
+        <option value="">（なし）</option>
+        ${(content.characters||[]).map(function(c){ return '<option value="'+c.id+'"'+(String(a.charId)===String(c.id)?' selected':'')+'>'+esc(c.name||'名無し')+'</option>'; }).join('')}
+      </select>
+    </div>
     <div class="ed-field"><label>本文</label>
       <div class="bodyedit" id="bodyEdit">
         <div class="be-tools">
@@ -2492,6 +2539,8 @@ function saveArticle(id){
   a.date     = val('ef-date');
   a.pinned   = document.getElementById('ef-pin').checked;
   a.by       = val('ef-by');
+  var _charSel = document.getElementById('ef-char');
+  a.charId   = (_charSel && _charSel.value) ? Number(_charSel.value) : '';
   // カテゴリータグの色（非月刊のみ操作）。「共通の色を使う」なら個別色を消して共通色に従う
   var _colEl = document.getElementById('ef-color');
   var _colCommon = document.getElementById('ef-color-common');
